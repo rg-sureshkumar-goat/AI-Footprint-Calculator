@@ -75,6 +75,13 @@ npx serve .
 Pushing to `main` publishes the site to GitHub Pages via
 `.github/workflows/deploy-pages.yml`.
 
+On a fresh clone or fork, Pages has to be switched on once by hand: **Settings
+&rarr; Pages &rarr; Source &rarr; GitHub Actions**. The workflow passes
+`enablement: true` to do this itself, but on personal repositories the default
+`GITHUB_TOKEN` is not allowed to create a Pages site and the first run fails
+with *"Resource not accessible by integration"*. After the one-time switch,
+every later push deploys without intervention.
+
 ## Connecting real company data
 
 `assets/js/team-data.js` ships with **illustrative sample data for a fictional
