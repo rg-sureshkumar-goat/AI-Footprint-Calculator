@@ -2,10 +2,15 @@
  * base.css — design tokens plus the original calculator's styles.
  *
  * The source page was an Astro component that inherited its tokens from the
- * site layout (--font-editorial, --accent, --bg-elevated, and so on). That
- * layout is not part of the public source, so the palette below is
- * reconstructed from the colors the original hardcodes into its generated
- * report: #1C1E1B ink, #6B6E66 dim, #1f5a7a accent, #bcbfb2 inactive bars.
+ * site layout (--font-editorial, --accent, --bg-elevated, and so on), which is
+ * not part of the public source. The structure below was reconstructed from
+ * the colors the original hardcodes into its generated report, then recolored
+ * to the brand: #BF5700 on #FFFFFF.
+ *
+ * Every color in the project resolves through these tokens, so the palette can
+ * be changed here alone — with two exceptions that cannot read a CSS variable:
+ * the chevron data-URIs in this file, and the standalone report document built
+ * in calculator.js, which is written to a Blob with no stylesheet attached.
  */
 
 /* ---- Tokens ---- */
@@ -13,50 +18,61 @@
   --font-editorial: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
   --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
 
-  --text: #1C1E1B;
-  --text-secondary: #44473F;
-  --dim: #6B6E66;
+  /* Ink is warmed to sit with the orange rather than fight it. */
+  --text: #1A1512;
+  --text-secondary: #4A403A;
+  --dim: #6E6259;                /* 5.9:1 on white */
 
-  --bg: #FBFAF7;
+  --bg: #FFFFFF;
   --bg-elevated: #FFFFFF;
-  --bg-subtle: #F4F3EE;
+  /* Page and panels are both white, so inset areas need the faintest wash to
+     keep the structure readable. Tinted from the brand orange, not grey, so it
+     reads as part of the palette. */
+  --bg-subtle: #FDF4EE;
 
-  --border: #E2E0D8;
-  --border-strong: #C9C6BA;
+  --border: #EFE2D8;
+  --border-strong: #D8C3B2;
 
-  --accent: #1f5a7a;
-  --accent-hover: #164459;
-  --accent-subtle: #E8F0F4;
+  --accent: #BF5700;             /* 4.59:1 on white, and white on it — AA */
+  --accent-hover: #963F00;
+  --accent-subtle: #FCEBDD;
+  --on-accent: #FFFFFF;          /* text that sits on an accent fill */
 
-  --warn: #b05a37;
-  --warn-subtle: #FBEDE6;
-  --ok: #3F7A52;
-  --ok-subtle: #EAF3EC;
+  /* The old warn was itself a burnt orange, which the brand colour now owns.
+     A red keeps "over budget" and "adds emissions" distinct from "this is a
+     control", and lets the meter read ok -> brand -> red as three real steps. */
+  --warn: #B3261E;               /* 6.5:1 on white */
+  --warn-subtle: #FDECEA;
+  --ok: #2E7D4F;                 /* 5.0:1 on white */
+  --ok-subtle: #E7F3EC;
 
   --max-width: 640px;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --text: #ECEAE3;
-    --text-secondary: #BFBDB4;
-    --dim: #8E9188;
+    --text: #F6EDE6;
+    --text-secondary: #CDBDB1;
+    --dim: #9A8C81;
 
-    --bg: #15170F;
-    --bg-elevated: #1C1E1B;
-    --bg-subtle: #24261F;
+    --bg: #17120F;
+    --bg-elevated: #201A16;
+    --bg-subtle: #2B2320;
 
-    --border: #34362E;
-    --border-strong: #4A4C42;
+    --border: #3A302A;
+    --border-strong: #54463D;
 
-    --accent: #79B2CE;
-    --accent-hover: #9CCBE2;
-    --accent-subtle: #1E2E37;
+    /* #BF5700 is far too dark to read on a dark ground; lift it and flip the
+       text that sits on it, or accent buttons become light-on-light. */
+    --accent: #FF8A3D;
+    --accent-hover: #FFA766;
+    --accent-subtle: #38230F;
+    --on-accent: #241304;
 
-    --warn: #d98a63;
-    --warn-subtle: #33241C;
-    --ok: #8CC49C;
-    --ok-subtle: #1E2A21;
+    --warn: #F2796B;
+    --warn-subtle: #3A1F1C;
+    --ok: #6FC08E;
+    --ok-subtle: #1C2E23;
   }
 }
 
@@ -128,7 +144,7 @@ body {
   font-family: var(--font-body); font-size: 0.85rem; color: var(--text);
   background-color: var(--bg-subtle); border: 1px solid var(--border-strong);
   border-radius: 5px; padding: 0.32rem 1.55rem 0.32rem 0.6rem; cursor: pointer; appearance: none; max-width: 100%;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='6' viewBox='0 0 9 6'%3E%3Cpath d='M1 1l3.5 3.5L8 1' stroke='%236B6E66' stroke-width='1.4' fill='none'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='6' viewBox='0 0 9 6'%3E%3Cpath d='M1 1l3.5 3.5L8 1' stroke='%236E6259' stroke-width='1.4' fill='none'/%3E%3C/svg%3E");
   background-repeat: no-repeat; background-position: right 0.55rem center; transition: border-color 0.12s, background-color 0.12s;
 }
 .aipf-row .aipf-rsel { width: 100%; }
@@ -166,7 +182,7 @@ body {
   font-family: var(--font-body); font-size: 0.84rem; font-weight: 600; color: var(--text);
   background-color: var(--bg-elevated); border: 1px solid var(--border-strong); border-radius: 5px;
   padding: 0.14rem 1.35rem 0.14rem 0.5rem;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='6' viewBox='0 0 9 6'%3E%3Cpath d='M1 1l3.5 3.5L8 1' stroke='%236B6E66' stroke-width='1.6' fill='none'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='6' viewBox='0 0 9 6'%3E%3Cpath d='M1 1l3.5 3.5L8 1' stroke='%236E6259' stroke-width='1.6' fill='none'/%3E%3C/svg%3E");
   background-position: right 0.45rem center;
 }
 .aipf-life select:hover { border-color: var(--accent); color: var(--accent); }
@@ -175,7 +191,7 @@ body {
 /* Top toolbar: metric toggle on the left, report button on the right */
 .aipf-toolbar-top { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem 1rem; flex-wrap: wrap; margin-bottom: 1.1rem; }
 .aipf-report-btn {
-  background: var(--accent); color: #fff; border: none; border-radius: 6px;
+  background: var(--accent); color: var(--on-accent); border: none; border-radius: 6px;
   padding: 0.5rem 0.95rem; font-family: var(--font-body); font-size: 0.82rem; cursor: pointer;
   transition: background-color 0.12s; max-width: 17rem; text-align: left;
   text-wrap: balance; line-height: 1.3;
@@ -188,7 +204,7 @@ body {
 .aipf-showing { display: inline-flex; border: 1px solid var(--border-strong); border-radius: 6px; overflow: hidden; font-family: var(--font-body); }
 .aipf-metric { background: var(--bg-elevated); border: none; padding: 0.44rem 1.05rem; font: inherit; font-size: 0.9rem; color: var(--dim); cursor: pointer; transition: background-color 0.12s, color 0.12s; }
 .aipf-metric + .aipf-metric { border-left: 1px solid var(--border-strong); }
-.aipf-metric.is-active { background: var(--accent); color: #fff; font-weight: 600; }
+.aipf-metric.is-active { background: var(--accent); color: var(--on-accent); font-weight: 600; }
 .aipf-metric:hover:not(.is-active) { color: var(--text); background: var(--bg-subtle); }
 
 .aipf-verdict { margin: 0; }

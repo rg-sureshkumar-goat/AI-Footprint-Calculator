@@ -280,10 +280,10 @@
     rows.forEach((r, i) => {
       const y = top + i * rowH, cy = y + rowH / 2;
       const bw = Math.max(2, (r.v / max) * barMax);
-      const col = r.focal ? '#1f5a7a' : '#bcbfb2';
-      s += '<text x="' + (padL - 8) + '" y="' + (cy + 4) + '" text-anchor="end" font-size="12.5" fill="#1C1E1B">' + escXml(r.label) + '</text>';
+      const col = r.focal ? '#BF5700' : '#D8C3B2';
+      s += '<text x="' + (padL - 8) + '" y="' + (cy + 4) + '" text-anchor="end" font-size="12.5" fill="#1A1512">' + escXml(r.label) + '</text>';
       s += '<rect x="' + padL + '" y="' + (y + 5) + '" width="' + bw.toFixed(1) + '" height="' + (rowH - 12) + '" fill="' + col + '"/>';
-      s += '<text x="' + (padL + bw + 6).toFixed(1) + '" y="' + (cy + 4) + '" font-size="11.5" fill="#555">' + escXml(fmt(r.v)) + '</text>';
+      s += '<text x="' + (padL + bw + 6).toFixed(1) + '" y="' + (cy + 4) + '" font-size="11.5" fill="#6E6259">' + escXml(fmt(r.v)) + '</text>';
     });
     return s + '</svg>';
   }
@@ -325,13 +325,13 @@
     const date = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
     return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">' +
       '<title>How my AI use contributes to my carbon emissions and water use</title><style>' +
-      'body{font-family:Georgia,"Times New Roman",serif;color:#1C1E1B;max-width:760px;margin:2.5rem auto;padding:0 1.25rem;line-height:1.55;}' +
-      'h1{font-size:1.65rem;line-height:1.2;margin:0 0 .25rem;}.date{color:#6B6E66;font-size:.85rem;margin:0 0 1.5rem;}' +
+      'body{font-family:Georgia,"Times New Roman",serif;color:#1A1512;max-width:760px;margin:2.5rem auto;padding:0 1.25rem;line-height:1.55;}' +
+      'h1{font-size:1.65rem;line-height:1.2;margin:0 0 .25rem;}.date{color:#6E6259;font-size:.85rem;margin:0 0 1.5rem;}' +
       'h2{font-size:1.15rem;margin:2rem 0 .6rem;border-bottom:1px solid #ddd;padding-bottom:.25rem;}p{margin:.6rem 0;}' +
       'table{border-collapse:collapse;width:100%;font-size:.85rem;margin:.5rem 0;}th,td{text-align:left;padding:.35rem .5rem;border-bottom:1px solid #eee;}' +
-      'th{color:#6B6E66;font-weight:600;font-size:.72rem;text-transform:uppercase;letter-spacing:.03em;}td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;}' +
-      '.big{font-size:2.1rem;font-weight:700;}a{color:#1f5a7a;}sup a{text-decoration:none;}ol.refs{font-size:.8rem;color:#444;padding-left:1.2rem;}ol.refs li{margin:.35rem 0;word-break:break-word;}' +
-      '.muted{color:#6B6E66;font-size:.85rem;}@media print{a{color:#000;}body{margin:0;}}</style></head><body>' +
+      'th{color:#6E6259;font-weight:600;font-size:.72rem;text-transform:uppercase;letter-spacing:.03em;}td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;}' +
+      '.big{font-size:2.1rem;font-weight:700;}a{color:#BF5700;}sup a{text-decoration:none;}ol.refs{font-size:.8rem;color:#444;padding-left:1.2rem;}ol.refs li{margin:.35rem 0;word-break:break-word;}' +
+      '.muted{color:#6E6259;font-size:.85rem;}@media print{a{color:#000;}body{margin:0;}}</style></head><body>' +
       '<h1>How my AI use contributes to my carbon emissions and water use</h1>' +
       '<p class="date">Generated ' + date + ', based on exactly the inputs below.</p>' +
       '<h2>1. What I entered</h2>' +
