@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Footprint Calculator</title>
+<meta name="description" content="Enter your daily ChatGPT, Claude, and Gemini prompts to see the carbon and water footprint of your AI use, set against your real-world footprint, everyday things, and bigger lifestyle changes.">
+<link rel="stylesheet" href="assets/css/base.css">
+</head>
+<body>
+
+<!-- The calculator is written to "break out" of a narrow content column,
+     the way it did on the original site. This wrapper recreates that column. -->
+<main class="page">
+
+<article class="aipf" id="aipf">
+  <header class="aipf-header">
+    <h1 class="aipf-title">What your chatbot use actually costs</h1>
+    <p class="aipf-dek">
+      Enter an average day of AI use and this tool adds it up into one carbon and water cost, set
+      against your own footprint and the everyday things around it. Numbers for AI's energy and water come from
+      <a href="https://huggingface.co/spaces/genai-impact/ecologits-calculator" target="_blank" rel="noopener">EcoLogits</a>,
+      an open-source estimator of the energy, carbon, and water behind each AI model. The Claude
+      numbers are the shakiest here: Anthropic hasn't said how Claude is built, so EcoLogits has
+      to guess, and its guess might run low
+      (<a href="#methodology" onclick="document.getElementById('methodology').open=true">more in the methodology</a>). For carbon we
+      use the average grid intensity of the region you pick (not EcoLogits' single whole-world
+      average) plus the hardware's embodied emissions; everything else is sourced in the methodology
+      below. Training is excluded as too uncertain, but split across all users it
+      <a href="https://blog.andymasley.com/p/training-ai-models-doesnt-emit-that" target="_blank" rel="noopener">adds little to your personal footprint</a>.
+    </p>
+  </header>
+
+  <div class="aipf-toolbar-top">
+    <div class="aipf-toggle" role="group" aria-label="Footprint type">
+      <span class="aipf-toggle-label">Show</span>
+      <div class="aipf-showing">
+        <button type="button" class="aipf-metric is-active" data-metric="carbon">💨 Carbon</button>
+        <button type="button" class="aipf-metric" data-metric="water">💧 Water</button>
+      </div>
+    </div>
+    <button type="button" class="aipf-report-btn" id="aipf-report"
+      title="Generate a report with citations of exactly how my AI use as entered here contributes to my carbon emissions.">
+      Generate a personalized cited report of my AI emissions
+    </button>
+  </div>
+
+  <!-- Tool: inputs on the left, the answer on the right -->
+  <div class="aipf-tool">
+    <div class="aipf-in" aria-label="Your daily AI usage">
+      <div class="aipf-in-head"><span>Your AI use</span><span class="aipf-in-sub">per day</span></div>
+      <div class="aipf-rows-head" aria-hidden="true">
+        <span>Model</span><span>Typical output</span><span>Prompts/day</span><span></span>
+      </div>
+      <div class="aipf-rows" id="aipf-rows"></div>
+      <button type="button" class="aipf-addrow" id="aipf-addrow">+ add another</button>
+      <p class="aipf-running" id="aipf-running" aria-live="polite"></p>
+      <div class="aipf-writes">
+        <p class="aipf-writes-h">What it writes</p>
+        <p class="aipf-words" id="aipf-words" aria-live="polite"></p>
+      </div>
+      <p class="aipf-hint">"Typical output" is how long each reply is. A "coding / agent session" means one full run of an AI coding assistant that writes and edits code across many steps. It uses EcoLogits' 100,000-token "assist application development" benchmark (much of it the model's own reasoning and tool calls, not final code).</p>
+      <p class="aipf-tools">
+        <button type="button" class="aipf-link" id="aipf-reset">Reset</button>
+        <span class="aipf-tools-sep">·</span>
+        <button type="button" class="aipf-link" id="aipf-share">Copy link</button>
+      </p>
+    </div>
+
+    <div class="aipf-out" aria-label="How it compares">
+      <div class="aipf-out-head">
+        <p class="aipf-life">
+          vs. a day for someone in
+          <select id="aipf-loc" aria-label="Where you live"></select> who lives in
+          <span class="aipf-nw"><select id="aipf-home" aria-label="Your home"></select>,</span> drives
+          <span class="aipf-nw"><select id="aipf-drive" aria-label="How much you drive"></select>,</span> eats
+          <span class="aipf-nw"><select id="aipf-diet" aria-label="Your diet"></select>,</span> and flies
+          <select id="aipf-fly" aria-label="How much you fly"></select>
+        </p>
+      </div>
+      <div class="aipf-verdict" id="aipf-headline" aria-live="polite"></div>
+      <div class="aipf-mini">
+        <p class="aipf-chart-title">A day of your AI use vs. everyday things</p>
+        <p class="aipf-mini-h" id="aipf-daily-sub"></p>
+        <div class="aipf-bars aipf-bars--compact" id="aipf-daily-bars" aria-live="polite"></div>
+      </div>
+      <p class="aipf-fine" id="aipf-grid-note"></p>
+      <p class="aipf-fine">Excludes training, image and video generation, and retries.</p>
+      <p class="aipf-fine">*A note on the Claude models: Anthropic has never said how Claude is built, so EcoLogits has to guess. Its guess is that Claude Opus and Sonnet only use a fraction of their parameters at a time. Some people who follow this closely think Claude actually uses all of them on every token, and if that's right, the Claude numbers here are too low. <a href="#methodology" onclick="document.getElementById('methodology').open=true">More in the methodology below</a>.</p>
+    </div>
+  </div>
+
+  <!-- Below: a year, split into emissions added vs cuts you could make -->
+  <div class="aipf-below" aria-label="In a year, ways you add">
+    <h2 class="aipf-h2" id="aipf-add-title">In a year, ways you add emissions</h2>
+    <p class="aipf-sub" id="aipf-add-sub"></p>
+    <div class="aipf-bars" id="aipf-add-bars" aria-live="polite"></div>
+  </div>
+  <div class="aipf-below" aria-label="In a year, ways you can cut">
+    <h2 class="aipf-h2" id="aipf-cut-title">In a year, ways you can cut emissions</h2>
+    <p class="aipf-sub" id="aipf-cut-sub"></p>
+    <div class="aipf-bars" id="aipf-cut-bars" aria-live="polite"></div>
+  </div>
+
+  <details class="aipf-method" id="methodology">
+    <summary>How these numbers are made</summary>
+    <div class="aipf-method-body">
+      <p>
+        <strong>Per-model AI estimates.</strong> The energy, carbon, and water numbers for each
+        prompt come from the open-source <a href="https://ecologits.ai/" target="_blank" rel="noopener">EcoLogits</a>
+        library (v0.10), the same code that runs the
+        <a href="https://huggingface.co/spaces/genai-impact/ecologits-calculator" target="_blank" rel="noopener">EcoLogits calculator</a>.
+        The model list is current as of June 2026. EcoLogits estimates electricity from how big
+        each model is (really, how many parameters it uses on each token) and how long the reply
+        is, then adds the cost of manufacturing the hardware. The low and high ends are
+        EcoLogits' own 95% confidence interval, which mostly comes down to nobody outside these
+        companies knowing how big the closed models really are. One of its guesses matters a lot
+        here: Anthropic has never said how Claude is built, and
+        <a href="https://github.com/genai-impact/ecologits/blob/main/ecologits/data/models.json" target="_blank" rel="noopener">EcoLogits' model data</a>
+        assumes Claude Opus and Sonnet are mixture-of-experts models, which would mean they only
+        use a fraction of their parameters on any given token (it marks every Claude entry
+        "model-arch-not-released"). People who track this disagree. Some think the clues we do
+        have, like Claude's speed and pricing, point to dense models that use every parameter
+        every time. Others think Claude is a very large mixture-of-experts. If the dense camp is
+        right, the Claude numbers on this page are probably too low. The water numbers count
+        consumption, not withdrawal: water that is actually gone, evaporated cooling the data
+        center or generating its electricity, not water taken in and then returned. Every water
+        figure on this page works this way, so the comparisons are apples to apples.
+      </p>
+      <p>
+        <strong>Carbon basis.</strong>
+        <a href="https://ecologits.ai/latest/" target="_blank" rel="noopener">EcoLogits</a> gives each
+        prompt's electricity use and its embodied (hardware-manufacturing) emissions separately. We
+        keep EcoLogits' embodied figure as-is and cost the electricity on the grid where you live,
+        using carbon intensities from
+        <a href="https://ember-energy.org/latest-insights/global-electricity-review-2024/" target="_blank" rel="noopener">Ember 2024</a>
+        and <a href="https://ourworldindata.org/grapher/carbon-intensity-electricity" target="_blank" rel="noopener">Our World in Data</a>:
+        roughly 380 (US), 215 (EU), 125 (UK), 580 (China), 700 (India), and 480 (world)
+        g CO<sub>2</sub>e/kWh. Water is left on EcoLogits' global basis.
+      </p>
+      <p>
+        <strong>Output, words, and code.</strong> Each row maps to an EcoLogits output-token count:
+        tweet (50), short email (170), article summary (250), chatbot reply (400), 5-page report
+        (5,000), long document (15,000), coding or agent session (100,000), and re-writing the
+        Lord of the Rings trilogy (500,000) — both EcoLogits benchmark tasks; the trilogy itself
+        runs about 480,000 words.
+        The coding/agent session uses EcoLogits' 100,000-token "assist application development"
+        benchmark, which represents one full run that writes and edits code across many steps.
+        Cost scales with length, so long generations dominate. Counts are per day; annual figures
+        multiply by 365. Words assume
+        <a href="https://help.openai.com/en/articles/4936856-what-are-tokens-and-how-to-count-them" target="_blank" rel="noopener">OpenAI's ~0.75 words per token</a>,
+        read at
+        <a href="https://biblio.ugent.be/publication/8647789" target="_blank" rel="noopener">238 words a minute (Brysbaert 2019)</a>.
+        A coding session is counted as lines of code (~10 tokens a line) rather than words to
+        read. Only about 15% of its output tokens are treated as actual code; the rest is
+        reasoning (which dominates for reasoning models), tool calls, file exploration, and
+        explanation, so a 100,000-token session is on the order of 1,500 lines. This is a rough
+        estimate with wide uncertainty.
+      </p>
+      <p>
+        <strong>Your footprint.</strong> "Where you live" is a regional baseline for goods,
+        services, and shared infrastructure (per-capita consumption from
+        <a href="https://ourworldindata.org/co2-emissions" target="_blank" rel="noopener">Our World in Data</a>);
+        home energy and driving are separate so they do not double-count.
+        <strong>Home</strong> runs from a small apartment to a big house, about 1.5 to 7 t
+        CO<sub>2</sub>e a year (<a href="https://www.eia.gov/consumption/residential/" target="_blank" rel="noopener">EIA RECS</a>;
+        <a href="https://www.pnas.org/doi/10.1073/pnas.1922205117" target="_blank" rel="noopener">Goldstein et al. 2020</a>).
+        <strong>Driving</strong> uses
+        <a href="https://www.epa.gov/greenvehicles/greenhouse-gas-emissions-typical-passenger-vehicle" target="_blank" rel="noopener">EPA's ~400 g CO<sub>2</sub>/mile</a>
+        across roughly 3,000 to 25,000 miles a year (<a href="https://www.fhwa.dot.gov/policyinformation/statistics/2023/vm1.cfm" target="_blank" rel="noopener">FHWA</a>).
+        <strong>Diet</strong> uses food footprints from
+        <a href="https://www.science.org/doi/10.1126/science.aaq0216" target="_blank" rel="noopener">Poore &amp; Nemecek (2018)</a>
+        and <a href="https://www.nature.com/articles/s43016-023-00795-w" target="_blank" rel="noopener">Scarborough et al. (2023)</a>:
+        about 1.05 t CO<sub>2</sub>e a year for a vegan diet up to 3.2 t for a heavy-meat one.
+        <strong>Flying</strong> is anchored to a transatlantic round trip of about 1.6 t
+        (<a href="https://iopscience.iop.org/article/10.1088/1748-9326/aa7541" target="_blank" rel="noopener">Wynes &amp; Nicholas 2017</a>);
+        the rarely / sometimes / often options are roughly 0.5, 1.5, and 5 such trips a year.
+        The <strong>water footprint</strong> uses <strong>blue water only</strong> — freshwater
+        actually drawn from rivers, lakes, and aquifers. We deliberately leave out
+        <em>green</em> water (rain that falls on farmland and would evaporate anyway, whether or
+        not a crop is grown) and <em>grey</em> water (a notional pollution-dilution volume),
+        because neither is a real draw on freshwater supplies. The AI figure is already blue
+        (data-center cooling and power-plant water), so both sides match. The per-person blue
+        footprint is from the
+        <a href="https://tools.waterfootprint.org/national-explorer/" target="_blank" rel="noopener">Water Footprint Network (Mekonnen &amp; Hoekstra)</a>:
+        about <a href="https://www.mdpi.com/2073-4441/12/11/3286" target="_blank" rel="noopener">450 m<sup>3</sup>/yr for the US</a>
+        and <a href="https://www.pnas.org/doi/10.1073/pnas.1109936109" target="_blank" rel="noopener">153 m<sup>3</sup> globally</a>
+        (the other regions are scaled by their irrigation intensity and are approximate). Removing
+        green water changes the picture a lot: most of a food's water is rain, so a beef burger
+        drops from ~1,700 L total to about <a href="https://theconversation.com/heres-how-much-water-it-takes-to-make-a-serving-of-beef-and-why-where-it-comes-from-is-so-important-208155" target="_blank" rel="noopener">6 L of freshwater</a>,
+        while irrigated crops stay high.
+      </p>
+      <p>
+        <strong>Lifestyle cuts (the yearly chart).</strong> The "saved" figures come from the
+        <a href="https://www.founderspledge.com/research/climate-and-lifestyle-report" target="_blank" rel="noopener">Founders Pledge Climate &amp; Lifestyle report</a>,
+        drawing on
+        <a href="https://iopscience.iop.org/article/10.1088/1748-9326/aa7541" target="_blank" rel="noopener">Wynes &amp; Nicholas (2017)</a>
+        (living car-free 2.4 t, avoiding a transatlantic flight 1.6 t, hang-drying, recycling, LED
+        bulbs) and
+        <a href="https://iopscience.iop.org/article/10.1088/1748-9326/ab8589" target="_blank" rel="noopener">Ivanova et al. (2020)</a>
+        (green electricity, heat-pump heating, a home retrofit, electric and hybrid cars).
+      </p>
+      <p>
+        <strong>Ways you add emissions (the yearly chart).</strong>
+        Manufacturing a new car ≈ 6 t CO<sub>2</sub>e
+        (<a href="https://howbadarebananas.com/" target="_blank" rel="noopener">Berners-Lee, How Bad Are Bananas?</a>);
+        a <a href="https://www.epa.gov/sites/default/files/2018-02/documents/lca_tv.pdf" target="_blank" rel="noopener">new flat-screen TV ≈ 350 kg</a>;
+        a <a href="https://devera.ai/benchmarks/carbon-footprint-of-a-laptop" target="_blank" rel="noopener">new laptop ≈ 250 kg</a>;
+        a <a href="https://howbadarebananas.com/" target="_blank" rel="noopener">new bicycle ≈ 100 kg and a new sofa ≈ 90 kg</a>.
+        Flights, per passenger
+        (<a href="https://co2.myclimate.org/en/flight_calculators/new" target="_blank" rel="noopener">myclimate</a>,
+        with a transatlantic round trip ≈ 1.6 t per
+        <a href="https://iopscience.iop.org/article/10.1088/1748-9326/aa7541" target="_blank" rel="noopener">Wynes &amp; Nicholas</a>):
+        a short-haul round trip ≈ 250 kg, a round-trip US
+        cross-country flight ≈ 1 t, and a transatlantic round trip ≈ 1.6 t. A year of average US
+        driving (~12,000 mi) ≈ 4.8 t at ~0.40 kg/mile
+        (<a href="https://www.epa.gov/greenvehicles/greenhouse-gas-emissions-typical-passenger-vehicle" target="_blank" rel="noopener">EPA</a>).
+        A beef burger every week for a year ≈ 156 kg
+        (<a href="https://www.science.org/doi/10.1126/science.aaq0216" target="_blank" rel="noopener">Poore &amp; Nemecek</a>, ~3 kg each);
+        a <a href="https://theconversation.com/coffee-heres-the-carbon-cost-of-your-daily-cup-and-how-to-make-it-climate-friendly-152629" target="_blank" rel="noopener">year of daily coffee ≈ 77 kg</a>;
+        a <a href="https://howbadarebananas.com/" target="_blank" rel="noopener">cotton T-shirt ≈ 7 kg</a>;
+        a new smartphone ≈ 70 kg (<a href="https://www.apple.com/environment/" target="_blank" rel="noopener">Apple</a>);
+        and a pair of jeans ≈ 33 kg (<a href="https://www.levistrauss.com/wp-content/uploads/2015/03/Full-LCA-Results-Deck-FINAL.pdf" target="_blank" rel="noopener">Levi's</a>).
+      </p>
+      <p>
+        <strong>Everyday things.</strong> A cup of coffee: ~0.21 kg CO<sub>2</sub>e and
+        <a href="https://www.weforum.org/stories/2019/03/hidden-water-in-your-cup-of-coffee/" target="_blank" rel="noopener">140 L of water</a>.
+        An hour on a <a href="https://www.playstation.com/en-us/legal/ecodesign/" target="_blank" rel="noopener">PS5 (~200 W)</a>;
+        3 minutes in a <a href="https://www.siliconvalleypower.com/residents/save-energy/appliance-energy-use-chart" target="_blank" rel="noopener">1,200 W microwave</a>;
+        a mile in a gas car (<a href="https://www.epa.gov/greenvehicles/greenhouse-gas-emissions-typical-passenger-vehicle" target="_blank" rel="noopener">EPA, ~0.40 kg</a>);
+        a 10-minute hot shower (<a href="https://www.epa.gov/watersense/showerheads" target="_blank" rel="noopener">~21 gal, EPA WaterSense</a>, plus water heating);
+        a <a href="https://www.energystar.gov/products/dishwashers" target="_blank" rel="noopener">dishwasher load (≤3.5 gal, ENERGY STAR)</a>;
+        a <a href="https://www.energystar.gov/products/clothes_dryers" target="_blank" rel="noopener">dryer load (~3 kWh)</a>;
+        <a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1530-9290.2011.00414.x" target="_blank" rel="noopener">printing a 400-page book (~2.7 kg, Wells 2012)</a>
+        with <a href="https://waterfootprint.org/resources/Report46-WaterFootprintPaper.pdf" target="_blank" rel="noopener">paper's water footprint</a>;
+        a beef burger (~3 kg, <a href="https://www.science.org/doi/10.1126/science.aaq0216" target="_blank" rel="noopener">Poore &amp; Nemecek</a>; ~1,700 L at
+        <a href="https://watercalculator.org/footprint/the-hidden-water-in-everyday-products/" target="_blank" rel="noopener">15,400 L/kg beef</a>);
+        a <a href="https://www.apple.com/environment/" target="_blank" rel="noopener">new smartphone (~70 kg, Apple)</a>
+        needing <a href="https://www.compareandrecycle.co.uk/blog/world-water-week-how-much-water-does-your-smartphone-use" target="_blank" rel="noopener">~12,800 L</a>;
+        a <a href="https://www.levistrauss.com/wp-content/uploads/2015/03/Full-LCA-Results-Deck-FINAL.pdf" target="_blank" rel="noopener">pair of jeans (~33 kg, Levi's)</a>
+        at ~10,000 L (<a href="https://watercalculator.org/footprint/the-hidden-water-in-everyday-products/" target="_blank" rel="noopener">Water Footprint Network</a>).
+      </p>
+      <p>
+        <strong>How the appliance figures are derived.</strong> The coffee, PS5, microwave, shower,
+        dishwasher, and dryer carbon numbers are each that item's measured electricity (cited
+        above) times the US grid (~0.38 kg CO<sub>2</sub>/kWh), so they fall on cleaner grids.
+        Two depend heavily on assumptions: a cup of coffee is
+        <a href="https://theconversation.com/coffee-heres-the-carbon-cost-of-your-daily-cup-and-how-to-make-it-climate-friendly-152629" target="_blank" rel="noopener">~0.05 kg black up to ~0.5 kg for a large latte</a>
+        (we use ~0.2 kg), and a 10-minute hot shower is roughly 0.2 kg on a gas water heater up to
+        1.5 kg on electric resistance (we use ~0.7 kg). Where a single authority does not exist,
+        figures are rounded mid-range estimates from the sources cited, not false precision.
+      </p>
+      <p>
+        <strong>Water comparisons (blue water).</strong> The water charts use the
+        <strong>blue</strong> (freshwater) component only, so the comparison items are the
+        irrigation- and process-water heavy ones, from the
+        <a href="https://watercalculator.org/footprint/the-hidden-water-in-everyday-products/" target="_blank" rel="noopener">Water Footprint Network</a>
+        and crop studies: a beef burger (~6 L, since beef is ~90% rainwater), a cup of coffee
+        (~4 L), a slice of bread (~8 L), an egg (~15 L), a glass of milk (~22 L), a bowl of rice
+        (~25 L), an avocado (~60 L), a handful of almonds (~120 L, as
+        <a href="https://www.almonds.org/sites/default/files/2020-05/Water_footprint_plus_almonds.pdf" target="_blank" rel="noopener">each California almond takes ~12 L of irrigation</a>),
+        a cotton T-shirt (~1,500 L of its 2,700 L total is blue), a pair of jeans (~5,000 L), and a
+        <a href="https://www.compareandrecycle.co.uk/blog/world-water-week-how-much-water-does-your-smartphone-use" target="_blank" rel="noopener">new smartphone</a>
+        (mostly ultrapure freshwater). The savings come from cutting irrigated products (a few
+        fewer cotton clothes) and outdoor watering: a typical lawn drinks roughly 20,000 gal of
+        freshwater a year, so letting it go unwatered or replacing it with native plants saves most
+        of that (<a href="https://www.epa.gov/watersense/landscaping-tips" target="_blank" rel="noopener">EPA WaterSense</a>).
+        Eating less meat barely moves the blue total, because almost all of meat's water is rain.
+        Energy and manufactured goods have a blue-water cost too: thermoelectric power plants
+        evaporate about
+        <a href="https://www.nrel.gov/docs/fy11osti/50900.pdf" target="_blank" rel="noopener">0.47 gal of freshwater per kWh</a>
+        (NREL, cooling/consumption only), so an hour of central air conditioning (~3 kWh) consumes
+        roughly 1.4 gal and a day of the
+        <a href="https://www.eia.gov/tools/faqs/faq.php?id=97" target="_blank" rel="noopener">average US home's electricity (~29 kWh)</a>
+        about 14 gal — the very same power-plant cooling water that makes up much of AI's footprint.
+        Printing a 300-page book uses on the order of ~5 gal of process freshwater
+        (<a href="https://waterfootprint.org/resources/Report64-WaterFootprint-Paper.pdf" target="_blank" rel="noopener">paper's water footprint</a>
+        is mostly rain on trees, with the blue mill water lower since most is returned to rivers).
+      </p>
+    </div>
+  </details>
+
+  <p class="aipf-permission">Built on the AI prompt footprint calculator by Andy Masley, who dedicated it to the public domain and gave explicit permission to copy it without credit. All figures are facts and estimates drawn from the sources cited in the methodology (mostly CC BY, public-domain, or MPL-licensed) and used as data, which copyright does not restrict.</p>
+
+  <p class="aipf-cc0">
+    <a rel="license" href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener license">
+      <img src="https://licensebuttons.net/p/zero/1.0/88x31.png" alt="CC0 1.0 Universal Public Domain Dedication" width="88" height="31" loading="lazy">
+    </a>
+    <span>The original work is dedicated to the public domain under <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener license">CC0 1.0</a>, and so is this adaptation.</span>
+  </p>
+</article>
+
+</main>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/calculator.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

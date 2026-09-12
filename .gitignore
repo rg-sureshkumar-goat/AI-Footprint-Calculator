@@ -1,0 +1,10 @@
+# macOS
+.DS_Store
+
+# Editor / tooling
+.vscode/
+.idea/
+node_modules/
+
+# Local dev server config (machine-specific absolute paths)
+.claude/launch.json
