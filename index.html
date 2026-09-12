@@ -3,9 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AI Footprint Calculator</title>
+<title>AI Footprint Calculator — Company Edition</title>
 <meta name="description" content="Enter your daily ChatGPT, Claude, and Gemini prompts to see the carbon and water footprint of your AI use, set against your real-world footprint, everyday things, and bigger lifestyle changes.">
 <link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/features.css">
 </head>
 <body>
 
@@ -45,6 +46,60 @@
     </button>
   </div>
 
+  <!-- FEATURE 1: Live session tracker. Logs prompts as they happen and keeps a
+       running total for today, instead of asking for an "average day". -->
+  <section class="aipf-panel" id="aipf-tracker" aria-label="Live session tracker">
+    <div class="aipf-panel-head">
+      <h2 class="aipf-panel-title"><span class="aipf-pulse" aria-hidden="true"></span> Today&rsquo;s session</h2>
+      <label class="aipf-switch" title="Drive the whole page from what you actually logged today, instead of a typed-in estimate.">
+        <input type="checkbox" id="aipf-tk-uselog" checked>
+        Use my log to drive this page
+      </label>
+    </div>
+
+    <div class="aipf-tk">
+      <div class="aipf-tk-left">
+        <p class="aipf-tk-today-label">So far today</p>
+        <div class="aipf-tk-figs">
+          <span class="aipf-tk-total" id="aipf-tk-total" aria-live="polite">0 g CO&#8322;e</span>
+          <span class="aipf-tk-count" id="aipf-tk-count">0 prompts</span>
+        </div>
+        <p class="aipf-tk-live" id="aipf-tk-live" aria-live="polite"></p>
+        <p class="aipf-tk-pace" id="aipf-tk-pace" aria-live="polite"></p>
+
+        <div class="aipf-tk-form">
+          <p class="aipf-tk-form-h">Log a prompt</p>
+          <div class="aipf-tk-controls">
+            <select id="aipf-tk-model" aria-label="Model to log"></select>
+            <select id="aipf-tk-size" aria-label="Output length to log"></select>
+            <button type="button" class="aipf-tk-btn" id="aipf-tk-log">+ Log</button>
+            <button type="button" class="aipf-tk-btn aipf-tk-btn--ghost" id="aipf-tk-log5">+5</button>
+          </div>
+          <div class="aipf-tk-quick" id="aipf-tk-quick"></div>
+          <p class="aipf-tk-kbd">Press <kbd>L</kbd> anywhere on the page to log one prompt without reaching for the mouse.</p>
+        </div>
+      </div>
+
+      <div class="aipf-tk-right">
+        <p class="aipf-tk-hours-h">Through the day</p>
+        <div class="aipf-tk-hours" id="aipf-tk-hours" aria-hidden="true"></div>
+        <div class="aipf-tk-scale"><span>7am</span><span>1pm</span><span>8pm</span></div>
+
+        <p class="aipf-tk-history-h">Last 7 days</p>
+        <div class="aipf-tk-history" id="aipf-tk-history" aria-hidden="true"></div>
+
+        <p class="aipf-tk-recent-h">Recent</p>
+        <div id="aipf-tk-recent" aria-live="polite"></div>
+
+        <p class="aipf-tk-foot">
+          <button type="button" class="aipf-link" id="aipf-tk-undo">Undo last</button>
+          <span class="aipf-tools-sep">&middot;</span>
+          <button type="button" class="aipf-link" id="aipf-tk-clear">Clear today</button>
+        </p>
+      </div>
+    </div>
+  </section>
+
   <!-- Tool: inputs on the left, the answer on the right -->
   <div class="aipf-tool">
     <div class="aipf-in" aria-label="Your daily AI usage">
@@ -52,6 +107,7 @@
       <div class="aipf-rows-head" aria-hidden="true">
         <span>Model</span><span>Typical output</span><span>Prompts/day</span><span></span>
       </div>
+      <p class="aipf-rows-note" id="aipf-rows-note"></p>
       <div class="aipf-rows" id="aipf-rows"></div>
       <button type="button" class="aipf-addrow" id="aipf-addrow">+ add another</button>
       <p class="aipf-running" id="aipf-running" aria-live="polite"></p>
@@ -293,8 +349,10 @@
 </main>
 
 <script src="assets/js/data.js"></script>
+<script src="assets/js/store.js"></script>
 <script src="assets/js/core.js"></script>
 <script src="assets/js/calculator.js"></script>
+<script src="assets/js/tracker.js"></script>
 <script src="assets/js/app.js"></script>
 </body>
 </html>

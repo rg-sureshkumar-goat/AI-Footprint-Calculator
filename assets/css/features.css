@@ -1,0 +1,139 @@
+/**
+ * features.css — styles for the company features added on top of the original
+ * calculator: the live session tracker, the team dashboard, and the budget.
+ *
+ * These reuse the tokens in base.css so the additions read as part of the same
+ * page rather than bolted on.
+ */
+
+/* ---- Shared panel shell ---- */
+.aipf-panel {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  padding: 1.1rem 1.25rem;
+  margin-bottom: 1.25rem;
+}
+.aipf-panel-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 0.6rem 1rem; flex-wrap: wrap;
+  margin-bottom: 0.9rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--border);
+}
+.aipf-panel-title {
+  font-family: var(--font-editorial); font-weight: 600; font-size: 1.1rem;
+  letter-spacing: -0.01em; margin: 0; display: flex; align-items: center; gap: 0.5rem;
+}
+.aipf-panel-note { font-family: var(--font-body); font-size: 0.72rem; color: var(--dim); margin: 0; }
+
+/* A quiet live indicator, so "real time" is visible without being loud. */
+.aipf-pulse {
+  width: 7px; height: 7px; border-radius: 50%; background: var(--ok);
+  box-shadow: 0 0 0 0 var(--ok); animation: aipf-pulse 2.4s ease-out infinite;
+  flex-shrink: 0;
+}
+@keyframes aipf-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(63, 122, 82, 0.5); }
+  70%  { box-shadow: 0 0 0 7px rgba(63, 122, 82, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(63, 122, 82, 0); }
+}
+@media (prefers-reduced-motion: reduce) { .aipf-pulse { animation: none; } }
+
+/* Checkbox-style mode switch */
+.aipf-switch {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  font-family: var(--font-body); font-size: 0.78rem; color: var(--text-secondary); cursor: pointer;
+}
+.aipf-switch input { accent-color: var(--accent); width: 0.95rem; height: 0.95rem; cursor: pointer; }
+
+/* ---- Feature 1: live session tracker ---- */
+.aipf-tk { display: grid; grid-template-columns: 1.15fr 1fr; gap: 1.5rem; }
+.aipf-tk-left { min-width: 0; }
+.aipf-tk-right { min-width: 0; }
+
+.aipf-tk-figs { display: flex; align-items: baseline; gap: 1.2rem; flex-wrap: wrap; }
+.aipf-tk-total {
+  font-family: var(--font-editorial); font-weight: 600;
+  font-size: clamp(2.2rem, 1.6rem + 2.2vw, 3.2rem); line-height: 0.95;
+  letter-spacing: -0.03em; color: var(--text); font-variant-numeric: tabular-nums;
+}
+.aipf-tk-count { font-family: var(--font-body); font-size: 0.9rem; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+.aipf-tk-today-label { font-family: var(--font-body); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--dim); margin: 0 0 0.3rem; }
+.aipf-tk-live { font-family: var(--font-body); font-size: 0.78rem; color: var(--text-secondary); margin: 0.6rem 0 0; }
+.aipf-tk-pace { font-family: var(--font-body); font-size: 0.78rem; color: var(--dim); margin: 0.2rem 0 0; font-variant-numeric: tabular-nums; }
+
+/* Log controls */
+.aipf-tk-form { margin-top: 1rem; padding-top: 0.9rem; border-top: 1px solid var(--border); }
+.aipf-tk-form-h { font-family: var(--font-body); font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-secondary); margin: 0 0 0.5rem; }
+.aipf-tk-controls { display: flex; gap: 0.45rem; flex-wrap: wrap; align-items: center; }
+.aipf-tk-controls select { flex: 1 1 8rem; min-width: 0; }
+.aipf-tk-btn {
+  background: var(--accent); color: #fff; border: none; border-radius: 5px;
+  padding: 0.4rem 0.85rem; font-family: var(--font-body); font-size: 0.82rem;
+  cursor: pointer; white-space: nowrap; transition: background-color 0.12s;
+}
+.aipf-tk-btn:hover { background: var(--accent-hover); }
+.aipf-tk-btn--ghost { background: transparent; color: var(--accent); border: 1px solid var(--border-strong); }
+.aipf-tk-btn--ghost:hover { background: var(--accent-subtle); color: var(--accent-hover); }
+.aipf-tk-kbd {
+  font-family: var(--font-body); font-size: 0.68rem; color: var(--dim); margin: 0.5rem 0 0;
+}
+.aipf-tk-kbd kbd {
+  font-family: var(--font-body); font-size: 0.66rem; border: 1px solid var(--border-strong);
+  border-bottom-width: 2px; border-radius: 3px; padding: 0.02rem 0.28rem; background: var(--bg-subtle); color: var(--text-secondary);
+}
+.aipf-tk-quick { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.6rem; }
+.aipf-tk-quickbtn {
+  background: var(--bg-subtle); border: 1px solid var(--border-strong); border-radius: 20px;
+  padding: 0.24rem 0.7rem; font-family: var(--font-body); font-size: 0.75rem;
+  color: var(--text-secondary); cursor: pointer; transition: border-color 0.12s, color 0.12s;
+}
+.aipf-tk-quickbtn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Hour-by-hour shape of the day */
+.aipf-tk-hours-h { font-family: var(--font-body); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--dim); margin: 0 0 0.35rem; }
+.aipf-tk-hours { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 2px; height: 46px; align-items: end; }
+.aipf-tk-hour { height: 100%; display: flex; align-items: flex-end; background: var(--bg-subtle); border-radius: 2px 2px 0 0; }
+.aipf-tk-hour.is-now { background: var(--accent-subtle); }
+.aipf-tk-hour-fill { width: 100%; background: var(--accent); border-radius: 2px 2px 0 0; min-height: 0; }
+.aipf-tk-hour.is-now .aipf-tk-hour-fill { background: var(--accent-hover); }
+.aipf-tk-scale { display: flex; justify-content: space-between; font-family: var(--font-body); font-size: 0.62rem; color: var(--dim); margin-top: 0.2rem; }
+
+/* Recent entries */
+.aipf-tk-recent-h { font-family: var(--font-body); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--dim); margin: 1rem 0 0.35rem; }
+.aipf-tk-entry {
+  display: grid; grid-template-columns: 4.2rem 1fr auto; gap: 0.5rem; align-items: baseline;
+  font-family: var(--font-body); font-size: 0.76rem; padding: 0.28rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.aipf-tk-entry-time { color: var(--dim); font-variant-numeric: tabular-nums; }
+.aipf-tk-entry-what { color: var(--text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.aipf-tk-dot { color: var(--dim); margin: 0 0.15rem; }
+.aipf-tk-entry-val { color: var(--dim); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.aipf-tk-empty, .aipf-tk-more { font-family: var(--font-body); font-size: 0.74rem; color: var(--dim); margin: 0.5rem 0 0; }
+
+/* Seven-day history */
+.aipf-tk-history-h { font-family: var(--font-body); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--dim); margin: 1rem 0 0.35rem; }
+.aipf-tk-history { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 5px; }
+.aipf-tk-day { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; }
+.aipf-tk-day-track { width: 100%; height: 34px; background: var(--bg-subtle); border-radius: 2px; display: flex; align-items: flex-end; }
+.aipf-tk-day-fill { width: 100%; background: var(--border-strong); border-radius: 2px; }
+.aipf-tk-day.is-today .aipf-tk-day-fill { background: var(--accent); }
+.aipf-tk-day-label { font-family: var(--font-body); font-size: 0.62rem; color: var(--dim); }
+.aipf-tk-day.is-today .aipf-tk-day-label { color: var(--accent); font-weight: 600; }
+
+.aipf-tk-foot { margin-top: 0.9rem; padding-top: 0.7rem; border-top: 1px solid var(--border); font-family: var(--font-body); font-size: 0.74rem; color: var(--dim); }
+
+/* When the log drives the calculator, the hand-entry rows are read-only. */
+.aipf-rows-note { font-family: var(--font-body); font-size: 0.72rem; line-height: 1.5; color: var(--dim); margin: 0 0 0.7rem; padding: 0.45rem 0.6rem; background: var(--accent-subtle); border-radius: 4px; }
+.aipf-log-driven .aipf-rows .aipf-rsel,
+.aipf-log-driven .aipf-rows .aipf-step,
+.aipf-log-driven .aipf-rows .aipf-count,
+.aipf-log-driven .aipf-rows .aipf-rowdel { pointer-events: none; opacity: 0.65; }
+.aipf-log-driven #aipf-addrow, .aipf-log-driven #aipf-reset { opacity: 0.45; pointer-events: none; }
+
+@media (max-width: 820px) {
+  .aipf-tk { grid-template-columns: 1fr; gap: 1.2rem; }
+}
+@media (max-width: 560px) {
+  .aipf-tk-controls select { flex-basis: 100%; }
+  .aipf-tk-btn { flex: 1 1 auto; }
+}
