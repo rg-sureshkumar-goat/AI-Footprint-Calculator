@@ -6,6 +6,8 @@ Session transcripts for this project, kept as evidence of process.
   to a standalone site and adding the three features.
 - `debrief-*.md` — Unit 1 debrief conversations, saved separately so debrief
   evidence stays distinct from build sessions.
+- `debrief-*.pdf` — the same debrief rendered for submission, generated from the
+  Markdown file beside it, so the two always carry identical content.
 
 These are sanitised before being committed: the author's email address, macOS
 home path and username, and temporary session paths are replaced. Message
