@@ -146,6 +146,48 @@
     </div>
   </div>
 
+  <!-- FEATURE 2: Team & company dashboard. Sets one person's footprint against
+       their team and the organisation, and scales it to the whole company. -->
+  <section class="aipf-panel" id="aipf-team" aria-label="Team and company footprint" hidden>
+    <div class="aipf-panel-head">
+      <h2 class="aipf-panel-title">Your team &amp; company</h2>
+      <p class="aipf-tm-who">
+        You&rsquo;re on <select id="aipf-tm-team" aria-label="Your team"></select>
+        at <b id="aipf-tm-company"></b>
+      </p>
+    </div>
+
+    <p class="aipf-tm-sample" id="aipf-tm-sample" hidden>
+      <b>Sample data.</b> The team profiles below describe a fictional company so this
+      dashboard has something to show. Replace them with your own usage data
+      (see <code>assets/js/team-data.js</code>) before drawing any real conclusion.
+    </p>
+
+    <div class="aipf-tm-cells" id="aipf-tm-cells" aria-live="polite"></div>
+    <p class="aipf-tm-verdict" id="aipf-tm-verdict" aria-live="polite"></p>
+
+    <div class="aipf-tm-split">
+      <div>
+        <p class="aipf-tm-sub-h">Company-wide</p>
+        <div class="aipf-tm-co-figs">
+          <span><span class="aipf-tm-co-fig" id="aipf-tm-co-daily">&mdash;</span><span class="aipf-tm-co-unit">a day</span></span>
+          <span><span class="aipf-tm-co-fig" id="aipf-tm-co-annual">&mdash;</span><span class="aipf-tm-co-unit">a year</span></span>
+        </div>
+        <p class="aipf-tm-co-sub" id="aipf-tm-co-sub"></p>
+        <p class="aipf-tm-co-anchor" id="aipf-tm-co-anchor"></p>
+      </div>
+      <div>
+        <p class="aipf-tm-sub-h">If everyone worked like you</p>
+        <div id="aipf-tm-ifall" aria-live="polite"></div>
+      </div>
+    </div>
+
+    <div class="aipf-tm-bars-wrap">
+      <p class="aipf-tm-sub-h">Every team, per person, per day</p>
+      <div class="aipf-bars" id="aipf-tm-bars" aria-live="polite"></div>
+    </div>
+  </section>
+
   <!-- Below: a year, split into emissions added vs cuts you could make -->
   <div class="aipf-below" aria-label="In a year, ways you add">
     <h2 class="aipf-h2" id="aipf-add-title">In a year, ways you add emissions</h2>
@@ -350,9 +392,11 @@
 
 <script src="assets/js/data.js"></script>
 <script src="assets/js/store.js"></script>
+<script src="assets/js/team-data.js"></script>
 <script src="assets/js/core.js"></script>
 <script src="assets/js/calculator.js"></script>
 <script src="assets/js/tracker.js"></script>
+<script src="assets/js/team.js"></script>
 <script src="assets/js/app.js"></script>
 </body>
 </html>
