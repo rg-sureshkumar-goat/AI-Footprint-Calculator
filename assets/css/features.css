@@ -231,7 +231,7 @@
 .aipf-bg-fill { height: 100%; background: var(--ok); transition: width 0.3s ease, background-color 0.2s; min-width: 2px; }
 .aipf-bg-meter.is-warn .aipf-bg-fill { background: var(--warn); }
 .aipf-bg-meter.is-over .aipf-bg-fill { background: #a33b2a; }
-[data-theme='dark'] .aipf-bg-meter.is-over .aipf-bg-fill { background: #e0785c; }
+@media (prefers-color-scheme: dark) { .aipf-bg-meter.is-over .aipf-bg-fill { background: #e0785c; } }
 .aipf-bg-readout { display: flex; justify-content: space-between; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.4rem; }
 .aipf-bg-pct { font-family: var(--font-body); font-size: 0.82rem; font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; }
 .aipf-bg-used { font-family: var(--font-body); font-size: 0.76rem; color: var(--dim); font-variant-numeric: tabular-nums; }
@@ -249,7 +249,7 @@
 }
 .aipf-bg-alert.is-warn { background: var(--warn-subtle); border-left-color: var(--warn); color: var(--warn); }
 .aipf-bg-alert.is-over { background: var(--warn-subtle); border-left-color: #a33b2a; color: #a33b2a; }
-[data-theme='dark'] .aipf-bg-alert.is-over { color: #e0785c; border-left-color: #e0785c; }
+@media (prefers-color-scheme: dark) { .aipf-bg-alert.is-over { color: #e0785c; border-left-color: #e0785c; } }
 .aipf-bg-alert-text { flex: 1; }
 .aipf-bg-alert-x { background: none; border: none; color: inherit; font-size: 1.1rem; line-height: 1; cursor: pointer; padding: 0 0.1rem; opacity: 0.7; }
 .aipf-bg-alert-x:hover { opacity: 1; }

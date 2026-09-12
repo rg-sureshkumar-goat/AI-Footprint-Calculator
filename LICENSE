@@ -1,0 +1,17 @@
+CC0 1.0 Universal (CC0 1.0) Public Domain Dedication
+
+This work builds on the AI prompt footprint calculator by Andy Masley
+(https://andymasley.com/visuals/ai-prompt-footprint), which its author
+dedicated to the public domain under CC0 1.0 and explicitly gave permission to
+copy without credit. This adaptation is released on the same terms.
+
+To the extent possible under law, the authors have waived all copyright and
+related or neighboring rights to this work.
+
+Full text: https://creativecommons.org/publicdomain/zero/1.0/legalcode
+
+Note on the underlying figures: the energy, carbon, and water estimates come
+from third-party sources cited in the methodology section of index.html
+(EcoLogits, Ember, Our World in Data, EPA, and the academic papers listed
+there). Those are facts and estimates used as data, which copyright does not
+restrict, but the sources are credited on the page.
