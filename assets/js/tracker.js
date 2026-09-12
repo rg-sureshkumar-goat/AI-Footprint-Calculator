@@ -106,10 +106,18 @@
       .sort((a, b) => b.count - a.count)
       .map((r) => ({ uid: AIPF.nextUid(), model: r.model, size: r.size, count: r.count }));
   }
+  // True when the log is driving the page and actually has something in it.
+  // With the log on but empty — a first visit — the page would otherwise be a
+  // wall of zeros, which reads as broken rather than as "nothing yet", so fall
+  // back to the original's example day until there is real usage to show.
+  function isLogDriving() { return tracker.useLog && tracker.today.length > 0; }
+  AIPF.trackerIsLogDriving = isLogDriving;
+
   // Push the log into shared state so every other panel reflects real usage.
   function syncRows() {
     if (!tracker.useLog) return;
-    AIPF.state.rows = rowsFromLog();
+    if (isLogDriving()) AIPF.state.rows = rowsFromLog();
+    else AIPF.setDefaultRows();
     AIPF.renderRows();
   }
   AIPF.trackerSyncRows = syncRows;
@@ -256,13 +264,20 @@
   function renderMode() {
     const cb = root.querySelector('#aipf-tk-uselog');
     cb.checked = tracker.useLog;
-    root.classList.toggle('aipf-log-driven', tracker.useLog);
+    // Only lock the hand-entry rows once the log is genuinely driving them.
+    // While the example day is showing there is nothing to protect, and
+    // someone should be able to explore before logging anything.
+    const driving = isLogDriving();
+    root.classList.toggle('aipf-log-driven', driving);
+
     const note = root.querySelector('#aipf-rows-note');
-    if (note) {
-      note.textContent = tracker.useLog
-        ? 'These rows are your actual logged prompts for today. Turn off “use my log” above to enter an estimate by hand instead.'
-        : '';
-      note.style.display = tracker.useLog ? '' : 'none';
+    if (!note) return;
+    note.hidden = !tracker.useLog;
+    note.classList.toggle('is-example', tracker.useLog && !driving);
+    if (driving) {
+      note.textContent = 'These rows are your actual logged prompts for today. Turn off “use my log” above to enter an estimate by hand instead.';
+    } else if (tracker.useLog) {
+      note.textContent = 'Showing an example day so you can see how this works. Log your first prompt above and your own usage takes over.';
     }
   }
 

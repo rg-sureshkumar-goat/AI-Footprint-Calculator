@@ -124,6 +124,8 @@
 
 /* When the log drives the calculator, the hand-entry rows are read-only. */
 .aipf-rows-note { font-family: var(--font-body); font-size: 0.72rem; line-height: 1.5; color: var(--dim); margin: 0 0 0.7rem; padding: 0.45rem 0.6rem; background: var(--accent-subtle); border-radius: 4px; }
+/* The example day is a placeholder, not the reader's data: keep it quieter. */
+.aipf-rows-note.is-example { background: var(--bg-subtle); border: 1px dashed var(--border-strong); }
 .aipf-log-driven .aipf-rows .aipf-rsel,
 .aipf-log-driven .aipf-rows .aipf-step,
 .aipf-log-driven .aipf-rows .aipf-count,
