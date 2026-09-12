@@ -146,6 +146,54 @@
     </div>
   </div>
 
+  <!-- FEATURE 3: Monthly budget, alerts, and model-swap suggestions. Turns the
+       number into a target and a specific action. -->
+  <section class="aipf-panel" id="aipf-budget" aria-label="Your monthly budget">
+    <div class="aipf-panel-head">
+      <h2 class="aipf-panel-title">Your monthly budget</h2>
+      <p class="aipf-panel-note">Month-to-date is summed from what you logged above.</p>
+    </div>
+
+    <div class="aipf-bg-alert" id="aipf-bg-alert" role="status" hidden></div>
+
+    <div class="aipf-bg">
+      <div class="aipf-bg-left">
+        <div class="aipf-bg-set">
+          <label class="aipf-bg-unit" for="aipf-bg-amount">Budget</label>
+          <input type="text" inputmode="decimal" class="aipf-bg-amount" id="aipf-bg-amount" aria-label="Monthly budget amount">
+          <span class="aipf-bg-unit" id="aipf-bg-unit"></span>
+        </div>
+        <div class="aipf-bg-presets" id="aipf-bg-presets">
+          <button type="button" class="aipf-bg-preset" data-preset="0.5">Half the company average</button>
+          <button type="button" class="aipf-bg-preset" data-preset="1">Company average</button>
+          <button type="button" class="aipf-bg-preset" data-preset="1.5">Generous</button>
+        </div>
+
+        <div class="aipf-bg-meter" id="aipf-bg-meter">
+          <div class="aipf-bg-track"><div class="aipf-bg-fill" id="aipf-bg-fill"></div></div>
+          <div class="aipf-bg-readout">
+            <span class="aipf-bg-pct" id="aipf-bg-pct" aria-live="polite"></span>
+            <span class="aipf-bg-used" id="aipf-bg-used"></span>
+          </div>
+        </div>
+        <p class="aipf-bg-pace" id="aipf-bg-pace" aria-live="polite"></p>
+      </div>
+
+      <div class="aipf-bg-right">
+        <p class="aipf-tm-sub-h">Cheapest ways to cut</p>
+        <div id="aipf-bg-swaps" aria-live="polite"></div>
+        <p class="aipf-bg-caveat">
+          Ranked by what each would save across a full month at your current rate. A swap is
+          only worth making where the smaller model can actually do the job &mdash; these are
+          options to weigh, not instructions. Shorter replies are the other lever: cost
+          scales with output length, so a 5-page report costs roughly twelve times a chat reply.
+          Only the next model down in the same family is suggested, since that is the step a
+          team can realistically take.
+        </p>
+      </div>
+    </div>
+  </section>
+
   <!-- FEATURE 2: Team & company dashboard. Sets one person's footprint against
        their team and the organisation, and scales it to the whole company. -->
   <section class="aipf-panel" id="aipf-team" aria-label="Team and company footprint" hidden>
@@ -397,6 +445,7 @@
 <script src="assets/js/calculator.js"></script>
 <script src="assets/js/tracker.js"></script>
 <script src="assets/js/team.js"></script>
+<script src="assets/js/budget.js"></script>
 <script src="assets/js/app.js"></script>
 </body>
 </html>
