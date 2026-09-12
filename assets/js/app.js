@@ -16,8 +16,11 @@
 
     // Company features opt in by exposing an init function; each is independent,
     // so the page still works if one is removed.
-    for (const name of ['initTracker', 'initTeam', 'initBudget']) {
-      if (typeof AIPF[name] === 'function') AIPF[name](root);
+    for (const name of ['initTracker', 'initTeam', 'initBudget', 'initNav']) {
+      if (typeof AIPF[name] !== 'function') continue;
+      // Isolate each one: a feature that fails to start should not stop the
+      // features after it in this list from starting at all.
+      try { AIPF[name](root); } catch (e) { console.error('AIPF ' + name + ' failed', e); }
     }
 
     AIPF.emitUpdate();

@@ -275,3 +275,91 @@
 
 @media (max-width: 820px) { .aipf-bg { grid-template-columns: 1fr; gap: 1.3rem; } }
 .aipf-bg-arrow { color: var(--dim); margin: 0 0.1rem; }
+
+/* ---- Sticky section bar ---- */
+.aipf-nav {
+  position: sticky; top: 0; z-index: 20;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin-bottom: 1.1rem;
+  /* Lifts off the page only once it has actually stuck to the top. */
+  box-shadow: 0 1px 0 var(--border);
+}
+.aipf-nav-in {
+  display: flex; align-items: center; gap: 0.6rem 1rem;
+  padding: 0.45rem 0.8rem; flex-wrap: nowrap;
+}
+
+/* The running total: the number the whole page is about. */
+.aipf-nav-now { display: flex; align-items: baseline; gap: 0.4rem; flex-shrink: 0; }
+.aipf-nav-now-fig {
+  font-family: var(--font-editorial); font-weight: 600; font-size: 1.05rem;
+  letter-spacing: -0.01em; color: var(--text); font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.aipf-nav-now-label {
+  font-family: var(--font-body); font-size: 0.64rem; text-transform: uppercase;
+  letter-spacing: 0.05em; color: var(--dim); white-space: nowrap;
+}
+
+.aipf-nav-links {
+  display: flex; align-items: center; gap: 0.1rem;
+  list-style: none; margin: 0; padding: 0; flex: 1 1 auto;
+  min-width: 0; overflow-x: auto; scrollbar-width: none;
+}
+.aipf-nav-links::-webkit-scrollbar { display: none; }
+/* On narrow screens the later links sit off the edge with nothing to say so.
+   Fading the last few pixels is the usual cue that the row keeps going. */
+@supports (mask-image: linear-gradient(90deg, #000, transparent)) {
+  .aipf-nav-links.is-clipped {
+    mask-image: linear-gradient(90deg, #000 calc(100% - 22px), transparent 100%);
+  }
+}
+.aipf-nav-link {
+  display: block; white-space: nowrap; text-decoration: none;
+  font-family: var(--font-body); font-size: 0.78rem; color: var(--dim);
+  padding: 0.28rem 0.6rem; border-radius: 4px;
+  transition: color 0.12s, background-color 0.12s;
+}
+.aipf .aipf-nav-link { text-decoration: none; }
+.aipf-nav-link:hover { color: var(--text); background: var(--bg-subtle); }
+.aipf-nav-link.is-active { color: var(--accent); background: var(--accent-subtle); font-weight: 600; }
+
+.aipf-nav .aipf-showing { flex-shrink: 0; }
+.aipf-nav .aipf-metric { padding: 0.3rem 0.7rem; font-size: 0.78rem; }
+
+/* Anchor jumps must clear the bar rather than hide under it. */
+[id='session'], [id='usage'], [id='budget'], [id='team'], [id='context'], [id='methodology'] {
+  scroll-margin-top: calc(var(--aipf-nav-h, 52px) + 12px);
+}
+
+/* A heading for the calculator, which had none despite being the tallest
+   block on the page. */
+.aipf-usage-head { margin: 0 0 0.7rem; }
+.aipf-usage-head .aipf-h2 { margin-bottom: 0.15rem; }
+.aipf-usage-sub { font-family: var(--font-body); font-size: 0.76rem; color: var(--dim); margin: 0; }
+
+/* The intro's detail sits behind a disclosure so the tool is reachable
+   without scrolling past a wall of text. */
+.aipf-dek-more { margin-top: 0.5rem; }
+.aipf-dek-more > summary {
+  cursor: pointer; font-family: var(--font-body); font-size: 0.78rem;
+  color: var(--accent); list-style: none; display: inline-block;
+}
+.aipf-dek-more > summary::-webkit-details-marker { display: none; }
+.aipf-dek-more > summary::after { content: ' ↓'; }
+.aipf-dek-more[open] > summary::after { content: ' ↑'; }
+.aipf-dek-more > summary:hover { color: var(--accent-hover); }
+.aipf-dek-more p { font-size: 0.88rem; line-height: 1.5; color: var(--text-secondary); margin: 0.55rem 0 0; }
+
+@media (max-width: 900px) {
+  /* The links scroll horizontally on their own; drop the total to keep the
+     toggle and the links on one line. */
+  .aipf-nav-now { display: none; }
+}
+@media (max-width: 560px) {
+  .aipf-nav-in { padding: 0.4rem 0.5rem; gap: 0.4rem; }
+  .aipf-nav-link { padding: 0.26rem 0.45rem; font-size: 0.74rem; }
+  .aipf-nav .aipf-metric { padding: 0.28rem 0.5rem; font-size: 0.74rem; }
+}

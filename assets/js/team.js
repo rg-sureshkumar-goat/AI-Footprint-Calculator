@@ -211,15 +211,17 @@
   AIPF.setTeamData = function (next) {
     if (!root) { AIPF.TEAM_DATA = next; return; }
     if (!applyData(next)) return;
-    root.querySelector('#aipf-team').hidden = false;
+    const panel = root.querySelector('#team');
+    if (panel) panel.hidden = false;
     renderPicker();
     render();
   };
 
   AIPF.initTeam = function (rootEl) {
     root = rootEl;
-    const panel = root.querySelector('#aipf-team');
-    if (!applyData(AIPF.TEAM_DATA)) { if (panel) panel.hidden = true; return; }
+    const panel = root.querySelector('#team');
+    if (!panel) return;
+    if (!applyData(AIPF.TEAM_DATA)) { panel.hidden = true; return; }
     panel.hidden = false;
 
     // Sample data must never be mistaken for the company's real numbers.

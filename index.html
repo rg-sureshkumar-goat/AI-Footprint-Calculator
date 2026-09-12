@@ -19,28 +19,50 @@
   <header class="aipf-header">
     <h1 class="aipf-title">What your chatbot use actually costs</h1>
     <p class="aipf-dek">
-      Enter an average day of AI use and this tool adds it up into one carbon and water cost, set
-      against your own footprint and the everyday things around it. Numbers for AI's energy and water come from
+      Log your AI use as it happens and this tool adds it up into one carbon and water cost, set
+      against your own footprint, your team&rsquo;s, and your company&rsquo;s. Per-model figures come from
       <a href="https://huggingface.co/spaces/genai-impact/ecologits-calculator" target="_blank" rel="noopener">EcoLogits</a>,
-      an open-source estimator of the energy, carbon, and water behind each AI model. The Claude
-      numbers are the shakiest here: Anthropic hasn't said how Claude is built, so EcoLogits has
-      to guess, and its guess might run low
-      (<a href="#methodology" onclick="document.getElementById('methodology').open=true">more in the methodology</a>). For carbon we
-      use the average grid intensity of the region you pick (not EcoLogits' single whole-world
-      average) plus the hardware's embodied emissions; everything else is sourced in the methodology
-      below. Training is excluded as too uncertain, but split across all users it
-      <a href="https://blog.andymasley.com/p/training-ai-models-doesnt-emit-that" target="_blank" rel="noopener">adds little to your personal footprint</a>.
+      an open-source estimator of the energy, carbon, and water behind each AI model.
     </p>
+    <details class="aipf-dek-more">
+      <summary>What&rsquo;s counted, and how reliable it is</summary>
+      <p>
+        Carbon uses the average grid intensity of the region you pick, not a single whole-world
+        average, plus the hardware&rsquo;s embodied emissions. Training, image and video generation,
+        and retries are excluded &mdash; training is too uncertain to attribute, though split
+        across all users it
+        <a href="https://blog.andymasley.com/p/training-ai-models-doesnt-emit-that" target="_blank" rel="noopener">adds little to your personal footprint</a>.
+        The Claude numbers are the shakiest here: Anthropic hasn&rsquo;t said how Claude is built, so
+        EcoLogits has to guess, and its guess might run low. Everything else is sourced in
+        <a href="#methodology" onclick="document.getElementById('methodology').open=true">the methodology</a>.
+      </p>
+    </details>
   </header>
 
-  <div class="aipf-toolbar-top">
-    <div class="aipf-toggle" role="group" aria-label="Footprint type">
-      <span class="aipf-toggle-label">Show</span>
-      <div class="aipf-showing">
+  <!-- Sticky section bar: the running total, where you are, and the metric
+       toggle, which was otherwise stranded at the top of an eight-screen page. -->
+  <nav class="aipf-nav" id="aipf-nav" aria-label="Sections">
+    <div class="aipf-nav-in">
+      <div class="aipf-nav-now">
+        <span class="aipf-nav-now-fig" id="aipf-nav-total" aria-live="polite">&mdash;</span>
+        <span class="aipf-nav-now-label" id="aipf-nav-label">today</span>
+      </div>
+      <ul class="aipf-nav-links">
+        <li><a class="aipf-nav-link" data-target="session" href="#session">Session</a></li>
+        <li><a class="aipf-nav-link" data-target="usage" href="#usage">Your use</a></li>
+        <li><a class="aipf-nav-link" data-target="budget" href="#budget">Budget</a></li>
+        <li><a class="aipf-nav-link" data-target="team" href="#team">Team</a></li>
+        <li><a class="aipf-nav-link" data-target="context" href="#context">In a year</a></li>
+        <li><a class="aipf-nav-link" data-target="methodology" href="#methodology">Method</a></li>
+      </ul>
+      <div class="aipf-showing" role="group" aria-label="Footprint type">
         <button type="button" class="aipf-metric is-active" data-metric="carbon">💨 Carbon</button>
         <button type="button" class="aipf-metric" data-metric="water">💧 Water</button>
       </div>
     </div>
+  </nav>
+
+  <div class="aipf-toolbar-top">
     <button type="button" class="aipf-report-btn" id="aipf-report"
       title="Generate a report with citations of exactly how my AI use as entered here contributes to my carbon emissions.">
       Generate a personalized cited report of my AI emissions
@@ -49,9 +71,9 @@
 
   <!-- FEATURE 1: Live session tracker. Logs prompts as they happen and keeps a
        running total for today, instead of asking for an "average day". -->
-  <section class="aipf-panel" id="aipf-tracker" aria-label="Live session tracker">
+  <section class="aipf-panel" id="session" aria-labelledby="aipf-session-h">
     <div class="aipf-panel-head">
-      <h2 class="aipf-panel-title"><span class="aipf-pulse" aria-hidden="true"></span> Today&rsquo;s session</h2>
+      <h2 class="aipf-panel-title" id="aipf-session-h"><span class="aipf-pulse" aria-hidden="true"></span> Today&rsquo;s session</h2>
       <label class="aipf-switch" title="Drive the whole page from what you actually logged today, instead of a typed-in estimate.">
         <input type="checkbox" id="aipf-tk-uselog" checked>
         Use my log to drive this page
@@ -102,6 +124,11 @@
   </section>
 
   <!-- Tool: inputs on the left, the answer on the right -->
+  <section id="usage" aria-labelledby="aipf-usage-h">
+  <div class="aipf-usage-head">
+    <h2 class="aipf-h2" id="aipf-usage-h">Your use, against the rest of your life</h2>
+    <p class="aipf-usage-sub">What a day of this costs next to your own footprint and the everyday things around it.</p>
+  </div>
   <div class="aipf-tool">
     <div class="aipf-in" aria-label="Your daily AI usage">
       <div class="aipf-in-head"><span>Your AI use</span><span class="aipf-in-sub">per day</span></div>
@@ -149,7 +176,7 @@
 
   <!-- FEATURE 3: Monthly budget, alerts, and model-swap suggestions. Turns the
        number into a target and a specific action. -->
-  <section class="aipf-panel" id="aipf-budget" aria-label="Your monthly budget">
+  <section class="aipf-panel" id="budget" aria-label="Your monthly budget">
     <div class="aipf-panel-head">
       <h2 class="aipf-panel-title">Your monthly budget</h2>
       <p class="aipf-panel-note">Month-to-date is summed from what you logged above.</p>
@@ -197,7 +224,7 @@
 
   <!-- FEATURE 2: Team & company dashboard. Sets one person's footprint against
        their team and the organisation, and scales it to the whole company. -->
-  <section class="aipf-panel" id="aipf-team" aria-label="Team and company footprint" hidden>
+  <section class="aipf-panel" id="team" aria-label="Team and company footprint" hidden>
     <div class="aipf-panel-head">
       <h2 class="aipf-panel-title">Your team &amp; company</h2>
       <p class="aipf-tm-who">
@@ -237,7 +264,10 @@
     </div>
   </section>
 
+  </section>
+
   <!-- Below: a year, split into emissions added vs cuts you could make -->
+  <section id="context" aria-label="In a year">
   <div class="aipf-below" aria-label="In a year, ways you add">
     <h2 class="aipf-h2" id="aipf-add-title">In a year, ways you add emissions</h2>
     <p class="aipf-sub" id="aipf-add-sub"></p>
@@ -248,6 +278,7 @@
     <p class="aipf-sub" id="aipf-cut-sub"></p>
     <div class="aipf-bars" id="aipf-cut-bars" aria-live="polite"></div>
   </div>
+  </section>
 
   <details class="aipf-method" id="methodology">
     <summary>How these numbers are made</summary>
@@ -447,6 +478,7 @@
 <script src="assets/js/tracker.js"></script>
 <script src="assets/js/team.js"></script>
 <script src="assets/js/budget.js"></script>
+<script src="assets/js/nav.js"></script>
 <script src="assets/js/app.js"></script>
 </body>
 </html>
