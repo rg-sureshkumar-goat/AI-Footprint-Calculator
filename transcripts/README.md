@@ -8,6 +8,10 @@ Session transcripts for this project, kept as evidence of process.
   evidence stays distinct from build sessions.
 - `debrief-*.pdf` — the same debrief rendered for submission, generated from the
   Markdown file beside it, so the two always carry identical content.
+- `research-*.md` — Project 2 research-stage conversations (`start research`),
+  one per chat. A PDF with the same name is generated alongside for submission.
+  Tool calls appear as one-line summaries followed by output truncated to 400
+  characters; the agent's internal reasoning is not included.
 
 These are sanitised before being committed: the author's email address, macOS
 home path and username, and temporary session paths are replaced. Message
