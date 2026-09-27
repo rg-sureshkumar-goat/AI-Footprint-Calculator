@@ -101,6 +101,32 @@
           <div class="aipf-tk-quick" id="aipf-tk-quick"></div>
           <p class="aipf-tk-kbd">Press <kbd>L</kbd> anywhere on the page to log one prompt without reaching for the mouse.</p>
         </div>
+
+        <div class="aipf-tk-form" id="aipf-tk-images">
+          <p class="aipf-tk-form-h">Log generated images</p>
+          <div class="aipf-tk-controls">
+            <input type="number" class="aipf-tk-num" id="aipf-tk-img-n" min="1" max="1000" step="1" value="1"
+                   aria-label="Number of images generated, including discarded variations">
+            <span class="aipf-tk-num-lab">images, counting discarded variations</span>
+            <button type="button" class="aipf-tk-btn" id="aipf-tk-img-log">+ Log images</button>
+          </div>
+          <p class="aipf-tk-img-result" id="aipf-tk-img-result" aria-live="polite"></p>
+          <p class="aipf-fine">
+            Energy, carbon, and water per image; the range is wide because studies disagree by more than 100&times;.
+            Every figure comes from open models on research hardware
+            (<a href="https://arxiv.org/abs/2311.16863" target="_blank" rel="noopener">Luccioni et al. 2024</a>, 2022&ndash;23 models on an A100 GPU, central 1.35&nbsp;Wh and high 11.49&nbsp;Wh;
+            <a href="https://arxiv.org/abs/2506.17016" target="_blank" rel="noopener">Bertazzini et al. 2025</a>, a consumer RTX&nbsp;4090, low 0.086&nbsp;Wh),
+            not the commercial tools you are likely to use: no commercial image provider publishes per-image figures.
+            Each model ran at its own default resolution and steps, so the range already spans different settings
+            (<a href="https://www.technologyreview.com/2025/05/20/1116331/ai-energy-demand-methodology/" target="_blank" rel="noopener">MIT Technology Review</a>
+            found doubling the steps roughly doubles energy), and the studies measured different parts of the system.
+            Carbon is the electricity on your region&rsquo;s grid; no embodied hardware carbon is included, because no image source reports it.
+            Water is derived, not measured: energy &times; 4.88&nbsp;L/kWh, the US data-centre average for on-site plus power-plant water in 2023
+            (<a href="https://eta-publications.lbl.gov/sites/default/files/2024-12/lbnl-2024-united-states-data-center-energy-usage-report_1.pdf" target="_blank" rel="noopener">Berkeley Lab</a>),
+            a modelled US-only figure that ignores renewable-power contracts; where your image was made is unknown.
+            Images count toward your AI total only while &ldquo;Use my log&rdquo; is on.
+          </p>
+        </div>
       </div>
 
       <div class="aipf-tk-right">
@@ -334,6 +360,34 @@
         reasoning (which dominates for reasoning models), tool calls, file exploration, and
         explanation, so a 100,000-token session is on the order of 1,500 lines. This is a rough
         estimate with wide uncertainty.
+      </p>
+      <p>
+        <strong>Generated images.</strong> Images are logged in the session tracker, one per image
+        made, including variations you discard. Every image uses one general range, with no choice of
+        tool or settings, because no commercial image provider (such as DALL&middot;E or Midjourney)
+        publishes per-image figures. The central value, 1.35&nbsp;Wh, is the median across the image
+        models in
+        <a href="https://arxiv.org/abs/2311.16863" target="_blank" rel="noopener">Luccioni, Jernite &amp; Strubell (2024)</a>,
+        who measured 2022&ndash;23 open models on one A100 GPU (1.35&nbsp;kWh per 1,000 images); the
+        high end, 11.49&nbsp;Wh, is their least efficient model (Stable Diffusion XL base). The low end,
+        0.086&nbsp;Wh, is the lowest of 17 open models run on a consumer RTX&nbsp;4090 by
+        <a href="https://arxiv.org/abs/2506.17016" target="_blank" rel="noopener">Bertazzini et al. (2025)</a>,
+        a preprint. Each model ran at its own default resolution and steps, so the range already mixes
+        settings; there are no settings inputs because doubling the resolution raised energy
+        1.3&ndash;4.7&times; (Bertazzini et al.), doubling the diffusion steps roughly doubled it
+        (<a href="https://www.technologyreview.com/2025/05/20/1116331/ai-energy-demand-methodology/" target="_blank" rel="noopener">MIT Technology Review, 2025</a>),
+        commercial tools rarely expose steps, and no study measured above 1024&nbsp;pixels. The studies
+        also drew different system boundaries (a cloud A100 including idle power from the machine's
+        other GPUs, a whole workstation, or a GPU with an assumed doubling for overhead), so the figures are not strictly comparable. Carbon is the energy on your
+        region's grid, with no embodied hardware carbon, since no image study reports one. Water is
+        derived: energy &times; 4.88&nbsp;L/kWh, which is the US data-centre average on-site water use
+        (0.36&nbsp;L/kWh) plus the water used to generate their electricity (4.52&nbsp;L/kWh) in 2023,
+        from
+        <a href="https://eta-publications.lbl.gov/sites/default/files/2024-12/lbnl-2024-united-states-data-center-energy-usage-report_1.pdf" target="_blank" rel="noopener">Berkeley Lab's 2024 US data center report</a>.
+        That matches the scope of the EcoLogits text figures (cooling plus power-plant water), but it
+        is modelled, US-only, and, as its authors state, ignores renewable-power contracts; the
+        location of the data centre that made your image is unknown. Images are counted in your AI
+        total only while &ldquo;Use my log&rdquo; is on.
       </p>
       <p>
         <strong>Your footprint.</strong> "Where you live" is a regional baseline for goods,

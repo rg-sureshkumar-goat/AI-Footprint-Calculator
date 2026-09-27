@@ -132,6 +132,21 @@
   const entryKind = (e) => e.k || 'prompt';
   const isAiEntry = (e) => AI_KINDS.indexOf(entryKind(e)) !== -1;
 
+  // Convert an energy triple (Wh) to the metric asked for. Carbon is the
+  // electricity on the selected grid, with no embodied carbon; water uses the
+  // derived data-centre factor (on-site plus power-plant water).
+  function fromEnergy(wh, metric) {
+    if (metric === 'energy') return wh.slice();
+    if (metric === 'carbon') {
+      const grid = AIPF.getLoc().grid;
+      return wh.map((x) => (x / 1000) * grid);
+    }
+    return wh.map((x) => (x / 1000) * AIPF.DC_WATER_L_PER_KWH);
+  }
+
+  // One generated image, from the general evidence range (no model or settings).
+  const imageTriple = (metric) => fromEnergy([AIPF.IMAGE.wh, AIPF.IMAGE.whmin, AIPF.IMAGE.whmax], metric);
+
   // Mean, low, and high impact of one logged entry, in carbon, water, or energy.
   function entryTriple(entry, metric) {
     const kind = entryKind(entry);
@@ -140,8 +155,9 @@
       if (!model.sizes[entry.s]) return [0, 0, 0];
       return perPromptTriple(model, entry.s, metric);
     }
-    // Images (feature 1) and agent sessions (feature 2) are costed here once
-    // their figures are added; any other kind is not AI use.
+    if (kind === 'image') return imageTriple(metric);
+    // Agent sessions (feature 2) are costed here once their figures are added;
+    // any other kind is not AI use.
     return [0, 0, 0];
   }
 
@@ -168,6 +184,8 @@
   }
   const aiDaily = (metric) => aiDailyTriple(metric)[0];
   const aiDailyEnergy = () => aiDailyTriple('energy')[0];
+  // How many of today's counted entries are of a given kind (e.g. 'image').
+  const aiLoggedCount = (kind) => AIPF.aiLoggedEntries().filter((e) => entryKind(e) === kind).length;
 
   function dailyFootprint(metric) {
     const loc = AIPF.getLoc();
@@ -199,7 +217,7 @@
   }
 
   Object.assign(AIPF, { perPromptTriple, perPrompt, totalPrompts, entryKind, isAiEntry,
-                        entryTriple, aiDailyTriple, aiDaily,
+                        fromEnergy, imageTriple, entryTriple, aiDailyTriple, aiDaily, aiLoggedCount,
                         aiDailyEnergy, dailyFootprint, itemBase, isCodeRow, linesForSize,
                         dailyWords, dailyCodeLines });
 

@@ -74,8 +74,14 @@
   // ---- Totals ----
   // One entry's cost, in the metric asked for. Reads the same shared figures
   // as the calculator, so a logged entry and a typed-in prompt always agree.
+  // Every logged AI entry, prompts included, counts only while "use my log" is
+  // on, so the tracker, history, and budget treat all kinds alike (spec,
+  // implementation-stage revision of 2026-09-26).
+  function counts(entry) {
+    return AIPF.isAiEntry(entry) && tracker.useLog;
+  }
   function entryCost(entry, metric) {
-    return AIPF.isAiEntry(entry) ? AIPF.entryTriple(entry, metric)[0] : 0;
+    return counts(entry) ? AIPF.entryTriple(entry, metric)[0] : 0;
   }
   function sumEntries(entries, metric) {
     let t = 0;
@@ -132,6 +138,14 @@
     syncRows();
     AIPF.emitUpdate();
   }
+  // One entry per image, so "Undo last" removes one image, as it does a prompt.
+  function logImages(count) {
+    const now = Date.now();
+    for (let i = 0; i < count; i++) tracker.today.push({ t: now, k: 'image' });
+    saveToday();
+    syncRows();
+    AIPF.emitUpdate();
+  }
   function undoLast() {
     if (!tracker.today.length) return;
     tracker.today.pop();
@@ -171,13 +185,25 @@
     return new Date(ts).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
   }
 
+  function countKinds(entries) {
+    const out = { prompt: 0, image: 0 };
+    for (const e of entries) {
+      const k = AIPF.entryKind(e);
+      out[k] = (out[k] || 0) + 1;
+    }
+    return out;
+  }
+  const plural = (n, word) => n.toLocaleString('en-US') + ' ' + word + (n === 1 ? '' : 's');
+
   // ---- Rendering ----
   function renderHeadline() {
     const metric = AIPF.state.metric;
     const total = sumEntries(tracker.today, metric);
     const n = tracker.today.length;
+    const kinds = countKinds(tracker.today);
     root.querySelector('#aipf-tk-total').textContent = AIPF.fmtMetric(total);
-    root.querySelector('#aipf-tk-count').textContent = n.toLocaleString('en-US') + (n === 1 ? ' prompt' : ' prompts');
+    root.querySelector('#aipf-tk-count').textContent = plural(kinds.prompt, 'prompt') +
+      (kinds.image ? ' · ' + plural(kinds.image, 'image') : '');
 
     const live = root.querySelector('#aipf-tk-live');
     const paceBox = root.querySelector('#aipf-tk-pace');
@@ -186,7 +212,8 @@
       paceBox.textContent = '';
       return;
     }
-    live.textContent = 'Last logged ' + agoText(tracker.today[n - 1].t) + '.';
+    live.textContent = 'Last logged ' + agoText(tracker.today[n - 1].t) + '.' +
+      (tracker.useLog ? '' : ' “Use my log” is off, so nothing logged is counted.');
     const p = paceProjection(metric);
     paceBox.textContent = p
       ? 'At this pace, about ' + AIPF.fmtMetric(p.total) + ' by 6pm (' + AIPF.fmtMetric(p.perHour) + ' an hour).'
@@ -229,11 +256,15 @@
     for (const e of recent) {
       const line = el('div', 'aipf-tk-entry');
       line.appendChild(el('span', 'aipf-tk-entry-time', AIPF.esc(timeText(e.t))));
-      const model = AIPF.getModel(e.m);
-      const size = AIPF.getSize(e.s);
-      line.appendChild(el('span', 'aipf-tk-entry-what',
-        AIPF.esc(model.name) + ' <span class="aipf-tk-dot">·</span> ' + AIPF.esc(AIPF.sizeLabel(e.m, size))));
-      line.appendChild(el('span', 'aipf-tk-entry-val', AIPF.fmtMetric(entryCost(e, AIPF.state.metric))));
+      if (AIPF.entryKind(e) === 'image') {
+        line.appendChild(el('span', 'aipf-tk-entry-what', 'Generated image'));
+      } else {
+        const model = AIPF.getModel(e.m);
+        const size = AIPF.getSize(e.s);
+        line.appendChild(el('span', 'aipf-tk-entry-what',
+          AIPF.esc(model.name) + ' <span class="aipf-tk-dot">·</span> ' + AIPF.esc(AIPF.sizeLabel(e.m, size))));
+      }
+      line.appendChild(el('span', 'aipf-tk-entry-val', counts(e) ? AIPF.fmtMetric(entryCost(e, AIPF.state.metric)) : 'not counted'));
       box.appendChild(line);
     }
     if (tracker.today.length > RECENT_SHOWN) {
@@ -263,6 +294,25 @@
     });
   }
 
+  // Per-image and today's image figures, each as central value with its range,
+  // in energy, carbon, and water together (the range is the point here).
+  function renderImages() {
+    const box = root.querySelector('#aipf-tk-img-result');
+    if (!box) return;
+    const n = countKinds(tracker.today).image;
+    const fig = (metric, fmt, k) => {
+      const t = AIPF.imageTriple(metric).map((x) => x * k);
+      return '<b>' + fmt(t[0]) + '</b> <span class="aipf-tk-range">(' + fmt(t[1]) + '–' + fmt(t[2]) + ')</span>';
+    };
+    const line = (k) => fig('energy', AIPF.fmtEnergy, k) + ' · ' + fig('carbon', AIPF.fmtCarbon, k) + ' · ' + fig('water', AIPF.fmtWater, k);
+    let html = '<span class="aipf-tk-img-lab">Each image</span> ' + line(1);
+    if (n) {
+      html += '<br><span class="aipf-tk-img-lab">Today’s ' + plural(n, 'image') + '</span> ' + line(n) +
+        (tracker.useLog ? '' : ' <em>Not counted while “Use my log” is off.</em>');
+    }
+    box.innerHTML = html;
+  }
+
   function renderMode() {
     const cb = root.querySelector('#aipf-tk-uselog');
     cb.checked = tracker.useLog;
@@ -284,7 +334,7 @@
   }
 
   function render() {
-    renderMode(); renderHeadline(); renderHours(); renderRecent(); renderHistory();
+    renderMode(); renderHeadline(); renderHours(); renderRecent(); renderHistory(); renderImages();
   }
 
   // ---- Wiring ----
@@ -326,6 +376,13 @@
       b.addEventListener('click', () => logPrompt(tracker.model, q.size, 1));
       quickBox.appendChild(b);
     }
+
+    const imgN = root.querySelector('#aipf-tk-img-n');
+    root.querySelector('#aipf-tk-img-log').addEventListener('click', () => {
+      const n = Math.round(Number(imgN.value));
+      if (!(n >= 1 && n <= 1000)) { imgN.value = '1'; imgN.focus(); return; }
+      logImages(n);
+    });
 
     root.querySelector('#aipf-tk-undo').addEventListener('click', undoLast);
     root.querySelector('#aipf-tk-clear').addEventListener('click', () => {

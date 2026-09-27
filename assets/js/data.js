@@ -40,6 +40,18 @@
 
   AIPF.WORLD_GRID = 480; // global-average grid carbon intensity, g CO2e/kWh (Ember)
 
+  // ---- Generated images (feature 1): one general range, Wh per image ----
+  // Central: median across Luccioni et al. 2024's image models (1.35 kWh per
+  // 1,000 inferences, 2022–23 open models on an A100). Low: Bertazzini et al.
+  // 2025's lowest of 17 open models (8.6e-5 kWh, LCM_SSD_1B, RTX 4090). High:
+  // Luccioni et al.'s least efficient model (11.49 kWh per 1,000, SDXL base).
+  AIPF.IMAGE = { wh: 1.35, whmin: 0.086, whmax: 11.49 };
+
+  // Data-centre water per kWh, derived: Berkeley Lab's 2023 US average on-site
+  // use (0.36 L/kWh) plus indirect water through electricity (4.52 L/kWh).
+  AIPF.DC_WATER_L_PER_KWH = 0.36 + 4.52;
+
+
   // location = regional baseline for goods, services, shared infrastructure
   // (home energy and driving are separate knobs below, so they are excluded here)
   // w = BLUE water footprint per capita (freshwater from rivers/lakes/aquifers),
@@ -95,6 +107,9 @@
     { url: 'https://iopscience.iop.org/article/10.1088/1748-9326/ab8589', label: 'Ivanova et al. 2020 — housing and transport mitigation options.' },
     { url: 'https://www.founderspledge.com/research/climate-and-lifestyle-report', label: 'Founders Pledge, Climate & Lifestyle report — the lifestyle-cut comparison.' },
     { url: 'https://www.waterfootprint.org/', label: 'Water Footprint Network (Mekonnen & Hoekstra) and the Water Footprint Calculator — water-consumption figures and the personal water footprint.' },
+    { url: 'https://arxiv.org/abs/2311.16863', label: 'Luccioni, Jernite & Strubell 2024 (FAccT) — median and highest energy per generated image.' },
+    { url: 'https://arxiv.org/abs/2506.17016', label: 'Bertazzini et al. 2025 (preprint) — lowest energy per generated image across 17 open models.' },
+    { url: 'https://eta-publications.lbl.gov/sites/default/files/2024-12/lbnl-2024-united-states-data-center-energy-usage-report_1.pdf', label: 'Shehabi et al. 2024, Berkeley Lab — US data-centre on-site and indirect water per kWh.' },
   ];
 
   // Daily reference points (all things that emit, so no add/save direction)

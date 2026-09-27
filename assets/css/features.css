@@ -80,6 +80,14 @@
   font-family: var(--font-body); font-size: 0.66rem; border: 1px solid var(--border-strong);
   border-bottom-width: 2px; border-radius: 3px; padding: 0.02rem 0.28rem; background: var(--bg-subtle); color: var(--text-secondary);
 }
+.aipf-tk-num {
+  width: 4.5rem; padding: 0.35rem 0.45rem; font-family: var(--font-body); font-size: 0.82rem;
+  border: 1px solid var(--border-strong); border-radius: 5px; background: var(--bg); color: var(--text);
+}
+.aipf-tk-num-lab { font-family: var(--font-body); font-size: 0.76rem; color: var(--text-secondary); flex: 1 1 8rem; }
+.aipf-tk-img-result { font-family: var(--font-body); font-size: 0.76rem; line-height: 1.6; color: var(--text-secondary); margin: 0.55rem 0 0; font-variant-numeric: tabular-nums; }
+.aipf-tk-img-lab { display: inline-block; min-width: 6.5rem; color: var(--dim); }
+.aipf-tk-range { color: var(--dim); }
 .aipf-tk-quick { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.6rem; }
 .aipf-tk-quickbtn {
   background: var(--bg-subtle); border: 1px solid var(--border-strong); border-radius: 20px;

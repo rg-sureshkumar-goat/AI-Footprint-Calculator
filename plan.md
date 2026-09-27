@@ -77,11 +77,12 @@ Draft for the user's review. One checkpoint per build step (decided by the user 
 
 **Checkpoint 2. Feature 1, image logging**
 
-- [ ] Add the image figures (0.086, 1.35, 11.49 Wh per image), the 4.88 L/kWh water factor, and source links to the data
-- [ ] Add an "Image" logging action to the tracker with a count, feeding the running total, recent list, history, and "Undo last"
-- [ ] Show image results as central value with low–high range in energy, carbon, and water
-- [ ] Add the plain-language limitations note (S1, S2, S3, S46) and the methodology text in `index.html`
-- [ ] Agent runs feature 1 acceptance checks 1–6
+- [x] Add the image figures (0.086, 1.35, 11.49 Wh per image), the 4.88 L/kWh water factor, and source links to the data
+- [x] Add an "Image" logging action to the tracker with a count, feeding the running total, recent list, history, and "Undo last"
+- [x] Show image results as central value with low–high range in energy, carbon, and water
+- [x] Add the plain-language limitations note (S1, S2, S3, S46) and the methodology text in `index.html`
+- [x] Agent runs feature 1 acceptance checks 1–6. Done 2026-09-26: all six passed in the preview (one image adds 1.35 Wh, 0.086–11.49; 0.513 g, 0.033–4.37; 6.59 mL, 0.42–56.1); checked at phone width and in dark mode
+- [x] Make logged prompts follow "Use my log" in the tracker total, history, and budget, as images do (decided by the user on 2026-09-26; see Revisions)
 - [ ] User verifies checkpoint 2; commit when asked
 
 **Checkpoint 3. Feature 2, agent sessions and projects**
@@ -145,6 +146,8 @@ Draft for the user's review. One checkpoint per build step (decided by the user 
 ## Revisions
 
 Record material changes to the approach, sequence, or checklist and explain why they were made.
+
+- 2026-09-26 (checkpoint 2): Added a task to checkpoint 2. Building feature 1 showed that the budget counted logged prompts even with "Use my log" off, while the spec excludes images then. The user chose to make logged prompts follow the setting as well, so every logged kind is treated alike; recorded in `spec.md` under Revisions.
 
 ## Commands
 

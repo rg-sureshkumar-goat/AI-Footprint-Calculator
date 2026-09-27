@@ -160,11 +160,12 @@
   // ---- Outputs ----
   function renderRunning() {
     const box = root.querySelector('#aipf-running');
-    const n = AIPF.totalPrompts();
+    const n = AIPF.totalPrompts(), imgs = AIPF.aiLoggedCount('image');
     const cD = AIPF.aiDaily('carbon'), wD = AIPF.aiDaily('water'), eD = AIPF.aiDailyEnergy();
-    if (n <= 0) { box.innerHTML = 'Nothing entered yet.'; return; }
+    if (n <= 0 && imgs <= 0) { box.innerHTML = 'Nothing entered yet.'; return; }
     box.innerHTML =
-      'That is <b>' + n.toLocaleString('en-US') + '</b> prompts a day, costing about <b>' + AIPF.fmtCarbon(cD) +
+      'That is <b>' + n.toLocaleString('en-US') + '</b> prompts' +
+      (imgs ? ' and <b>' + imgs.toLocaleString('en-US') + '</b> generated image' + (imgs === 1 ? '' : 's') : '') + ' a day, costing about <b>' + AIPF.fmtCarbon(cD) +
       '</b> and <b>' + AIPF.fmtWater(wD) + '</b> (' + AIPF.fmtEnergy(eD) + '). Over a year, <b>' + AIPF.fmtCarbon(cD * DAYS) +
       '</b> and <b>' + AIPF.fmtWater(wD * DAYS) + '</b>.';
   }
@@ -300,6 +301,12 @@
       const wt = AIPF.perPromptTriple(md, r.size, 'water');
       rowsHtml += '<tr><td>' + escXml(md.name) + '</td><td>' + escXml(AIPF.sizeLabel(r.model, AIPF.getSize(r.size))) + '</td><td class="n">' + r.count + '</td><td class="n">' + AIPF.fmtCarbon(d) + '</td><td class="n">' + AIPF.fmtWater(r.count * wt[0]) + '</td></tr>';
     }
+    // Logged images (counted only while the log drives the page) get their own row.
+    const imgs = AIPF.aiLoggedCount('image');
+    if (imgs) {
+      rowsHtml += '<tr><td>Generated images (logged)</td><td>One general range</td><td class="n">' + imgs + '</td><td class="n">' +
+        AIPF.fmtCarbon(imgs * AIPF.imageTriple('carbon')[0]) + '</td><td class="n">' + AIPF.fmtWater(imgs * AIPF.imageTriple('water')[0]) + '</td></tr>';
+    }
     const aiYr = aiDay * DAYS, wYr = wDay * DAYS;
     const day = AIPF.dailyFootprint('carbon');
     const pctStr = AIPF.fmtPct(day > 0 ? (aiDay / day) * 100 : 0);
@@ -335,9 +342,11 @@
       '<h1>How my AI use contributes to my carbon emissions and water use</h1>' +
       '<p class="date">Generated ' + date + ', based on exactly the inputs below.</p>' +
       '<h2>1. What I entered</h2>' +
-      '<table><thead><tr><th>Model</th><th>Typical output</th><th class="n">Prompts/day</th><th class="n">CO₂e/day</th><th class="n">Water/day</th></tr></thead><tbody>' +
+      '<table><thead><tr><th>Model</th><th>Typical output</th><th class="n">Per day</th><th class="n">CO₂e/day</th><th class="n">Water/day</th></tr></thead><tbody>' +
       (rowsHtml || '<tr><td colspan="5">No usage entered.</td></tr>') + '</tbody></table>' +
       '<p class="muted">Per-prompt figures come from the EcoLogits model' + fn(1) + '; the electricity is costed on the ' + escXml(loc.label) + ' grid' + fn(2) + ', and EcoLogits’ embodied hardware emissions are kept.</p>' +
+      (imgs ? '<p class="muted">Each generated image is about ' + AIPF.fmtEnergy(AIPF.IMAGE.wh) + ' (range ' + AIPF.fmtEnergy(AIPF.IMAGE.whmin) + ' to ' + AIPF.fmtEnergy(AIPF.IMAGE.whmax) +
+        '), from open models on research hardware, because no commercial image tool publishes figures' + fn(11) + fn(12) + '. Image carbon is that electricity on the same grid, with no embodied carbon; image water is derived at 4.88 L/kWh, the US data-centre average' + fn(13) + '.</p>' : '') +
       '<h2>2. My AI carbon</h2>' +
       '<p>Across these prompts, my AI use comes to about <strong>' + AIPF.fmtCarbon(aiDay) + ' per day</strong> (range ' + AIPF.fmtCarbon(aiMin) + ' to ' + AIPF.fmtCarbon(aiMax) + '), or <strong>' + AIPF.fmtCarbon(aiYr) + ' per year</strong>, drawing about ' + AIPF.fmtEnergy(eD) + ' of electricity a day.' + fn(1) + fn(2) + ' The range is EcoLogits’ 95% interval, mostly uncertainty in the parameter counts of closed models.' + fn(1) + '</p>' +
       '<h2>3. How that compares with the rest of my life</h2>' +
