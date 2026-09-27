@@ -12,6 +12,9 @@ Session transcripts for this project, kept as evidence of process.
   one per chat. A PDF with the same name is generated alongside for submission.
   Tool calls appear as one-line summaries followed by output truncated to 400
   characters; the agent's internal reasoning is not included.
+- `spec-*.md` — Project 2 specification-stage conversations
+  (`start specification`), one per chat, in the same format as the research
+  transcripts, with a PDF of the same name generated alongside for submission.
 
 These are sanitised before being committed: the author's email address, macOS
 home path and username, and temporary session paths are replaced. Message
