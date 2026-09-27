@@ -270,6 +270,27 @@
         </label>
         <p class="aipf-fine">Lower this when activities overlap (a call while music plays), so the router is counted once for that time.
           <button type="button" class="aipf-link" id="aipf-dg-wifi-reset">Reset to the sum</button></p>
+
+        <p class="aipf-tk-form-h aipf-mf-h">My devices</p>
+        <p class="aipf-ss-intro">The devices you own, whatever you use them for. Making each one is spread evenly over the days you keep it, and divided among the people who share it.</p>
+        <div id="aipf-mf-rows"></div>
+        <button type="button" class="aipf-addrow" id="aipf-mf-add">+ add a device</button>
+        <p class="aipf-fine">
+          Manufacturing makes up about 70&ndash;76% of the life-cycle carbon of current phones, laptops, and TVs, so it is added to your
+          digital day as its own component (as the AI total already includes data-centre hardware). Each figure is a manufacturer&rsquo;s
+          report or a proxy for one model, not a market average, and Apple notes its models carry inherent uncertainty. The office desktop
+          (<a href="https://www.delltechnologies.com/asset/en-us/products/desktops-and-all-in-ones/technical-support/optiplex-tower-plus-7020-pcf-report.pdf" target="_blank" rel="noopener">Dell</a>) and monitor (<a href="https://www.delltechnologies.com/asset/en-us/products/electronics-and-accessories/technical-support/p2725h-monitor-pcf-report.pdf" target="_blank" rel="noopener">Dell</a>) figures are whole-life-cycle totals, which overstate
+          manufacturing; the gaming PC (<a href="https://arxiv.org/abs/2608.19040" target="_blank" rel="noopener">Hazas et al.</a>) is an office-desktop lower bound; the console is an
+          Xbox Series X stand-in (<a href="https://download.microsoft.com/download/4/8/D/48D50344-33CD-4D9A-BA11-0C7DCA1A3948/EcoProfile_XboxSeries_X.pdf" target="_blank" rel="noopener">Microsoft</a>), because Sony publishes none (a teardown estimate put a PS4 at
+          89&nbsp;kg, <a href="https://www.ifm.eng.cam.ac.uk/insights/sustainability/the-environmental-impact-of-a-playstation-4/" target="_blank" rel="noopener">Cambridge IfM</a>). Sources disagree on monitors by about 2.7&times; (Dell&rsquo;s older method gave
+          <a href="https://www.delltechnologies.com/asset/en-us/products/electronics-and-accessories/technical-support/dell-s2721h-monitor-pcf-datasheet.pdf" target="_blank" rel="noopener">about 334&nbsp;kg</a>). A laptop benchmark&rsquo;s 215&nbsp;kg median (158&ndash;287&nbsp;kg,
+          <a href="https://devera.ai/benchmarks/carbon-footprint-of-a-laptop" target="_blank" rel="noopener">devera.ai</a>) is cradle to grave, including use, so it is shown here but not used. The default years kept
+          are each source&rsquo;s own assumption, and the result depends strongly on them. No manufacturing energy is counted, because no
+          source reports it. Manufacturing water is available for phones only: about 12,075&nbsp;L (3,190 gallons) per phone
+          (<a href="https://watercalculator.org/footprint/the-hidden-water-in-everyday-products/" target="_blank" rel="noopener">GRACE Communications</a>), mostly grey water, a notional volume for diluting pollution rather than
+          water consumed, so it is measured differently from the other water figures on this page. That page also gives the figure as
+          12,760&nbsp;L, which does not match its gallons; the gallons figure is used.
+        </p>
       </div>
       <div class="aipf-dg-col">
         <div class="aipf-dg-totals" id="aipf-dg-totals" aria-live="polite"></div>
@@ -595,8 +616,37 @@
         grid intensity. Water is device, router, and network electricity &times; 4.35&nbsp;L/kWh and data
         centres &times; 4.88&nbsp;L/kWh, US averages from
         <a href="https://eta-publications.lbl.gov/sites/default/files/2024-12/lbnl-2024-united-states-data-center-energy-usage-report_1.pdf" target="_blank" rel="noopener">Berkeley Lab</a>,
-        so it does not change with the region. Device manufacturing is not included here. The AI total
+        so it does not change with the region. Device manufacturing is added separately (below). The AI total
         does not count your own device or router, so the two totals use different boundaries.
+      </p>
+      <p>
+        <strong>Device manufacturing.</strong> Making a device accounts for about 70&ndash;76% of the
+        life-cycle carbon of a current phone, laptop, or TV, so the devices you list under &ldquo;My
+        devices&rdquo; add a manufacturing component to your digital day, in the same way that the AI
+        figures include EcoLogits' data-centre hardware manufacturing. Each device's daily share is its
+        manufacturing carbon &times; the number owned &divide; (years kept &times; 365) &divide; the number of
+        people sharing it, whatever you used it for that day. Figures: a smartphone about 42&nbsp;kg (76% of the
+        <a href="https://www.apple.com/environment/pdf/products/iphone/iPhone_17_PER_Sept2025.pdf" target="_blank" rel="noopener">iPhone 17's 55&nbsp;kg</a>, three years); a laptop about 110&nbsp;kg (71% of the
+        <a href="https://www.apple.com/environment/pdf/products/notebooks/M4_MacBook_Air_PER_March2025.pdf" target="_blank" rel="noopener">15-inch MacBook Air's 155&nbsp;kg</a>, four years); a TV of about 55&nbsp;inches about
+        370&nbsp;kg, a proxy derived from 21.9% of a
+        <a href="https://www.samsung.com/global/sustainability/landing_hub-file/AY_wFeS6BzIALYNu/Signage_QMC_Environmental_Report_EN_2503.pdf" target="_blank" rel="noopener">55-inch commercial signage display's 1,691&nbsp;kg</a> (seven years); a 75-inch TV about
+        690&nbsp;kg (70.4% of the <a href="https://www.samsung.com/global/sustainability/media/pdf/TV_QLED_Environmental_Report_EN.pdf" target="_blank" rel="noopener">QLED 75Q60C's 982&nbsp;kg</a>, seven years); an office desktop
+        198&nbsp;kg, the <a href="https://www.delltechnologies.com/asset/en-us/products/desktops-and-all-in-ones/technical-support/optiplex-tower-plus-7020-pcf-report.pdf" target="_blank" rel="noopener">OptiPlex Tower Plus 7020's</a> whole life cycle, excluding the monitor (four
+        years); a games console 190&nbsp;kg, the <a href="https://download.microsoft.com/download/4/8/D/48D50344-33CD-4D9A-BA11-0C7DCA1A3948/EcoProfile_XboxSeries_X.pdf" target="_blank" rel="noopener">Xbox Series X's</a> production figure used as a
+        stand-in because Sony publishes none (five years; a
+        <a href="https://www.ifm.eng.cam.ac.uk/insights/sustainability/the-environmental-impact-of-a-playstation-4/" target="_blank" rel="noopener">teardown estimate</a> put a PS4 at 89&nbsp;kg); a gaming PC 112&nbsp;kg, the office-desktop
+        proxy that <a href="https://arxiv.org/abs/2608.19040" target="_blank" rel="noopener">Hazas et al. (2026)</a> describe as the lower end of the gaming range, excluding the
+        monitor (four years); and a monitor 194&nbsp;kg, the
+        <a href="https://www.delltechnologies.com/asset/en-us/products/electronics-and-accessories/technical-support/p2725h-monitor-pcf-report.pdf" target="_blank" rel="noopener">Dell P2725H's</a> whole life cycle (five years; Dell's
+        <a href="https://www.delltechnologies.com/asset/en-us/products/electronics-and-accessories/technical-support/dell-s2721h-monitor-pcf-datasheet.pdf" target="_blank" rel="noopener">older method</a> gave about 334&nbsp;kg for a similar monitor, about 2.7&times; more). A
+        <a href="https://devera.ai/benchmarks/carbon-footprint-of-a-laptop" target="_blank" rel="noopener">laptop benchmark</a> with a 215&nbsp;kg median is cradle to grave, including use, and is not
+        used. The default years are each source's own assumption. No manufacturing energy is counted, because
+        no source reports it. In water, only the smartphone has a figure: about 12,075&nbsp;L (3,190 gallons) of
+        production water per phone, from <a href="https://watercalculator.org/footprint/the-hidden-water-in-everyday-products/" target="_blank" rel="noopener">GRACE Communications</a>, mostly grey water, which is a
+        notional volume for diluting pollution rather than water consumed, and so is measured differently from
+        the blue-water AI and digital-day figures; the same page gives 12,760&nbsp;L in litres, which does not
+        match its gallons, and the gallons figure is used. The manufacturing component is part of the digital-day
+        total and never the AI total.
       </p>
       <p>
         <strong>Generated images.</strong> Images are logged in the session tracker, one per image
@@ -673,8 +723,8 @@
         <strong>Ways you add emissions (the yearly chart).</strong>
         Manufacturing a new car ≈ 6 t CO<sub>2</sub>e
         (<a href="https://howbadarebananas.com/" target="_blank" rel="noopener">Berners-Lee, How Bad Are Bananas?</a>);
-        a <a href="https://www.epa.gov/sites/default/files/2018-02/documents/lca_tv.pdf" target="_blank" rel="noopener">new flat-screen TV ≈ 350 kg</a>;
-        a <a href="https://devera.ai/benchmarks/carbon-footprint-of-a-laptop" target="_blank" rel="noopener">new laptop ≈ 250 kg</a>;
+        manufacturing a new 55-inch TV ≈ 370 kg (<a href="https://www.samsung.com/global/sustainability/landing_hub-file/AY_wFeS6BzIALYNu/Signage_QMC_Environmental_Report_EN_2503.pdf" target="_blank" rel="noopener">Samsung signage proxy</a>);
+        manufacturing a new laptop ≈ 110 kg (<a href="https://www.apple.com/environment/pdf/products/notebooks/M4_MacBook_Air_PER_March2025.pdf" target="_blank" rel="noopener">Apple MacBook Air</a>);
         a <a href="https://howbadarebananas.com/" target="_blank" rel="noopener">new bicycle ≈ 100 kg and a new sofa ≈ 90 kg</a>.
         Flights, per passenger
         (<a href="https://co2.myclimate.org/en/flight_calculators/new" target="_blank" rel="noopener">myclimate</a>,
@@ -688,7 +738,7 @@
         (<a href="https://www.science.org/doi/10.1126/science.aaq0216" target="_blank" rel="noopener">Poore &amp; Nemecek</a>, ~3 kg each);
         a <a href="https://theconversation.com/coffee-heres-the-carbon-cost-of-your-daily-cup-and-how-to-make-it-climate-friendly-152629" target="_blank" rel="noopener">year of daily coffee ≈ 77 kg</a>;
         a <a href="https://howbadarebananas.com/" target="_blank" rel="noopener">cotton T-shirt ≈ 7 kg</a>;
-        a new smartphone ≈ 70 kg (<a href="https://www.apple.com/environment/" target="_blank" rel="noopener">Apple</a>);
+        manufacturing a new smartphone ≈ 42 kg (<a href="https://www.apple.com/environment/pdf/products/iphone/iPhone_17_PER_Sept2025.pdf" target="_blank" rel="noopener">Apple iPhone 17</a>);
         and a pair of jeans ≈ 33 kg (<a href="https://www.levistrauss.com/wp-content/uploads/2015/03/Full-LCA-Results-Deck-FINAL.pdf" target="_blank" rel="noopener">Levi's</a>).
       </p>
       <p>
@@ -704,7 +754,7 @@
         with <a href="https://waterfootprint.org/resources/Report46-WaterFootprintPaper.pdf" target="_blank" rel="noopener">paper's water footprint</a>;
         a beef burger (~3 kg, <a href="https://www.science.org/doi/10.1126/science.aaq0216" target="_blank" rel="noopener">Poore &amp; Nemecek</a>; ~1,700 L at
         <a href="https://watercalculator.org/footprint/the-hidden-water-in-everyday-products/" target="_blank" rel="noopener">15,400 L/kg beef</a>);
-        a <a href="https://www.apple.com/environment/" target="_blank" rel="noopener">new smartphone (~70 kg, Apple)</a>
+        a new smartphone (~42 kg to manufacture, <a href="https://www.apple.com/environment/pdf/products/iphone/iPhone_17_PER_Sept2025.pdf" target="_blank" rel="noopener">Apple</a>)
         needing <a href="https://www.compareandrecycle.co.uk/blog/world-water-week-how-much-water-does-your-smartphone-use" target="_blank" rel="noopener">~12,800 L</a>;
         a <a href="https://www.levistrauss.com/wp-content/uploads/2015/03/Full-LCA-Results-Deck-FINAL.pdf" target="_blank" rel="noopener">pair of jeans (~33 kg, Levi's)</a>
         at ~10,000 L (<a href="https://watercalculator.org/footprint/the-hidden-water-in-everyday-products/" target="_blank" rel="noopener">Water Footprint Network</a>).
@@ -769,6 +819,7 @@
 <script src="assets/js/tracker.js"></script>
 <script src="assets/js/sessions.js"></script>
 <script src="assets/js/digital.js"></script>
+<script src="assets/js/devices.js"></script>
 <script src="assets/js/team.js"></script>
 <script src="assets/js/budget.js"></script>
 <script src="assets/js/nav.js"></script>

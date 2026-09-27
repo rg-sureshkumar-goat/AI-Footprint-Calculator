@@ -158,6 +158,22 @@
 .aipf-dg-act-parts b { font-weight: 600; color: var(--text-secondary); }
 .aipf-tag--log { color: var(--ok); margin-left: 0.3rem; }
 .aipf-tag--typ { color: var(--dim); margin-left: 0.3rem; }
+/* ---- Project 2, feature 4: my devices ---- */
+.aipf-mf-h { margin-top: 1.4rem; padding-top: 0.9rem; border-top: 1px solid var(--border); }
+.aipf-mf-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.4rem 0.5rem; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid var(--border); }
+.aipf-mf-row > select { min-width: 0; }
+.aipf-mf-fields { grid-column: 1 / 2; display: flex; flex-wrap: wrap; gap: 0.35rem 0.8rem; }
+.aipf-mf-row .aipf-rowdel { grid-column: 2; grid-row: 1; }
+.aipf-mf-field { display: flex; align-items: center; gap: 0.3rem; font-family: var(--font-body); font-size: 0.72rem; color: var(--dim); white-space: nowrap; }
+.aipf-mf-field input {
+  width: 3.6rem; padding: 0.28rem 0.4rem; font-family: var(--font-body); font-size: 0.82rem; color: var(--text);
+  background: var(--bg-subtle); border: 1px solid var(--border-strong); border-radius: 5px; font-variant-numeric: tabular-nums;
+}
+.aipf-mf-field input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.aipf-mf-src { grid-column: 1 / -1; font-family: var(--font-body); font-size: 0.68rem; line-height: 1.45; color: var(--dim); margin: 0; }
+.aipf-mf-parts li { padding: 0.12rem 0; }
+.aipf-mf-name { color: var(--text-secondary); }
+
 @media (max-width: 820px) { .aipf-dg { grid-template-columns: 1fr; gap: 1.2rem; } }
 @media (max-width: 560px) {
   .aipf-dg-totals { grid-template-columns: 1fr; }

@@ -108,12 +108,12 @@ Draft for the user's review. One checkpoint per build step (decided by the user 
 
 **Checkpoint 5. Feature 4, device manufacturing**
 
-- [ ] Add the eight device manufacturing figures, default years kept, labels, and the smartphone production water (about 12,075 L) with sources
-- [ ] Build the "My devices" list: device type, number owned, years kept, shared with how many people
-- [ ] Add the manufacturing component to the digital-day total in carbon, and phone-only water, with a per-device breakdown; note beside the energy figure that manufacturing energy is not counted
-- [ ] Replace the yearly comparison figures for a new smartphone, laptop, and TV with about 42, 110, and 370 kg and their sources
-- [ ] Add the limitations notes and the methodology text
-- [ ] Agent runs feature 4 acceptance checks 1–7
+- [x] Add the eight device manufacturing figures, default years kept, labels, and the smartphone production water (about 12,075 L) with sources
+- [x] Build the "My devices" list: device type, number owned, years kept, shared with how many people
+- [x] Add the manufacturing component to the digital-day total in carbon, and phone-only water, with a per-device breakdown; note beside the energy figure that manufacturing energy is not counted
+- [x] Replace the yearly comparison figures for a new smartphone, laptop, and TV with about 42, 110, and 370 kg and their sources
+- [x] Add the limitations notes and the methodology text
+- [x] Agent runs feature 4 acceptance checks 1–7. Done 2026-09-26: all seven passed in the preview (162.0 g a day: phone 38.4, laptop 75.3, TV 48.3; TV unshared 144.8 g; phone kept 6 years 19.2 g; phone water 11.03 L; digital-day energy unchanged at 366.4 Wh with feature 3's typical day). Features 1–3 re-checked; checked at phone width and in dark mode
 - [ ] User verifies checkpoint 5; commit when asked
 
 **Checkpoint 6. Feature 5, like-for-like comparisons**
@@ -147,6 +147,7 @@ Draft for the user's review. One checkpoint per build step (decided by the user 
 
 Record material changes to the approach, sequence, or checklist and explain why they were made.
 
+- 2026-09-26 (checkpoint 5): S51 gives two mismatched values for a phone's production water (3,190 gallons, and 12,760 L). The user decided to keep the specification's 12,075 L from the gallons figure and disclose the mismatch; recorded in `spec.md` under Revisions.
 - 2026-09-26 (checkpoint 4): Three feature 3 details were open in the specification (the console's central streaming draw, router hours when log and typical day mix, and the time window of a logged activity). The user decided them before the build; recorded in `spec.md` under Revisions.
 - 2026-09-26 (checkpoint 2): Added a task to checkpoint 2. Building feature 1 showed that the budget counted logged prompts even with "Use my log" off, while the spec excludes images then. The user chose to make logged prompts follow the setting as well, so every logged kind is treated alike; recorded in `spec.md` under Revisions.
 

@@ -29,7 +29,8 @@
   let typical = { rows: [], wifi: null };  // wifi: null = follow the sum of home Wi-Fi hours
 
   // Components that other features add to the digital-day total. Each is a
-  // function returning null or { id, label, energy, carbon, water, note, items }.
+  // function returning null or { id, label, energy, carbon, water, summary,
+  // detail, cardNote }, where energy, carbon, and water are optional triples.
   AIPF.digitalExtras = AIPF.digitalExtras || [];
 
   // ---- Entries: activity, device, connection, quality ----
@@ -211,10 +212,10 @@
       '<p class="aipf-dg-card-fig">' + fig(x.carbon, AIPF.fmtCarbon) + '</p>' +
       '<p class="aipf-dg-card-fig">' + fig(x.water, AIPF.fmtWater) + '</p>' +
       '<p class="aipf-dg-card-sub">' + sub + '</p></div>';
-    const noMfgEnergy = res.extras.some((x) => x.id === 'manufacturing') ? ' Energy excludes device manufacturing: no source reports it.' : '';
+    const extraNotes = res.extras.map((x) => (x.cardNote ? ' ' + x.cardNote : '')).join('');
     root.querySelector('#aipf-dg-totals').innerHTML =
       card('Your AI total today', ai, 'Prompts, images, and agent sessions. Counts data centres only, not your own device or router.') +
-      card('Your digital day', t, 'Your devices, home router, network, and data centres.' + noMfgEnergy);
+      card('Your digital day', t, 'Your devices, home router, network, and data centres.' + extraNotes);
   }
 
   function renderBreakdown(res) {

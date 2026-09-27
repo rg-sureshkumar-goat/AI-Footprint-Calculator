@@ -114,6 +114,31 @@
     },
   };
 
+  // ---- Device manufacturing (feature 4), kg CO2e per device ----
+  // Spread per day kept: kg / (years x 365) / people sharing. Default years
+  // follow each source's own assumption. `label` says how far the figure is
+  // from a manufacturing-only average for that kind of device.
+  AIPF.DEVICE_MFG = [
+    { id: 'phone', label: 'Smartphone', kg: 42, years: 3, tag: 'one model',
+      basis: '76% of the iPhone 17’s 55 kg life cycle', src: 'Apple', url: 'https://www.apple.com/environment/pdf/products/iphone/iPhone_17_PER_Sept2025.pdf',
+      // GRACE Communications: 3,190 gallons of production water, mostly grey.
+      waterL: 3190 * 3.785411784 },
+    { id: 'laptop', label: 'Laptop', kg: 110, years: 4, tag: 'one model',
+      basis: '71% of the 15-inch MacBook Air’s 155 kg life cycle', src: 'Apple', url: 'https://www.apple.com/environment/pdf/products/notebooks/M4_MacBook_Air_PER_March2025.pdf' },
+    { id: 'tv55', label: 'TV, about 55-inch', kg: 370, years: 7, tag: 'proxy',
+      basis: '21.9% of a 55-inch commercial signage display’s 1,691 kg', src: 'Samsung', url: 'https://www.samsung.com/global/sustainability/landing_hub-file/AY_wFeS6BzIALYNu/Signage_QMC_Environmental_Report_EN_2503.pdf' },
+    { id: 'tv75', label: 'TV, 75-inch', kg: 690, years: 7, tag: 'one model',
+      basis: '70.4% of the QLED 75Q60C’s 982 kg life cycle', src: 'Samsung', url: 'https://www.samsung.com/global/sustainability/media/pdf/TV_QLED_Environmental_Report_EN.pdf' },
+    { id: 'desktop', label: 'Office desktop (no monitor)', kg: 198, years: 4, tag: 'whole life cycle',
+      basis: 'OptiPlex Tower Plus 7020, whole life cycle, since the manufacturing share is not published as text', src: 'Dell', url: 'https://www.delltechnologies.com/asset/en-us/products/desktops-and-all-in-ones/technical-support/optiplex-tower-plus-7020-pcf-report.pdf' },
+    { id: 'console', label: 'Games console', kg: 190, years: 5, tag: 'stand-in',
+      basis: 'Xbox Series X production; Sony publishes no figure for the PS5', src: 'Microsoft', url: 'https://download.microsoft.com/download/4/8/D/48D50344-33CD-4D9A-BA11-0C7DCA1A3948/EcoProfile_XboxSeries_X.pdf' },
+    { id: 'gamingpc', label: 'Gaming PC (no monitor)', kg: 112, years: 4, tag: 'lower bound',
+      basis: 'an office-desktop proxy the authors call the lower end of the gaming range', src: 'Hazas et al. 2026', url: 'https://arxiv.org/abs/2608.19040' },
+    { id: 'monitor', label: 'Monitor', kg: 194, years: 5, tag: 'whole life cycle',
+      basis: 'Dell P2725H 27-inch, whole life cycle, since the manufacturing share cannot be separated', src: 'Dell', url: 'https://www.delltechnologies.com/asset/en-us/products/electronics-and-accessories/technical-support/p2725h-monitor-pcf-report.pdf' },
+  ];
+
   // Data-centre water per kWh, derived: Berkeley Lab's 2023 US average on-site
   // use (0.36 L/kWh) plus indirect water through electricity (4.52 L/kWh).
   AIPF.DC_WATER_L_PER_KWH = 0.36 + 4.52;
@@ -199,14 +224,14 @@
   AIPF.ANNUAL_ITEMS = [
     { label: 'A cotton T-shirt',                c: 7,    w: 0,      dir: 'add' },
     { label: 'A new pair of jeans',             c: 33,   w: 2640,   dir: 'add' },
-    { label: 'A new smartphone',                c: 70,   w: 3370,   dir: 'add' },
+    { label: 'A new smartphone (manufacturing)', c: 42,  w: 3370,   dir: 'add' },
     { label: 'A year of daily coffee',          c: 77,   w: 0,      dir: 'add' },
     { label: 'A new sofa',                      c: 90,   w: 0,      dir: 'add' },
     { label: 'A new bicycle',                   c: 100,  w: 0,      dir: 'add' },
     { label: 'A beef burger every week (1 yr)', c: 156,  w: 0,      dir: 'add' },
-    { label: 'A new laptop',                    c: 250,  w: 0,      dir: 'add' },
+    { label: 'A new laptop (manufacturing)',    c: 110,  w: 0,      dir: 'add' },
     { label: 'A short-haul round-trip flight',  c: 250,  w: 0,      dir: 'add' },
-    { label: 'A new flat-screen TV',            c: 350,  w: 0,      dir: 'add' },
+    { label: 'A new 55-inch TV (manufacturing)', c: 370, w: 0,      dir: 'add' },
     { label: 'A round-trip US cross-country flight', c: 1000, w: 0, dir: 'add' },
     { label: 'One transatlantic flight',        c: 1600, w: 5,      dir: 'add' },
     { label: 'A year of driving (12,000 mi)',   c: 4800, w: 50,     dir: 'add' },
