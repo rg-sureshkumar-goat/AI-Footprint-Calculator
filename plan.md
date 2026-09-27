@@ -143,7 +143,7 @@ Ticked at the user's direction on 2026-09-26 ("tick the four verification items"
 
 ### Delivery
 
-- [ ] Commit meaningful checkpoints and export the working chat transcripts
+- [x] Commit meaningful checkpoints and export the working chat transcripts. Ticked at the user's direction on 2026-09-26 ("tick the delivery items"): six checkpoint commits, and the research, specification, planning, and implementation transcripts with PDFs in `transcripts/`
 - [ ] Add the provided Project 2 debrief, complete it after verification, and export its transcript
 
 ## Revisions
