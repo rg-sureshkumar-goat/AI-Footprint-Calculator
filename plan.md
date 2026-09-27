@@ -69,10 +69,10 @@ Draft for the user's review. One checkpoint per build step (decided by the user 
 
 **Checkpoint 1. Foundation for the AI total**
 
-- [ ] Give tracker log entries a kind (prompt, image, session, digital activity); read entries without a kind as prompts
-- [ ] Add one shared function for the AI total (central, low, high) covering rows plus today's logged images and sessions, and an energy counterpart
-- [ ] Switch the calculator headline, running line, charts, tracker total, `trackerDayTotal` (budget), nav total, and report to that function
-- [ ] Agent confirms every figure on the page is unchanged before and after (default day and a sample log)
+- [x] Give tracker log entries a kind (prompt, image, session, digital activity); read entries without a kind as prompts
+- [x] Add one shared function for the AI total (central, low, high) covering rows plus today's logged images and sessions, and an energy counterpart
+- [x] Switch the calculator headline, running line, charts, tracker total, `trackerDayTotal` (budget), nav total, and report to that function
+- [x] Agent confirms every figure on the page is unchanged before and after (default day and a sample log). Done 2026-09-26: the page text, tooltips, AI totals, 40 days of tracker totals, energy, and the generated report were identical in all three cases (example day; a seeded log driving the page; the same log with "Use my log" off)
 - [ ] User verifies checkpoint 1; commit when asked
 
 **Checkpoint 2. Feature 1, image logging**

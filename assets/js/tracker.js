@@ -37,7 +37,7 @@
     useLog: true,
     model: 'claude-sonnet-4-6',
     size: 'chat',
-    today: [],      // [{ t: epoch ms, m: modelId, s: sizeId }]
+    today: [],      // [{ t: epoch ms, k: kind, m: modelId, s: sizeId }]; no k = prompt
   };
   AIPF.tracker = tracker;
 
@@ -72,12 +72,10 @@
   }
 
   // ---- Totals ----
-  // One entry's cost, in the metric asked for. Reads the same per-prompt figures
-  // as the calculator, so a logged prompt and a typed-in prompt always agree.
+  // One entry's cost, in the metric asked for. Reads the same shared figures
+  // as the calculator, so a logged entry and a typed-in prompt always agree.
   function entryCost(entry, metric) {
-    const model = AIPF.getModel(entry.m);
-    if (!model.sizes[entry.s]) return 0;
-    return AIPF.perPromptTriple(model, entry.s, metric)[0];
+    return AIPF.isAiEntry(entry) ? AIPF.entryTriple(entry, metric)[0] : 0;
   }
   function sumEntries(entries, metric) {
     let t = 0;
@@ -98,6 +96,7 @@
   function rowsFromLog() {
     const byKey = new Map();
     for (const e of tracker.today) {
+      if (AIPF.entryKind(e) !== 'prompt') continue;
       const k = e.m + '|' + e.s;
       if (!byKey.has(k)) byKey.set(k, { model: e.m, size: e.s, count: 0 });
       byKey.get(k).count++;
@@ -112,6 +111,9 @@
   // back to the original's example day until there is real usage to show.
   function isLogDriving() { return tracker.useLog && tracker.today.length > 0; }
   AIPF.trackerIsLogDriving = isLogDriving;
+  // Logged entries that are not prompts (images, sessions) reach the AI total
+  // only while the log drives the page; prompts arrive through the rows.
+  AIPF.aiLoggedEntries = () => (isLogDriving() ? tracker.today : []);
 
   // Push the log into shared state so every other panel reflects real usage.
   function syncRows() {
@@ -125,7 +127,7 @@
   // ---- Logging ----
   function logPrompt(modelId, sizeId, count) {
     const now = Date.now();
-    for (let i = 0; i < (count || 1); i++) tracker.today.push({ t: now, m: modelId, s: sizeId });
+    for (let i = 0; i < (count || 1); i++) tracker.today.push({ t: now, k: 'prompt', m: modelId, s: sizeId });
     saveToday();
     syncRows();
     AIPF.emitUpdate();

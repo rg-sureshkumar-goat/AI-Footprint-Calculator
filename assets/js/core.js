@@ -106,8 +106,10 @@
 
   // Mean, low, and high impact of one prompt. Carbon = electricity costed on the
   // selected region's grid + EcoLogits' (grid-independent) embodied hardware carbon.
+  // Energy (Wh) is available too, for the panels that show it beside the metric.
   function perPromptTriple(model, size, metric) {
     const s = model.sizes[size];
+    if (metric === 'energy') return [s.wh, s.whmin, s.whmax];
     if (metric === 'carbon') {
       const grid = AIPF.getLoc().grid; // g CO2e per kWh
       return [
@@ -122,6 +124,34 @@
 
   function totalPrompts() { let n = 0; for (const r of state.rows) n += r.count || 0; return n; }
 
+  // ---- Tracker log entries ----
+  // Each logged entry has a kind. Entries saved before kinds existed have none
+  // and are prompts. Only the AI kinds ever reach the AI total; digital
+  // activities belong to the separate digital-day total.
+  const AI_KINDS = ['prompt', 'image', 'session'];
+  const entryKind = (e) => e.k || 'prompt';
+  const isAiEntry = (e) => AI_KINDS.indexOf(entryKind(e)) !== -1;
+
+  // Mean, low, and high impact of one logged entry, in carbon, water, or energy.
+  function entryTriple(entry, metric) {
+    const kind = entryKind(entry);
+    if (kind === 'prompt') {
+      const model = AIPF.getModel(entry.m);
+      if (!model.sizes[entry.s]) return [0, 0, 0];
+      return perPromptTriple(model, entry.s, metric);
+    }
+    // Images (feature 1) and agent sessions (feature 2) are costed here once
+    // their figures are added; any other kind is not AI use.
+    return [0, 0, 0];
+  }
+
+  // Today's logged entries that count toward the AI total. The tracker
+  // replaces this while its log is driving the page.
+  AIPF.aiLoggedEntries = () => [];
+
+  // The AI total: the one place it is computed. Typed-in (or log-derived)
+  // prompt rows, plus today's logged entries that are not prompts, since
+  // logged prompts already reach the rows through the tracker.
   function aiDailyTriple(metric) {
     let a = 0, b = 0, c = 0;
     for (const r of state.rows) {
@@ -129,14 +159,15 @@
       const t = perPromptTriple(AIPF.getModel(r.model), r.size, metric);
       a += r.count * t[0]; b += r.count * t[1]; c += r.count * t[2];
     }
+    for (const e of AIPF.aiLoggedEntries()) {
+      if (entryKind(e) === 'prompt' || !isAiEntry(e)) continue;
+      const t = entryTriple(e, metric);
+      a += t[0]; b += t[1]; c += t[2];
+    }
     return [a, b, c];
   }
   const aiDaily = (metric) => aiDailyTriple(metric)[0];
-  function aiDailyEnergy() {
-    let t = 0;
-    for (const r of state.rows) if (r.count) t += r.count * AIPF.getModel(r.model).sizes[r.size].wh;
-    return t;
-  }
+  const aiDailyEnergy = () => aiDailyTriple('energy')[0];
 
   function dailyFootprint(metric) {
     const loc = AIPF.getLoc();
@@ -167,7 +198,8 @@
     return n;
   }
 
-  Object.assign(AIPF, { perPromptTriple, perPrompt, totalPrompts, aiDailyTriple, aiDaily,
+  Object.assign(AIPF, { perPromptTriple, perPrompt, totalPrompts, entryKind, isAiEntry,
+                        entryTriple, aiDailyTriple, aiDaily,
                         aiDailyEnergy, dailyFootprint, itemBase, isCodeRow, linesForSize,
                         dailyWords, dailyCodeLines });
 

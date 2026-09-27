@@ -289,15 +289,15 @@
   }
 
   function reportHTML() {
-    let rowsHtml = '', aiDay = 0, aiMin = 0, aiMax = 0, eD = 0, wDay = 0, wMin = 0, wMax = 0;
+    let rowsHtml = '';
+    const [aiDay, aiMin, aiMax] = AIPF.aiDailyTriple('carbon');
+    const [wDay, wMin, wMax] = AIPF.aiDailyTriple('water');
+    const eD = AIPF.aiDailyEnergy();
     for (const r of state.rows) {
       if (!r.count) continue;
       const md = AIPF.getModel(r.model);
-      const ct = AIPF.perPromptTriple(md, r.size, 'carbon');
+      const d = r.count * AIPF.perPromptTriple(md, r.size, 'carbon')[0];
       const wt = AIPF.perPromptTriple(md, r.size, 'water');
-      const d = r.count * ct[0];
-      aiDay += d; aiMin += r.count * ct[1]; aiMax += r.count * ct[2]; eD += r.count * md.sizes[r.size].wh;
-      wDay += r.count * wt[0]; wMin += r.count * wt[1]; wMax += r.count * wt[2];
       rowsHtml += '<tr><td>' + escXml(md.name) + '</td><td>' + escXml(AIPF.sizeLabel(r.model, AIPF.getSize(r.size))) + '</td><td class="n">' + r.count + '</td><td class="n">' + AIPF.fmtCarbon(d) + '</td><td class="n">' + AIPF.fmtWater(r.count * wt[0]) + '</td></tr>';
     }
     const aiYr = aiDay * DAYS, wYr = wDay * DAYS;
