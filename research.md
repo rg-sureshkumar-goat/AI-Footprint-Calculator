@@ -812,7 +812,7 @@ Reviewed by the user on 2026-09-26, who accepted the decisions below; the user d
 
 ### S59. Peng, Lin & Lee (2026)
 
-Added during the specification stage on 2026-09-26, at the user's direction, for use as a project-level example in feature 2. Not yet assessed by the user.
+Added during the specification stage on 2026-09-26, at the user's direction, for use as a project-level example in feature 2. Assessed by the user on 2026-09-26 ("Record S59-S80 as assessed"), who accepted the proposed decision below ("I accept all 22 proposed decision").
 
 - Citation: Peng, S.-W., Lin, Y.-H., & Lee, Y.-P. (2026). Inference Economics of Enterprise Coding Agents: A Case Study of Cloud vs. On-Premise LLMs. arXiv:2607.13080. <https://arxiv.org/abs/2607.13080>
 - Claim or figure: over one 28-day period (Period A), one developer using Claude Code with Claude Opus 4.7/4.8 on a production monorepo made 31,901 requests using 980,326 incremental (fresh) input tokens, 108,060,378 cache-creation tokens, 15,202,019,495 cache-read tokens, and 20,156,852 output tokens, 15,331,217,051 in total; 99.3% of input-side tokens were cache reads.
@@ -822,7 +822,7 @@ Added during the specification stage on 2026-09-26, at the user's direction, for
 
 ### S60. Spotify, Audio quality (support page)
 
-Added during the specification stage on 2026-09-26, at the user's direction, for music-streaming data use in feature 3. Not yet assessed by the user.
+Added during the specification stage on 2026-09-26, at the user's direction, for music-streaming data use in feature 3. Assessed by the user on 2026-09-26 ("Record S59-S80 as assessed"), who accepted the proposed decision below ("I accept all 22 proposed decision").
 
 - Citation: Spotify. Audio quality. *Spotify Support*. <https://support.spotify.com/us/article/audio-quality/> (accessed 2026-09-26).
 - Claim or figure: music quality settings are "equivalent to approximately" 24 kbit/s (Low), 96 kbit/s (Normal), 160 kbit/s (High), and 320 kbit/s (Very high); Lossless is up to 24-bit/44.1 kHz FLAC; the web player uses AAC at 256 kbit/s (Premium) or 128 kbit/s (Free). Converted by the project: about 11, 43, 72, and 144 MB per hour.
@@ -832,7 +832,7 @@ Added during the specification stage on 2026-09-26, at the user's direction, for
 
 ### S61. US EPA, ENERGY STAR Certified Displays dataset
 
-Added during the specification stage on 2026-09-26, at the user's direction, for gaming-PC monitor power in feature 3. Not yet assessed by the user.
+Added during the specification stage on 2026-09-26, at the user's direction, for gaming-PC monitor power in feature 3. Assessed by the user on 2026-09-26 ("Record S59-S80 as assessed"), who accepted the proposed decision below ("I accept all 22 proposed decision").
 
 - Citation: US Environmental Protection Agency. ENERGY STAR Certified Displays (dataset). *ENERGY STAR data portal*. <https://data.energystar.gov/Active-Specifications/ENERGY-STAR-Certified-Displays/qbg3-d468> (downloaded 2026-09-26).
 - Claim or figure: on-mode power of certified computer monitors. Summary calculated by the project from the raw data for 1,588 monitors with a screen size and on-mode power, certified from June 2016 to September 2026: median 14.2 W, 10th–90th percentile 10.0–29.0 W. By size: 21–25 in, median 12.6 W; 26–28 in, 16.9 W; 29–35 in, 28.2 W.
@@ -842,7 +842,7 @@ Added during the specification stage on 2026-09-26, at the user's direction, for
 
 ### S62. Microsoft, Xbox Series X Eco Profile (2023)
 
-Added during the specification stage on 2026-09-26, at the user's direction, for console manufacturing in feature 4. Not yet assessed by the user.
+Added during the specification stage on 2026-09-26, at the user's direction, for console manufacturing in feature 4. Assessed by the user on 2026-09-26 ("Record S59-S80 as assessed"), who accepted the proposed decision below ("I accept all 22 proposed decision").
 
 - Citation: Microsoft Corporation. (2023, October). *Xbox Series X Ecoprofile*. <https://download.microsoft.com/download/4/8/D/48D50344-33CD-4D9A-BA11-0C7DCA1A3948/EcoProfile_XboxSeries_X.pdf>
 - Claim or figure: full life-cycle carbon footprint 729 kgCO₂e: production 190 kg, transport 1.2 kg, product use 538 kg (five years), end of life under 0.1 kg; includes the console, cables, controller, and packaging (US configuration).
@@ -852,7 +852,7 @@ Added during the specification stage on 2026-09-26, at the user's direction, for
 
 ### S63. Hazas, Dalli, Menon, Abraham & Nordgren (2026)
 
-Added during the specification stage on 2026-09-26, at the user's direction, for gaming-PC manufacturing in feature 4. Not yet assessed by the user.
+Added during the specification stage on 2026-09-26, at the user's direction, for gaming-PC manufacturing in feature 4. Assessed by the user on 2026-09-26 ("Record S59-S80 as assessed"), who accepted the proposed decision below ("I accept all 22 proposed decision").
 
 - Citation: Hazas, M., Dalli, K. C., Menon, A., Abraham, B., & Nordgren, O. (2026). Hot Games: Towards a Holistic Assessment of the Planet Warming Emissions of Video Games based on 2024–2025 Data. arXiv:2608.19040 (LOCO 2026 workshop). <https://arxiv.org/abs/2608.19040>
 - Claim or figure: no LCA is available for gaming desktops; the authors use a Dell Vostro 3030 as a proxy, giving 112 kgCO₂e for manufacturing and transport (from a 168 kg total), and describe it as a conservative estimate at "the lower end of the gaming desktop range"; they state that Sony publishes no console manufacturing emissions and assume 200 kg for a PS5.
@@ -862,7 +862,7 @@ Added during the specification stage on 2026-09-26, at the user's direction, for
 
 ### S64. Dell, P2725H monitor Life Cycle Assessment (2024)
 
-Added during the specification stage on 2026-09-26, at the user's direction, for monitor manufacturing in feature 4. Not yet assessed by the user.
+Added during the specification stage on 2026-09-26, at the user's direction, for monitor manufacturing in feature 4. Assessed by the user on 2026-09-26 ("Record S59-S80 as assessed"), who accepted the proposed decision below ("I accept all 22 proposed decision").
 
 - Citation: Dell Technologies. (2024, March). *Life Cycle Assessment: P2725H*. <https://www.delltechnologies.com/asset/en-us/products/electronics-and-accessories/technical-support/p2725h-monitor-pcf-report.pdf>
 - Claim or figure: 27-inch monitor, total carbon footprint 194 kgCO₂e (EU baseline, excluding end-of-life credits), five-year lifetime; manufacturing breakdown by component (panel 60%).
@@ -872,7 +872,7 @@ Added during the specification stage on 2026-09-26, at the user's direction, for
 
 ### S65. Dell, S2721H monitor carbon footprint datasheet (2021)
 
-Added during the specification stage on 2026-09-26 as a disclosed alternative to S64. Not yet assessed by the user.
+Added during the specification stage on 2026-09-26 as a disclosed alternative to S64. Assessed by the user on 2026-09-26 ("Record S59-S80 as assessed"), who accepted the proposed decision below ("I accept all 22 proposed decision").
 
 - Citation: Dell Technologies. (2021, August). *Dell S2721H Monitor: Estimated product carbon footprint*. <https://www.delltechnologies.com/asset/en-us/products/electronics-and-accessories/technical-support/dell-s2721h-monitor-pcf-datasheet.pdf>
 - Claim or figure: 27-inch monitor, 523 ± 100 kgCO₂e; manufacturing 63.9%, use 28.1%, transportation 7.6%, end of life 0.4%, implying about 334 kg from manufacturing (derived).
@@ -882,7 +882,7 @@ Added during the specification stage on 2026-09-26 as a disclosed alternative to
 
 ### S66. Barlow & Durrell, University of Cambridge IfM (2019)
 
-Added during the specification stage on 2026-09-26 as background for console manufacturing. Not yet assessed by the user.
+Added during the specification stage on 2026-09-26 as background for console manufacturing. Assessed by the user on 2026-09-26 ("Record S59-S80 as assessed"), who accepted the proposed decision below ("I accept all 22 proposed decision").
 
 - Citation: Institute for Manufacturing, University of Cambridge. (2019, December). The environmental impact of a PlayStation 4. <https://www.ifm.eng.cam.ac.uk/insights/sustainability/the-environmental-impact-of-a-playstation-4/>
 - Claim or figure: the production and transportation of one PS4 emits the equivalent of 89 kg of carbon dioxide, estimated by Claire Barlow and John Durrell from a physical teardown.
@@ -892,7 +892,7 @@ Added during the specification stage on 2026-09-26 as background for console man
 
 ### S67. Mekonnen & Hoekstra (2011)
 
-Added during the specification stage on 2026-09-26 for feature 5's water comparisons. Not yet assessed by the user.
+Added during the specification stage on 2026-09-26 for feature 5's water comparisons. Assessed by the user on 2026-09-26 ("Record S59-S80 as assessed"), who accepted the proposed decision below ("I accept all 22 proposed decision").
 
 - Citation: Mekonnen, M. M., & Hoekstra, A. Y. (2011). The green, blue and grey water footprint of crops and derived crop products. *Hydrology and Earth System Sciences*, 15, 1577–1600. <https://doi.org/10.5194/hess-15-1577-2011>
 - Claim or figure: global average blue water footprints, 1996–2005 (Table 3, m³/ton = L/kg): roasted coffee 139; wheat bread 301; husked (brown) rice 443; avocados 283; shelled almonds 3,816. A cup of coffee (7 g roasted) has a total footprint of about 130 L.
@@ -902,7 +902,7 @@ Added during the specification stage on 2026-09-26 for feature 5's water compari
 
 ### S68. Mekonnen & Hoekstra (2012)
 
-Added during the specification stage on 2026-09-26 for feature 5's water comparisons. Not yet assessed by the user.
+Added during the specification stage on 2026-09-26 for feature 5's water comparisons. Assessed by the user on 2026-09-26 ("Record S59-S80 as assessed"), who accepted the proposed decision below ("I accept all 22 proposed decision").
 
 - Citation: Mekonnen, M. M., & Hoekstra, A. Y. (2012). A global assessment of the water footprint of farm animal products. *Ecosystems*, 15, 401–415. <https://doi.org/10.1007/s10021-011-9517-8>; PDF: <https://waterfootprint.org/media/downloads/Mekonnen-Hoekstra-2012-WaterFootprintFarmAnimalProducts.pdf>
 - Claim or figure: weighted global average blue water footprints (Table 1, m³/ton = L/kg): beef 550 (total 15,415), egg 244 (total 3,265), milk 86 (total 1,020). US values: beef 525, egg 130, milk 60.
@@ -912,7 +912,7 @@ Added during the specification stage on 2026-09-26 for feature 5's water compari
 
 ### S69. US Energy Information Administration, household electricity FAQ
 
-Added during the specification stage on 2026-09-26. Not yet assessed by the user.
+Added during the specification stage on 2026-09-26. Assessed by the user on 2026-09-26 ("Record S59-S80 as assessed"), who accepted the proposed decision below ("I accept all 22 proposed decision").
 
 - Citation: US EIA. How much electricity does an American home use? <https://www.eia.gov/tools/faqs/faq.php?id=97>
 - Claim or figure: in 2022 the average US residential customer bought 10,791 kWh, about 899 kWh per month (about 29.6 kWh per day, derived).
@@ -922,7 +922,7 @@ Added during the specification stage on 2026-09-26. Not yet assessed by the user
 
 ### S70. Chapagain, Hoekstra, Savenije & Gautam (2005)
 
-Added during the specification stage on 2026-09-26 for feature 5's water comparisons. Not yet assessed by the user.
+Added during the specification stage on 2026-09-26 for feature 5's water comparisons. Assessed by the user on 2026-09-26 ("Record S59-S80 as assessed"), who accepted the proposed decision below ("I accept all 22 proposed decision").
 
 - Citation: Chapagain, A. K., Hoekstra, A. Y., Savenije, H. H. G., & Gautam, R. (2005). *The water footprint of cotton consumption* (Value of Water Research Report Series No. 18). UNESCO-IHE. <https://waterfootprint.org/resources/Report18.pdf> (published in revised form in *Ecological Economics*, 60(1), 186–203, 2006).
 - Claim or figure: global average virtual water content of final cotton textile 9,359 m³/ton, of which blue 4,917 and green 4,443 (Table 3.5; dilution water excluded); worldwide cotton consumption's footprint is about 42% blue, 39% green, and 19% dilution water.
@@ -932,7 +932,7 @@ Added during the specification stage on 2026-09-26 for feature 5's water compari
 
 ### S71. van Oel & Hoekstra (2010)
 
-Added during the specification stage on 2026-09-26 to record why a comparison item was removed. Not yet assessed by the user.
+Added during the specification stage on 2026-09-26 to record why a comparison item was removed. Assessed by the user on 2026-09-26 ("Record S59-S80 as assessed"), who accepted the proposed decision below ("I accept all 22 proposed decision").
 
 - Citation: van Oel, P. R., & Hoekstra, A. Y. (2010). *The green and blue water footprint of paper products: methodological considerations and quantification* (Value of Water Research Report Series No. 46). UNESCO-IHE. <https://waterfootprint.org/resources/Report46-WaterFootprintPaper.pdf>
 - Claim or figure: printing and writing paper has a combined green and blue footprint of 300–2,600 m³/ton (2–13 L per A4 sheet); the authors determine green and blue jointly for the forestry stage and state that more study is needed to separate them; the US industrial stage uses about 5.5 m³/ton.
@@ -942,7 +942,7 @@ Added during the specification stage on 2026-09-26 to record why a comparison it
 
 ### S72. US EPA WaterSense, outdoor water use
 
-Added during the specification stage on 2026-09-26 to record why comparison items were removed. Not yet assessed by the user.
+Added during the specification stage on 2026-09-26 to record why comparison items were removed. Assessed by the user on 2026-09-26 ("Record S59-S80 as assessed"), who accepted the proposed decision below ("I accept all 22 proposed decision").
 
 - Citation: US EPA. Outdoor Water Use in the United States. *WaterSense*. <https://www.epa.gov/watersense/outdoors>
 - Claim or figure: residential outdoor water use in the US accounts for nearly 8 billion gallons a day, mainly landscape irrigation; the average household uses more water outdoors than for showering and washing clothes combined. No per-lawn or per-household yearly figure is given; the landscaping-tips page cited by the calculator gives none either.
@@ -952,7 +952,7 @@ Added during the specification stage on 2026-09-26 to record why comparison item
 
 ### S73. Poore & Nemecek (2018), via Our World in Data
 
-Added during the specification stage on 2026-09-26 for feature 5's carbon comparisons. Not yet assessed by the user.
+Added during the specification stage on 2026-09-26 for feature 5's carbon comparisons. Assessed by the user on 2026-09-26 ("Record S59-S80 as assessed"), who accepted the proposed decision below ("I accept all 22 proposed decision").
 
 - Citation: Poore, J., & Nemecek, T. (2018). Reducing food's environmental impacts through producers and consumers. *Science*, 360(6392), 987–992. <https://doi.org/10.1126/science.aaq0216>; data as published by Our World in Data, "Greenhouse gas emissions per kilogram of food product": <https://ourworldindata.org/grapher/ghg-per-kg-poore>
 - Claim or figure: kgCO₂e per kg of food product (2010 data): beef (beef herd) 99.48; beef (dairy herd) 33.3; coffee 28.53; eggs 4.67; milk 3.15.
@@ -962,7 +962,7 @@ Added during the specification stage on 2026-09-26 for feature 5's carbon compar
 
 ### S74. US EPA, Greenhouse Gas Emissions from a Typical Passenger Vehicle
 
-Added during the specification stage on 2026-09-26. Not yet assessed by the user.
+Added during the specification stage on 2026-09-26. Assessed by the user on 2026-09-26 ("Record S59-S80 as assessed"), who accepted the proposed decision below ("I accept all 22 proposed decision").
 
 - Citation: US EPA. Greenhouse Gas Emissions from a Typical Passenger Vehicle (last updated June 3, 2026). <https://www.epa.gov/greenvehicles/greenhouse-gas-emissions-typical-passenger-vehicle>
 - Claim or figure: about 400 g CO₂ per mile; about 11,500 miles and 4.6 metric tons of CO₂ per year; tailpipe CO₂ only, with fuel production excluded.
@@ -972,7 +972,7 @@ Added during the specification stage on 2026-09-26. Not yet assessed by the user
 
 ### S75. Wynes & Nicholas (2017)
 
-Added during the specification stage on 2026-09-26. Not yet assessed by the user.
+Added during the specification stage on 2026-09-26. Assessed by the user on 2026-09-26 ("Record S59-S80 as assessed"), who accepted the proposed decision below ("I accept all 22 proposed decision").
 
 - Citation: Wynes, S., & Nicholas, K. A. (2017). The climate mitigation gap: education and government recommendations miss the most effective individual actions. *Environmental Research Letters*, 12(7), 074024. <https://doi.org/10.1088/1748-9326/aa7541>
 - Claim or figure: living car-free saves 2.4 tCO₂e per year; avoiding one transatlantic round-trip flight 1.6 t; a plant-based diet 0.8 t per year; hang-drying clothes 0.21 t; recycling 0.21 t; electric cars about 1.15 t; light-bulb upgrades not separately quantified.
@@ -982,7 +982,7 @@ Added during the specification stage on 2026-09-26. Not yet assessed by the user
 
 ### S76. Ivanova et al. (2020)
 
-Added during the specification stage on 2026-09-26. Not yet assessed by the user.
+Added during the specification stage on 2026-09-26. Assessed by the user on 2026-09-26 ("Record S59-S80 as assessed"), who accepted the proposed decision below ("I accept all 22 proposed decision").
 
 - Citation: Ivanova, D., Barrett, J., Wiedenhofer, D., Macura, B., Callaghan, M., & Creutzig, F. (2020). Quantifying the potential for climate change mitigation of consumption options. *Environmental Research Letters*, 15(9), 093001. <https://doi.org/10.1088/1748-9326/ab8589>
 - Claim or figure: mean mitigation potential in tCO₂e per person per year: renewable electricity 1.5 (0.3–2.5); heat pump 0.8; renovation 0.9; battery electric vehicle 2.0 (−1.9 to 5.4); hybrid 0.7 (−0.2 to 3.1); car-free living, median 2.0 (0.6–3.6); vegan diet 0.9 (median 0.8).
@@ -992,7 +992,7 @@ Added during the specification stage on 2026-09-26. Not yet assessed by the user
 
 ### S77. Founders Pledge, Climate & Lifestyle Report (2020)
 
-Added during the specification stage on 2026-09-26. Not yet assessed by the user.
+Added during the specification stage on 2026-09-26. Assessed by the user on 2026-09-26 ("Record S59-S80 as assessed"), who accepted the proposed decision below ("I accept all 22 proposed decision").
 
 - Citation: Ackva, J. (2020, February 10). *Climate & Lifestyle Report*. Founders Pledge. <https://www.founderspledge.com/research/climate-and-lifestyle-report>
 - Claim or figure: one round-trip transatlantic flight contributes 1.6 t CO₂; car-free living saves about 2.4 t; an electric car cuts driving emissions from 2.4 to 1.4 t.
@@ -1002,7 +1002,7 @@ Added during the specification stage on 2026-09-26. Not yet assessed by the user
 
 ### S78. Wells, Boucher, Laurent & Villeneuve (2012)
 
-Added during the specification stage on 2026-09-26. Not yet assessed by the user.
+Added during the specification stage on 2026-09-26. Assessed by the user on 2026-09-26 ("Record S59-S80 as assessed"), who accepted the proposed decision below ("I accept all 22 proposed decision").
 
 - Citation: Wells, J.-R., Boucher, J.-F., Laurent, A.-B., & Villeneuve, C. (2012). Carbon Footprint Assessment of a Paperback Book. *Journal of Industrial Ecology*, 16(2). <https://doi.org/10.1111/j.1530-9290.2011.00414.x>
 - Claim or figure: 2.71 kg CO₂-eq per paperback book, cradle to gate (400,000 books, 1,084 t in total).
@@ -1012,7 +1012,7 @@ Added during the specification stage on 2026-09-26. Not yet assessed by the user
 
 ### S79. Levi Strauss & Co., jeans life-cycle assessment (2015)
 
-Added during the specification stage on 2026-09-26. Not yet assessed by the user.
+Added during the specification stage on 2026-09-26. Assessed by the user on 2026-09-26 ("Record S59-S80 as assessed"), who accepted the proposed decision below ("I accept all 22 proposed decision").
 
 - Citation: Levi Strauss & Co. (2015). *The Life Cycle of a Jean: Understanding the environmental impact of a pair of Levi's® 501® jeans* (full LCA results deck). <https://www.levistrauss.com/wp-content/uploads/2015/03/Full-LCA-Results-Deck-FINAL.pdf>
 - Claim or figure: 33.4 kg CO₂e and 3,781 L of water consumption over the full life cycle of one pair of 501 jeans.
@@ -1022,7 +1022,7 @@ Added during the specification stage on 2026-09-26. Not yet assessed by the user
 
 ### S80. Hess & Williams, The Conversation (2023)
 
-Added during the specification stage on 2026-09-26 to explain the calculator's earlier beef water figure and show the range. Not yet assessed by the user.
+Added during the specification stage on 2026-09-26 to explain the calculator's earlier beef water figure and show the range. Assessed by the user on 2026-09-26 ("Record S59-S80 as assessed"), who accepted the proposed decision below ("I accept all 22 proposed decision").
 
 - Citation: Hess, T., & Williams, A. (2023, June 26). Here's how much water it takes to make a serving of beef – and why where it comes from is so important. *The Conversation*. <https://theconversation.com/heres-how-much-water-it-takes-to-make-a-serving-of-beef-and-why-where-it-comes-from-is-so-important-208155>
 - Claim or figure: beef's total water footprint is more than 15,000 L/kg; blue water is about 67 L/kg for UK beef and nearly 2,000 L/kg for US irrigated systems; about 33 L of blue water for a 375 g serving of English topside.
