@@ -36,8 +36,6 @@
       {
         id: 'eng', name: 'Engineering', headcount: 380,
         profile: [
-          { model: 'claude-opus-4-8',        size: 'agent',   count: 1.1 },
-          { model: 'claude-sonnet-4-6',      size: 'agent',   count: 2.4 },
           { model: 'claude-sonnet-4-6',      size: 'chat',    count: 22 },
           { model: 'gpt-5.5',                size: 'chat',    count: 9 },
           { model: 'gpt-5.4-mini',           size: 'email',   count: 6 },
@@ -46,7 +44,6 @@
       {
         id: 'data', name: 'Data Science', headcount: 95,
         profile: [
-          { model: 'claude-opus-4-8',        size: 'agent',   count: 0.6 },
           { model: 'gpt-5.5',                size: 'report',  count: 2.5 },
           { model: 'claude-sonnet-4-6',      size: 'chat',    count: 18 },
           { model: 'gemini-3.1-pro-preview', size: 'summary', count: 7 },

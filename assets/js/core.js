@@ -12,8 +12,7 @@
   'use strict';
 
   const { MODELS, SIZES, LOCATIONS, HOMES, DRIVING, DIETS, FLYING,
-          SIZE_LABEL_OVERRIDES, GAL_TO_L, DAYS,
-          TOKENS_PER_WORD, TOKENS_PER_LINE, CODE_FRACTION } = AIPF;
+          SIZE_LABEL_OVERRIDES, GAL_TO_L, DAYS } = AIPF;
 
   let uidSeq = 1;
   AIPF.nextUid = () => uidSeq++;
@@ -28,6 +27,10 @@
   AIPF.getModel = (id) => MODELS.find((m) => m.id === id) || MODELS[0];
   AIPF.getLoc = () => LOCATIONS.find((x) => x.id === state.loc) || LOCATIONS[0];
   AIPF.getSize = (id) => SIZES.find((s) => s.id === id) || SIZES[0];
+  // False for sizes that no longer exist, such as the removed 'agent' size, so
+  // old log entries and rows carrying one add nothing to any total.
+  const isSize = (id) => SIZES.some((s) => s.id === id);
+  AIPF.isSize = isSize;
 
   AIPF.sizeLabel = function (modelId, s) {
     const o = SIZE_LABEL_OVERRIDES[modelId];
@@ -122,7 +125,7 @@
   }
   const perPrompt = (modelId, sizeId, metric) => perPromptTriple(AIPF.getModel(modelId), sizeId, metric)[0];
 
-  function totalPrompts() { let n = 0; for (const r of state.rows) n += r.count || 0; return n; }
+  function totalPrompts() { let n = 0; for (const r of state.rows) if (isSize(r.size)) n += r.count || 0; return n; }
 
   // ---- Tracker log entries ----
   // Each logged entry has a kind. Entries saved before kinds existed have none
@@ -147,18 +150,53 @@
   // One generated image, from the general evidence range (no model or settings).
   const imageTriple = (metric) => fromEnergy([AIPF.IMAGE.wh, AIPF.IMAGE.whmin, AIPF.IMAGE.whmax], metric);
 
+  // ---- Agent sessions ----
+  // A session is token counts by type: fresh input, cache writes, cache reads,
+  // and output, plus the model that produced the output.
+  const tok = (v) => (isFinite(v) && v > 0 ? Number(v) : 0);
+  const trip = (k, r) => [k * r.wh, k * r.whmin, k * r.whmax];
+  const sum3 = (a, b) => [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
+
+  // Energy (Wh) of each part of a session, each as [central, low, high].
+  // Output uses the model's EcoLogits figure per output token; fresh input and
+  // cache writes share one flat rate, cache reads another, for every model.
+  function sessionParts(s) {
+    const agent = AIPF.getModel(s.m).sizes.agent;
+    return {
+      output:    trip(tok(s.out) / AIPF.AGENT_OUTPUT_TOKENS, agent),
+      input:     trip((tok(s.fresh) + tok(s.write)) / 10000, AIPF.SESSION_INPUT),
+      cacheRead: trip(tok(s.read) / 10000, AIPF.SESSION_CACHE_READ),
+    };
+  }
+
+  // Carbon: all electricity on the selected grid, plus EcoLogits' embodied
+  // carbon for the output tokens only (no source gives one for input). Water:
+  // EcoLogits' own water for the output, and the derived data-centre factor
+  // for the input side's energy.
+  function sessionTriple(s, metric) {
+    const p = sessionParts(s);
+    const inSide = sum3(p.input, p.cacheRead);
+    if (metric === 'energy') return sum3(p.output, inSide);
+    const agent = AIPF.getModel(s.m).sizes.agent;
+    const k = tok(s.out) / AIPF.AGENT_OUTPUT_TOKENS;
+    if (metric === 'carbon') {
+      const emb = [agent.emb, agent.embmin, agent.embmax];
+      return fromEnergy(sum3(p.output, inSide), 'carbon').map((c, i) => c + k * emb[i]);
+    }
+    const ml = [agent.ml, agent.mlmin, agent.mlmax];
+    return fromEnergy(inSide, 'water').map((w, i) => w + (k * ml[i]) / 1000);
+  }
+
   // Mean, low, and high impact of one logged entry, in carbon, water, or energy.
   function entryTriple(entry, metric) {
     const kind = entryKind(entry);
     if (kind === 'prompt') {
-      const model = AIPF.getModel(entry.m);
-      if (!model.sizes[entry.s]) return [0, 0, 0];
-      return perPromptTriple(model, entry.s, metric);
+      if (!isSize(entry.s)) return [0, 0, 0];
+      return perPromptTriple(AIPF.getModel(entry.m), entry.s, metric);
     }
     if (kind === 'image') return imageTriple(metric);
-    // Agent sessions (feature 2) are costed here once their figures are added;
-    // any other kind is not AI use.
-    return [0, 0, 0];
+    if (kind === 'session') return sessionTriple(entry, metric);
+    return [0, 0, 0];  // not AI use
   }
 
   // Today's logged entries that count toward the AI total. The tracker
@@ -171,7 +209,7 @@
   function aiDailyTriple(metric) {
     let a = 0, b = 0, c = 0;
     for (const r of state.rows) {
-      if (!r.count) continue;
+      if (!r.count || !isSize(r.size)) continue;
       const t = perPromptTriple(AIPF.getModel(r.model), r.size, metric);
       a += r.count * t[0]; b += r.count * t[1]; c += r.count * t[2];
     }
@@ -198,28 +236,16 @@
   }
   function itemBase(item, metric) { return metric === 'carbon' ? item.c * 1000 : item.w * GAL_TO_L; }
 
-  // An "agent" row is real code only when the model has not relabelled that size.
-  function isCodeRow(row) {
-    if (row.size !== 'agent') return false;
-    const o = SIZE_LABEL_OVERRIDES[row.model];
-    return !(o && o.agent);
-  }
-  function linesForSize(s) { return Math.round((s.w / TOKENS_PER_WORD) * CODE_FRACTION / TOKENS_PER_LINE); }
   function dailyWords() {
     let n = 0;
-    for (const r of state.rows) if (r.count && !isCodeRow(r)) n += r.count * AIPF.getSize(r.size).w;
-    return n;
-  }
-  function dailyCodeLines() {
-    let n = 0;
-    for (const r of state.rows) if (r.count && isCodeRow(r)) n += r.count * linesForSize(AIPF.getSize(r.size));
+    for (const r of state.rows) if (r.count && isSize(r.size)) n += r.count * AIPF.getSize(r.size).w;
     return n;
   }
 
   Object.assign(AIPF, { perPromptTriple, perPrompt, totalPrompts, entryKind, isAiEntry,
-                        fromEnergy, imageTriple, entryTriple, aiDailyTriple, aiDaily, aiLoggedCount,
-                        aiDailyEnergy, dailyFootprint, itemBase, isCodeRow, linesForSize,
-                        dailyWords, dailyCodeLines });
+                        fromEnergy, imageTriple, sessionParts, sessionTriple, entryTriple,
+                        aiDailyTriple, aiDaily, aiLoggedCount, aiDailyEnergy, dailyFootprint,
+                        itemBase, dailyWords });
 
   // ---- DOM helpers ----
   AIPF.el = function (tag, cls, html) {

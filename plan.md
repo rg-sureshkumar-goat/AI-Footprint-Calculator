@@ -87,13 +87,13 @@ Draft for the user's review. One checkpoint per build step (decided by the user 
 
 **Checkpoint 3. Feature 2, agent sessions and projects**
 
-- [ ] Add the input rates (fresh input and cache writes 2.1, 1–4 Wh; cache reads 0.39, 0–4 Wh per 10,000 tokens) and per-model output energy from EcoLogits' agent figures ÷ 100,000
-- [ ] Replace the tracker's "Agent session" quick button with a form: model, four token fields, optional project name, and the S8 reference note
-- [ ] Show each session's energy, carbon, and water with range and the output / input / cache-read breakdown; carbon adds EcoLogits embodied carbon for output only; water as specified
-- [ ] Add the project view (tagged sessions summed across days) and the project estimate form pre-filled with S59, shown beside the AI total and never added to it
-- [ ] Remove the "agent" size from `SIZES`, the calculator menus, the tracker, and `team-data.js`; ignore old "agent" log entries; keep old share links reading the old size positions
-- [ ] Add the limitations notes (S7, S8, S9, S10, S11, S46, S59) and the methodology text
-- [ ] Agent runs feature 2 acceptance checks 1–7
+- [x] Add the input rates (fresh input and cache writes 2.1, 1–4 Wh; cache reads 0.39, 0–4 Wh per 10,000 tokens) and per-model output energy from EcoLogits' agent figures ÷ 100,000
+- [x] Replace the tracker's "Agent session" quick button with a form: model, four token fields, optional project name, and the S8 reference note
+- [x] Show each session's energy, carbon, and water with range and the output / input / cache-read breakdown; carbon adds EcoLogits embodied carbon for output only; water as specified
+- [x] Add the project view (tagged sessions summed across days) and the project estimate form pre-filled with S59, shown beside the AI total and never added to it
+- [x] Remove the "agent" size from `SIZES`, the calculator menus, the tracker, and `team-data.js`; ignore old "agent" log entries; keep old share links reading the old size positions. The "lines of code" estimate, which applied only to "agent" rows, went with it
+- [x] Add the limitations notes (S7, S8, S9, S10, S11, S46, S59) and the methodology text
+- [x] Agent runs feature 2 acceptance checks 1–7. Done 2026-09-26: all seven passed in the preview (session 46.65 Wh, 17.69–238.2; 18.18 g, 7.17–90.97; 201.7 mL, 60.8–1,136; breakdown 22.95 / 4.2 / 19.5 Wh; S59 estimate 708 kWh, 271 kg, 3,352 L with matching ranges); feature 1 checks re-run; checked at phone width and in dark mode
 - [ ] User verifies checkpoint 3; commit when asked
 
 **Checkpoint 4. Feature 3, digital day builder**

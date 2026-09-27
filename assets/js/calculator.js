@@ -10,7 +10,7 @@
 
   const { MODELS, SIZES, LOCATIONS, HOMES, DRIVING, DIETS, FLYING, COUNTRY_DIET,
           DAILY_ITEMS, ANNUAL_ITEMS, DAILY_WATER_ITEMS, ANNUAL_WATER_ITEMS,
-          DEFAULT_ROWS, REPORT_REFS, GAL_TO_L, DAYS, WPM } = AIPF;
+          DEFAULT_ROWS, REPORT_REFS, GAL_TO_L, DAYS, WPM, LEGACY_SIZE_IDS } = AIPF;
   const { el, option, esc, escXml, state } = AIPF;
 
   let root = null;
@@ -23,6 +23,7 @@
     const p = new URLSearchParams();
     p.set('k', state.metric); p.set('l', state.loc); p.set('h', state.home);
     p.set('v', state.drive); p.set('d', state.diet); p.set('f', state.fly); p.set('r', r);
+    p.set('sv', '2');  // size positions follow the current SIZES list
     return location.origin + location.pathname + '#' + p.toString();
   }
   function readURL() {
@@ -38,11 +39,15 @@
       const f = p.get('f'); if (f && FLYING.some((x) => x.id === f)) state.fly = f;
       const r = p.get('r');
       if (r) {
+        // Links made before the 'agent' size was removed carry no 'sv' and use
+        // the old positions; an old 'agent' row is skipped.
+        const sizeIds = p.get('sv') === '2' ? SIZES.map((s) => s.id) : LEGACY_SIZE_IDS;
         const rows = [];
         for (const part of r.split('.')) {
           const a = part.split('-').map(Number);
-          if (MODELS[a[0]] && SIZES[a[1]] && a[2] >= 0) {
-            rows.push({ uid: AIPF.nextUid(), model: MODELS[a[0]].id, size: SIZES[a[1]].id, count: Math.min(100000, a[2]) });
+          const size = sizeIds[a[1]];
+          if (MODELS[a[0]] && size && AIPF.isSize(size) && a[2] >= 0) {
+            rows.push({ uid: AIPF.nextUid(), model: MODELS[a[0]].id, size: size, count: Math.min(100000, a[2]) });
           }
         }
         if (rows.length) state.rows = rows;
@@ -160,12 +165,16 @@
   // ---- Outputs ----
   function renderRunning() {
     const box = root.querySelector('#aipf-running');
-    const n = AIPF.totalPrompts(), imgs = AIPF.aiLoggedCount('image');
+    const n = AIPF.totalPrompts(), imgs = AIPF.aiLoggedCount('image'), sess = AIPF.aiLoggedCount('session');
     const cD = AIPF.aiDaily('carbon'), wD = AIPF.aiDaily('water'), eD = AIPF.aiDailyEnergy();
-    if (n <= 0 && imgs <= 0) { box.innerHTML = 'Nothing entered yet.'; return; }
+    if (n <= 0 && imgs <= 0 && sess <= 0) { box.innerHTML = 'Nothing entered yet.'; return; }
+    const count = (k, word) => '<b>' + k.toLocaleString('en-US') + '</b> ' + word + (k === 1 ? '' : 's');
+    const parts = [count(n, 'prompt')];
+    if (imgs) parts.push(count(imgs, 'generated image'));
+    if (sess) parts.push(count(sess, 'agent session'));
+    const list = parts.length > 1 ? parts.slice(0, -1).join(', ') + ' and ' + parts[parts.length - 1] : parts[0];
     box.innerHTML =
-      'That is <b>' + n.toLocaleString('en-US') + '</b> prompts' +
-      (imgs ? ' and <b>' + imgs.toLocaleString('en-US') + '</b> generated image' + (imgs === 1 ? '' : 's') : '') + ' a day, costing about <b>' + AIPF.fmtCarbon(cD) +
+      'That is ' + list + ' a day, costing about <b>' + AIPF.fmtCarbon(cD) +
       '</b> and <b>' + AIPF.fmtWater(wD) + '</b> (' + AIPF.fmtEnergy(eD) + '). Over a year, <b>' + AIPF.fmtCarbon(cD * DAYS) +
       '</b> and <b>' + AIPF.fmtWater(wD * DAYS) + '</b>.';
   }
@@ -193,20 +202,11 @@
 
   function renderWords() {
     const box = root.querySelector('#aipf-words');
-    const wd = AIPF.dailyWords(), cd = AIPF.dailyCodeLines();
-    if (wd <= 0 && cd <= 0) { box.innerHTML = 'Add some use to see how much your AI is writing.'; return; }
-    let html = '';
-    if (wd > 0) {
-      const wy = wd * DAYS;
-      html += 'About <b>' + AIPF.fmtWords(wd) + ' words a day</b>, roughly <b>' + AIPF.fmtWords(wy) + ' a year</b>. At the average American reading pace of ' + WPM +
-        ' words a minute, that is <b>' + AIPF.fmtReadingTime(wd / WPM) + '</b> of reading a day, or <b>' + AIPF.fmtReadingTime(wy / WPM) + '</b> nonstop across the year.';
-    } else {
-      html += 'Almost all of your use is code, not prose to read.';
-    }
-    if (cd > 0) {
-      const cy = cd * DAYS;
-      html += '<span class="aipf-words-code">It also writes about <b>' + AIPF.fmtWords(cd) + ' lines of code a day</b>, roughly <b>' + AIPF.fmtWords(cy) + '</b> a year.</span>';
-    }
+    const wd = AIPF.dailyWords();
+    if (wd <= 0) { box.innerHTML = 'Add some use to see how much your AI is writing.'; return; }
+    const wy = wd * DAYS;
+    let html = 'About <b>' + AIPF.fmtWords(wd) + ' words a day</b>, roughly <b>' + AIPF.fmtWords(wy) + ' a year</b>. At the average American reading pace of ' + WPM +
+      ' words a minute, that is <b>' + AIPF.fmtReadingTime(wd / WPM) + '</b> of reading a day, or <b>' + AIPF.fmtReadingTime(wy / WPM) + '</b> nonstop across the year.';
     const miles = Math.round(AIPF.aiDaily('carbon') * DAYS / 400); // EPA ~400 g CO2 per vehicle-mile
     html += '<span class="aipf-words-miles">If you use chatbots this much every day, your annual use emits as much as driving the average gas car <b>' + miles.toLocaleString('en-US') + '</b> mile' + (miles === 1 ? '' : 's') + ' once.</span>';
     box.innerHTML = html;
@@ -307,6 +307,11 @@
       rowsHtml += '<tr><td>Generated images (logged)</td><td>One general range</td><td class="n">' + imgs + '</td><td class="n">' +
         AIPF.fmtCarbon(imgs * AIPF.imageTriple('carbon')[0]) + '</td><td class="n">' + AIPF.fmtWater(imgs * AIPF.imageTriple('water')[0]) + '</td></tr>';
     }
+    const sessions = AIPF.aiLoggedEntries().filter((e) => AIPF.entryKind(e) === 'session');
+    for (const e of sessions) {
+      rowsHtml += '<tr><td>' + escXml(AIPF.getModel(e.m).name) + '</td><td>Agent session (logged)' + (e.p ? ', ' + escXml(e.p) : '') + '</td><td class="n">1</td><td class="n">' +
+        AIPF.fmtCarbon(AIPF.sessionTriple(e, 'carbon')[0]) + '</td><td class="n">' + AIPF.fmtWater(AIPF.sessionTriple(e, 'water')[0]) + '</td></tr>';
+    }
     const aiYr = aiDay * DAYS, wYr = wDay * DAYS;
     const day = AIPF.dailyFootprint('carbon');
     const pctStr = AIPF.fmtPct(day > 0 ? (aiDay / day) * 100 : 0);
@@ -347,6 +352,8 @@
       '<p class="muted">Per-prompt figures come from the EcoLogits model' + fn(1) + '; the electricity is costed on the ' + escXml(loc.label) + ' grid' + fn(2) + ', and EcoLogits’ embodied hardware emissions are kept.</p>' +
       (imgs ? '<p class="muted">Each generated image is about ' + AIPF.fmtEnergy(AIPF.IMAGE.wh) + ' (range ' + AIPF.fmtEnergy(AIPF.IMAGE.whmin) + ' to ' + AIPF.fmtEnergy(AIPF.IMAGE.whmax) +
         '), from open models on research hardware, because no commercial image tool publishes figures' + fn(11) + fn(12) + '. Image carbon is that electricity on the same grid, with no embodied carbon; image water is derived at 4.88 L/kWh, the US data-centre average' + fn(13) + '.</p>' : '') +
+      (sessions.length ? '<p class="muted">Agent sessions cost output tokens with the model’s EcoLogits figure' + fn(1) + ', fresh input and cache writes at about 2.1 Wh per 10,000 tokens (range 1–4)' + fn(14) + fn(16) +
+        ', and cache reads at about 0.39 Wh per 10,000 (range 0–4, this calculator’s own bounded estimate; no measurement exists)' + fn(15) + '. Input-side water is derived at 4.88 L/kWh' + fn(13) + '.</p>' : '') +
       '<h2>2. My AI carbon</h2>' +
       '<p>Across these prompts, my AI use comes to about <strong>' + AIPF.fmtCarbon(aiDay) + ' per day</strong> (range ' + AIPF.fmtCarbon(aiMin) + ' to ' + AIPF.fmtCarbon(aiMax) + '), or <strong>' + AIPF.fmtCarbon(aiYr) + ' per year</strong>, drawing about ' + AIPF.fmtEnergy(eD) + ' of electricity a day.' + fn(1) + fn(2) + ' The range is EcoLogits’ 95% interval, mostly uncertainty in the parameter counts of closed models.' + fn(1) + '</p>' +
       '<h2>3. How that compares with the rest of my life</h2>' +

@@ -16,7 +16,7 @@
   const { el, store } = AIPF;
 
   // The next model down within the same provider's family. Only one step, and
-  // never across providers: moving an agent session from Opus straight to
+  // never across providers: moving a long document from Opus straight to
   // Haiku would show a far bigger saving, but it is not a substitution most
   // teams can actually make, and advice nobody can follow is not advice.
   // Someone who takes the step down sees the next one on their return.

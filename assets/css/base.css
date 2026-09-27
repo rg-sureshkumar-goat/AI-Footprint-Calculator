@@ -237,7 +237,6 @@ body {
 .aipf-sub { font-size: 0.85rem; line-height: 1.5; color: var(--text-secondary); margin: 0 0 0.9rem; }
 .aipf-sub strong, .aipf-running b { color: var(--text); }
 .aipf-words { font-size: 1rem; line-height: 1.65; color: var(--text-secondary); margin: 0; }
-.aipf-words-code { display: block; margin-top: 0.7rem; }
 
 /* ---- Bars: squared, ink, on a baseline. Inline by default (annual). ---- */
 .aipf-bar-row { display: grid; grid-template-columns: 13rem 1fr auto; align-items: center; gap: 0.8rem; padding: 0.4rem 0; }

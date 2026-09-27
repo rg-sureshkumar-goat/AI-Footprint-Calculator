@@ -22,12 +22,12 @@
   const RETAIN_DAYS = 120;          // how much history to keep when pruning
   const TICK_MS = 20000;            // how often the "live" readouts refresh
 
-  // Quick-log buttons, chosen to cover the shapes of work that actually differ
-  // in cost: a normal exchange, a long document, and a full agent run.
+  // Quick-log buttons for the shapes of prompt that differ in cost: a normal
+  // exchange and a long document. Agent sessions have their own form, since
+  // their cost depends on tokens by type rather than on output length.
   const QUICK = [
     { label: 'Quick chat',    size: 'chat',   hint: 'a normal back-and-forth reply' },
     { label: 'Long output',   size: 'report', hint: 'a multi-page document' },
-    { label: 'Agent session', size: 'agent',  hint: 'a full coding / agent run' },
   ];
 
   let root = null;
@@ -37,7 +37,7 @@
     useLog: true,
     model: 'claude-sonnet-4-6',
     size: 'chat',
-    today: [],      // [{ t: epoch ms, k: kind, m: modelId, s: sizeId }]; no k = prompt
+    today: [],      // [{ t: epoch ms, k: kind, ... }]; no k = prompt (see logPrompt, logImages, AIPF.trackerLog)
   };
   AIPF.tracker = tracker;
 
@@ -102,7 +102,7 @@
   function rowsFromLog() {
     const byKey = new Map();
     for (const e of tracker.today) {
-      if (AIPF.entryKind(e) !== 'prompt') continue;
+      if (AIPF.entryKind(e) !== 'prompt' || !AIPF.isSize(e.s)) continue;
       const k = e.m + '|' + e.s;
       if (!byKey.has(k)) byKey.set(k, { model: e.m, size: e.s, count: 0 });
       byKey.get(k).count++;
@@ -146,6 +146,13 @@
     syncRows();
     AIPF.emitUpdate();
   }
+  // Other features log their own entry kinds through here (agent sessions).
+  AIPF.trackerLog = function (entry) {
+    tracker.today.push(Object.assign({ t: Date.now() }, entry));
+    saveToday();
+    syncRows();
+    AIPF.emitUpdate();
+  };
   function undoLast() {
     if (!tracker.today.length) return;
     tracker.today.pop();
@@ -186,7 +193,7 @@
   }
 
   function countKinds(entries) {
-    const out = { prompt: 0, image: 0 };
+    const out = { prompt: 0, image: 0, session: 0 };
     for (const e of entries) {
       const k = AIPF.entryKind(e);
       out[k] = (out[k] || 0) + 1;
@@ -203,7 +210,8 @@
     const kinds = countKinds(tracker.today);
     root.querySelector('#aipf-tk-total').textContent = AIPF.fmtMetric(total);
     root.querySelector('#aipf-tk-count').textContent = plural(kinds.prompt, 'prompt') +
-      (kinds.image ? ' · ' + plural(kinds.image, 'image') : '');
+      (kinds.image ? ' · ' + plural(kinds.image, 'image') : '') +
+      (kinds.session ? ' · ' + plural(kinds.session, 'session') : '');
 
     const live = root.querySelector('#aipf-tk-live');
     const paceBox = root.querySelector('#aipf-tk-pace');
@@ -256,15 +264,22 @@
     for (const e of recent) {
       const line = el('div', 'aipf-tk-entry');
       line.appendChild(el('span', 'aipf-tk-entry-time', AIPF.esc(timeText(e.t))));
-      if (AIPF.entryKind(e) === 'image') {
+      const kind = AIPF.entryKind(e);
+      if (kind === 'image') {
         line.appendChild(el('span', 'aipf-tk-entry-what', 'Generated image'));
+      } else if (kind === 'session') {
+        line.appendChild(el('span', 'aipf-tk-entry-what', 'Agent session <span class="aipf-tk-dot">·</span> ' +
+          AIPF.esc(AIPF.getModel(e.m).name) + (e.p ? ' <span class="aipf-tk-dot">·</span> ' + AIPF.esc(e.p) : '')));
+      } else if (!AIPF.isSize(e.s)) {
+        line.appendChild(el('span', 'aipf-tk-entry-what', AIPF.esc(AIPF.getModel(e.m).name) + ' <span class="aipf-tk-dot">·</span> removed size'));
       } else {
         const model = AIPF.getModel(e.m);
         const size = AIPF.getSize(e.s);
         line.appendChild(el('span', 'aipf-tk-entry-what',
           AIPF.esc(model.name) + ' <span class="aipf-tk-dot">·</span> ' + AIPF.esc(AIPF.sizeLabel(e.m, size))));
       }
-      line.appendChild(el('span', 'aipf-tk-entry-val', counts(e) ? AIPF.fmtMetric(entryCost(e, AIPF.state.metric)) : 'not counted'));
+      const counted = counts(e) && (kind !== 'prompt' || AIPF.isSize(e.s));
+      line.appendChild(el('span', 'aipf-tk-entry-val', counted ? AIPF.fmtMetric(entryCost(e, AIPF.state.metric)) : 'not counted'));
       box.appendChild(line);
     }
     if (tracker.today.length > RECENT_SHOWN) {
@@ -376,6 +391,19 @@
       b.addEventListener('click', () => logPrompt(tracker.model, q.size, 1));
       quickBox.appendChild(b);
     }
+    // "Agent session" opens the session form (sessions.js) instead of logging.
+    const sb = el('button', 'aipf-tk-quickbtn', 'Agent session…');
+    sb.type = 'button';
+    sb.title = 'Open the agent session form: model and tokens by type';
+    sb.addEventListener('click', () => {
+      const form = root.querySelector('#aipf-tk-session');
+      if (!form) return;
+      form.open = true;
+      form.scrollIntoView({ block: 'nearest' });
+      const first = form.querySelector('input');
+      if (first) first.focus();
+    });
+    quickBox.appendChild(sb);
 
     const imgN = root.querySelector('#aipf-tk-img-n');
     root.querySelector('#aipf-tk-img-log').addEventListener('click', () => {

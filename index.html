@@ -49,6 +49,7 @@
       </div>
       <ul class="aipf-nav-links">
         <li><a class="aipf-nav-link" data-target="session" href="#session">Session</a></li>
+        <li><a class="aipf-nav-link" data-target="projects" href="#projects">Projects</a></li>
         <li><a class="aipf-nav-link" data-target="usage" href="#usage">Your use</a></li>
         <li><a class="aipf-nav-link" data-target="budget" href="#budget">Budget</a></li>
         <li><a class="aipf-nav-link" data-target="team" href="#team">Team</a></li>
@@ -127,6 +128,53 @@
             Images count toward your AI total only while &ldquo;Use my log&rdquo; is on.
           </p>
         </div>
+
+        <details class="aipf-tk-form aipf-ss" id="aipf-tk-session">
+          <summary class="aipf-tk-form-h">Log an agent session</summary>
+          <p class="aipf-ss-intro">
+            Enter the tokens your coding tool reports for one session. Tools such as Claude Code log these four types.
+          </p>
+          <div class="aipf-ss-grid">
+            <label class="aipf-ss-field aipf-ss-field--wide">Model (for output tokens)
+              <select id="aipf-ss-model"></select></label>
+            <label class="aipf-ss-field">Fresh input tokens
+              <input type="text" inputmode="numeric" id="aipf-ss-fresh" autocomplete="off"></label>
+            <label class="aipf-ss-field">Cache-write tokens
+              <input type="text" inputmode="numeric" id="aipf-ss-write" autocomplete="off"></label>
+            <label class="aipf-ss-field">Cache-read tokens
+              <input type="text" inputmode="numeric" id="aipf-ss-read" autocomplete="off"></label>
+            <label class="aipf-ss-field">Output tokens
+              <input type="text" inputmode="numeric" id="aipf-ss-out" autocomplete="off"></label>
+            <label class="aipf-ss-field aipf-ss-field--wide">Project (optional)
+              <input type="text" id="aipf-ss-project" list="aipf-ss-projects" maxlength="60" autocomplete="off"></label>
+            <datalist id="aipf-ss-projects"></datalist>
+          </div>
+          <div class="aipf-tk-controls">
+            <button type="button" class="aipf-tk-btn" id="aipf-ss-log">+ Log session</button>
+            <span class="aipf-ss-msg" id="aipf-ss-msg" aria-live="polite"></span>
+          </div>
+          <p class="aipf-fine">
+            <strong>For reference, not a typical value:</strong> one developer's median Claude Code session was about
+            592,000 tokens, mostly cache reads, over 24 model calls, which the author estimated at about 41&nbsp;Wh
+            (<a href="https://simonpcouch.com/blog/2026-01-20-cc-impact/" target="_blank" rel="noopener">Couch 2026</a>). The post does not publish that session's split by token type, so it is not used to fill in the fields.
+            Cache writes are new context processed for the first time and then stored, so they are costed like fresh input.
+          </p>
+          <div id="aipf-ss-last" aria-live="polite"></div>
+          <p class="aipf-fine">
+            Output tokens use the chosen model's
+            <a href="https://ecologits.ai/latest/methodology/llm_inference/" target="_blank" rel="noopener">EcoLogits</a> energy per output token, with its range, plus its embodied hardware carbon.
+            Fresh input and cache writes use about 2.1&nbsp;Wh per 10,000 tokens (range 1&ndash;4), from GPT-4o-era estimates
+            (<a href="https://epoch.ai/gradient-updates/how-much-energy-does-chatgpt-use" target="_blank" rel="noopener">Epoch AI</a>, <a href="https://arxiv.org/abs/2505.09598" target="_blank" rel="noopener">Jegham et al.</a>) and a price-based proxy (Couch); the rate is the same for every model
+            because no source gives one per model, and no embodied carbon is added for input. Input cost also grows faster than
+            the number of tokens as the context gets longer (Epoch AI), which a flat rate does not capture.
+            <strong>Cache reads are our own estimate; no measurement exists:</strong> 0&ndash;4&nbsp;Wh per 10,000 tokens, with a central
+            0.39&nbsp;Wh derived from API prices (Couch). For real sessions they are usually the largest and least certain part.
+            No public source measures input or cache energy for frontier cloud models, and no provider publishes per-session energy.
+            The same task can vary up to 30&times; in tokens between runs (<a href="https://arxiv.org/abs/2604.22750" target="_blank" rel="noopener">Bai et al. 2026</a>).
+            Water is EcoLogits' own for the output, plus the input side's energy &times; 4.88&nbsp;L/kWh
+            (<a href="https://eta-publications.lbl.gov/sites/default/files/2024-12/lbnl-2024-united-states-data-center-energy-usage-report_1.pdf" target="_blank" rel="noopener">Berkeley Lab</a>, derived). Sessions count toward your AI total only while &ldquo;Use my log&rdquo; is on.
+          </p>
+        </details>
       </div>
 
       <div class="aipf-tk-right">
@@ -149,6 +197,45 @@
     </div>
   </section>
 
+  <section class="aipf-panel" id="projects" aria-labelledby="aipf-projects-h">
+    <div class="aipf-panel-head">
+      <h2 class="aipf-panel-title" id="aipf-projects-h">Agent projects</h2>
+      <p class="aipf-panel-note">Energy &middot; carbon &middot; water, each with its range</p>
+    </div>
+    <div class="aipf-pj">
+      <div class="aipf-pj-col">
+        <p class="aipf-tk-form-h">Your projects</p>
+        <p class="aipf-ss-intro">Logged sessions with the same project name, added up across the last 120 days. Each session is already counted once, in its own day&rsquo;s AI total.</p>
+        <div id="aipf-pj-list" aria-live="polite"></div>
+      </div>
+      <div class="aipf-pj-col" id="aipf-pe-form">
+        <p class="aipf-tk-form-h">Estimate a whole project</p>
+        <p class="aipf-ss-intro">
+          Pre-filled with one developer&rsquo;s 28 days of Claude Code on one repository, often running unattended around the clock
+          (<a href="https://arxiv.org/abs/2607.13080" target="_blank" rel="noopener">Peng, Lin &amp; Lee 2026</a>, a preprint). It is not typical use; replace it with your own totals.
+        </p>
+        <div class="aipf-ss-grid">
+          <label class="aipf-ss-field aipf-ss-field--wide">Model (for output tokens)
+            <select id="aipf-pe-model"></select></label>
+          <label class="aipf-ss-field">Fresh input tokens
+            <input type="text" inputmode="numeric" id="aipf-pe-fresh" autocomplete="off"></label>
+          <label class="aipf-ss-field">Cache-write tokens
+            <input type="text" inputmode="numeric" id="aipf-pe-write" autocomplete="off"></label>
+          <label class="aipf-ss-field">Cache-read tokens
+            <input type="text" inputmode="numeric" id="aipf-pe-read" autocomplete="off"></label>
+          <label class="aipf-ss-field">Output tokens
+            <input type="text" inputmode="numeric" id="aipf-pe-out" autocomplete="off"></label>
+        </div>
+        <p class="aipf-tk-foot"><button type="button" class="aipf-link" id="aipf-pe-reset">Reset to the example</button></p>
+        <div id="aipf-pe-result" aria-live="polite"></div>
+      </div>
+    </div>
+    <p class="aipf-fine">
+      Projects use the same method as logged sessions (see the session form above and &ldquo;How these numbers are made&rdquo;).
+      The example is a single developer, as is the reference session, and neither is typical.
+    </p>
+  </section>
+
   <!-- Tool: inputs on the left, the answer on the right -->
   <section id="usage" aria-labelledby="aipf-usage-h">
   <div class="aipf-usage-head">
@@ -169,7 +256,7 @@
         <p class="aipf-writes-h">What it writes</p>
         <p class="aipf-words" id="aipf-words" aria-live="polite"></p>
       </div>
-      <p class="aipf-hint">"Typical output" is how long each reply is. A "coding / agent session" means one full run of an AI coding assistant that writes and edits code across many steps. It uses EcoLogits' 100,000-token "assist application development" benchmark (much of it the model's own reasoning and tool calls, not final code).</p>
+      <p class="aipf-hint">"Typical output" is how long each reply is. Coding-agent sessions and generated images are logged in the session tracker above, not here.</p>
       <p class="aipf-tools">
         <button type="button" class="aipf-link" id="aipf-reset">Reset</button>
         <span class="aipf-tools-sep">·</span>
@@ -343,23 +430,63 @@
         g CO<sub>2</sub>e/kWh. Water is left on EcoLogits' global basis.
       </p>
       <p>
-        <strong>Output, words, and code.</strong> Each row maps to an EcoLogits output-token count:
+        <strong>Output and words.</strong> Each row maps to an EcoLogits output-token count:
         tweet (50), short email (170), article summary (250), chatbot reply (400), 5-page report
-        (5,000), long document (15,000), coding or agent session (100,000), and re-writing the
-        Lord of the Rings trilogy (500,000) — both EcoLogits benchmark tasks; the trilogy itself
-        runs about 480,000 words.
-        The coding/agent session uses EcoLogits' 100,000-token "assist application development"
-        benchmark, which represents one full run that writes and edits code across many steps.
+        (5,000), long document (15,000), and re-writing the Lord of the Rings trilogy (500,000),
+        an EcoLogits benchmark task; the trilogy itself runs about 480,000 words.
         Cost scales with length, so long generations dominate. Counts are per day; annual figures
         multiply by 365. Words assume
         <a href="https://help.openai.com/en/articles/4936856-what-are-tokens-and-how-to-count-them" target="_blank" rel="noopener">OpenAI's ~0.75 words per token</a>,
         read at
         <a href="https://biblio.ugent.be/publication/8647789" target="_blank" rel="noopener">238 words a minute (Brysbaert 2019)</a>.
-        A coding session is counted as lines of code (~10 tokens a line) rather than words to
-        read. Only about 15% of its output tokens are treated as actual code; the rest is
-        reasoning (which dominates for reasoning models), tool calls, file exploration, and
-        explanation, so a 100,000-token session is on the order of 1,500 lines. This is a rough
-        estimate with wide uncertainty.
+        An earlier version offered a "coding / agent session" row of 100,000 output tokens. It
+        was removed because real agent sessions are mostly input, not output (see below); old
+        log entries and share-link rows with that size are now ignored.
+      </p>
+      <p>
+        <strong>Agent sessions and projects.</strong> A coding-agent session reads far more than it
+        writes: agentic coding uses about 1,000&times; more tokens than chat, driven by input, and
+        runs of the same task can differ by up to 30&times; in tokens
+        (<a href="https://arxiv.org/abs/2604.22750" target="_blank" rel="noopener">Bai et al. 2026</a>, a preprint).
+        Most of that input is cached context read again on each model call. So sessions are logged in
+        the tracker by tokens of each type, as tools such as Claude Code report them, and costed in
+        three parts, each with a central value and a range:
+        output tokens &times; the chosen model's
+        <a href="https://ecologits.ai/latest/methodology/llm_inference/" target="_blank" rel="noopener">EcoLogits</a>
+        energy per output token (its 100,000-token "assist application development" figure &divide; 100,000, with its range);
+        fresh-input and cache-write tokens &times; about 2.1&nbsp;Wh per 10,000 (range 1&ndash;4); and
+        cache-read tokens &times; about 0.39&nbsp;Wh per 10,000 (range 0&ndash;4). EcoLogits does not model
+        input tokens at all. The 2.1&nbsp;Wh central value comes from
+        <a href="https://epoch.ai/gradient-updates/how-much-energy-does-chatgpt-use" target="_blank" rel="noopener">Epoch AI (2025)</a>,
+        which estimates a GPT-4o query with a 10,000-token input at about 2.4&nbsp;Wh against about
+        0.3&nbsp;Wh for a typical query; the 1&ndash;4 range spans that,
+        <a href="https://arxiv.org/abs/2505.09598" target="_blank" rel="noopener">Jegham et al. (2025)</a>
+        (a preprint inferring energy from API speeds), and the 3.9&nbsp;Wh per 10,000 used by
+        <a href="https://simonpcouch.com/blog/2026-01-20-cc-impact/" target="_blank" rel="noopener">Couch (2026)</a>.
+        Cache writes are new context processed for the first time and then stored, so they share the
+        fresh-input rate. The cache-read central value, 0.39&nbsp;Wh, is Couch's, derived by assuming
+        energy tracks API prices, which Couch calls napkin math. Its 0&ndash;4 bounds are this
+        calculator's own reasoning, not a measurement: a cache read avoids reprocessing, so it should
+        cost no more than fresh input, and it is not free, because the stored context is still used
+        during generation and storage has a hardware footprint. Because the two central values come
+        from different sources, the cache-read rate is about one-fifth of the fresh-input rate, not
+        the one-tenth that Couch's own pricing ratio implies. The input rates are GPT-4o-era, the same
+        for every model (no source gives them per model), and flat, although input cost grows faster
+        than the number of tokens as the context lengthens (Epoch AI). For realistic sessions the
+        cache-read part is usually the largest and least certain. Carbon is all of the session's
+        electricity on your region's grid, plus EcoLogits' embodied hardware carbon for the output
+        tokens only; no source gives embodied carbon for input. Water is EcoLogits' own figure for the
+        output, plus the input side's energy &times; 4.88&nbsp;L/kWh from
+        <a href="https://eta-publications.lbl.gov/sites/default/files/2024-12/lbnl-2024-united-states-data-center-energy-usage-report_1.pdf" target="_blank" rel="noopener">Berkeley Lab</a>
+        (derived, as for images), so the two parts use different water intensities. No public source
+        measures input or cache energy for frontier cloud models, and no provider publishes energy per
+        session. A session can carry a project name; the project view adds up a project's sessions,
+        each of which already counts once in its own day's AI total. The project estimate applies the
+        same method to typed-in totals, pre-filled with one developer's 28 days on one repository
+        (<a href="https://arxiv.org/abs/2607.13080" target="_blank" rel="noopener">Peng, Lin &amp; Lee 2026</a>,
+        a preprint; sessions often ran unattended around the clock), and is never added to the AI
+        total. That example and Couch's reference session are single developers, not typical use.
+        Sessions count toward your AI total only while &ldquo;Use my log&rdquo; is on.
       </p>
       <p>
         <strong>Generated images.</strong> Images are logged in the session tracker, one per image
@@ -530,6 +657,7 @@
 <script src="assets/js/core.js"></script>
 <script src="assets/js/calculator.js"></script>
 <script src="assets/js/tracker.js"></script>
+<script src="assets/js/sessions.js"></script>
 <script src="assets/js/team.js"></script>
 <script src="assets/js/budget.js"></script>
 <script src="assets/js/nav.js"></script>
