@@ -73,7 +73,7 @@ Draft for the user's review. One checkpoint per build step (decided by the user 
 - [x] Add one shared function for the AI total (central, low, high) covering rows plus today's logged images and sessions, and an energy counterpart
 - [x] Switch the calculator headline, running line, charts, tracker total, `trackerDayTotal` (budget), nav total, and report to that function
 - [x] Agent confirms every figure on the page is unchanged before and after (default day and a sample log). Done 2026-09-26: the page text, tooltips, AI totals, 40 days of tracker totals, energy, and the generated report were identical in all three cases (example day; a seeded log driving the page; the same log with "Use my log" off)
-- [ ] User verifies checkpoint 1; commit when asked
+- [x] User verifies checkpoint 1; commit when asked. Ticked at the user's direction on 2026-09-26 ("tick the six user verification items"); committed as `6b57f78`
 
 **Checkpoint 2. Feature 1, image logging**
 
@@ -83,7 +83,7 @@ Draft for the user's review. One checkpoint per build step (decided by the user 
 - [x] Add the plain-language limitations note (S1, S2, S3, S46) and the methodology text in `index.html`
 - [x] Agent runs feature 1 acceptance checks 1–6. Done 2026-09-26: all six passed in the preview (one image adds 1.35 Wh, 0.086–11.49; 0.513 g, 0.033–4.37; 6.59 mL, 0.42–56.1); checked at phone width and in dark mode
 - [x] Make logged prompts follow "Use my log" in the tracker total, history, and budget, as images do (decided by the user on 2026-09-26; see Revisions)
-- [ ] User verifies checkpoint 2; commit when asked
+- [x] User verifies checkpoint 2; commit when asked. Ticked at the user's direction on 2026-09-26 ("tick the six user verification items"); committed as `397e7eb`
 
 **Checkpoint 3. Feature 2, agent sessions and projects**
 
@@ -94,7 +94,7 @@ Draft for the user's review. One checkpoint per build step (decided by the user 
 - [x] Remove the "agent" size from `SIZES`, the calculator menus, the tracker, and `team-data.js`; ignore old "agent" log entries; keep old share links reading the old size positions. The "lines of code" estimate, which applied only to "agent" rows, went with it
 - [x] Add the limitations notes (S7, S8, S9, S10, S11, S46, S59) and the methodology text
 - [x] Agent runs feature 2 acceptance checks 1–7. Done 2026-09-26: all seven passed in the preview (session 46.65 Wh, 17.69–238.2; 18.18 g, 7.17–90.97; 201.7 mL, 60.8–1,136; breakdown 22.95 / 4.2 / 19.5 Wh; S59 estimate 708 kWh, 271 kg, 3,352 L with matching ranges); feature 1 checks re-run; checked at phone width and in dark mode
-- [ ] User verifies checkpoint 3; commit when asked
+- [x] User verifies checkpoint 3; commit when asked. Ticked at the user's direction on 2026-09-26 ("tick the six user verification items"); committed as `3210da9`
 
 **Checkpoint 4. Feature 3, digital day builder**
 
@@ -104,7 +104,7 @@ Draft for the user's review. One checkpoint per build step (decided by the user 
 - [x] Compute the digital-day total (central, low, high; energy, carbon, water) and its breakdown by activity and component; show it beside the AI total, never as a share, with each activity's origin (log or typical day)
 - [x] Add the limitations notes, "single estimate, no range available" labels, and the methodology text
 - [x] Agent runs feature 3 acceptance checks 1–8. Done 2026-09-26: all eight passed in the preview (366.4 Wh, 347.6–385.3; 139.2 g, 132.1–146.4; 1.60 L, 1.52–1.69; breakdown as specified). Check 7 first failed, because a logged digital activity alone switched the page into log-driven mode and zeroed the AI total; fixed so that only AI entries do that. Features 1 and 2 re-checked; checked at phone width and in dark mode
-- [ ] User verifies checkpoint 4; commit when asked
+- [x] User verifies checkpoint 4; commit when asked. Ticked at the user's direction on 2026-09-26 ("tick the six user verification items"); committed as `c6624c1`
 
 **Checkpoint 5. Feature 4, device manufacturing**
 
@@ -114,7 +114,7 @@ Draft for the user's review. One checkpoint per build step (decided by the user 
 - [x] Replace the yearly comparison figures for a new smartphone, laptop, and TV with about 42, 110, and 370 kg and their sources
 - [x] Add the limitations notes and the methodology text
 - [x] Agent runs feature 4 acceptance checks 1–7. Done 2026-09-26: all seven passed in the preview (162.0 g a day: phone 38.4, laptop 75.3, TV 48.3; TV unshared 144.8 g; phone kept 6 years 19.2 g; phone water 11.03 L; digital-day energy unchanged at 366.4 Wh with feature 3's typical day). Features 1–3 re-checked; checked at phone width and in dark mode
-- [ ] User verifies checkpoint 5; commit when asked
+- [x] User verifies checkpoint 5; commit when asked. Ticked at the user's direction on 2026-09-26 ("tick the six user verification items"); committed as `e793423`
 
 **Checkpoint 6. Feature 5, like-for-like comparisons**
 
@@ -125,7 +125,7 @@ Draft for the user's review. One checkpoint per build step (decided by the user 
 - [x] Rewrite the comparison methodology in `index.html`: remove deleted items and their citations, match every quoted figure, explain blue against total water; update `REPORT_REFS`
 - [x] Agent runs feature 5 acceptance checks 1–6. Done 2026-09-26: all six passed in the preview (coffee 0.97 L, burger 62 L with 7.6–226 L, home electricity 129 L; PS5 82 g in the US and 27 g in the UK; both totals as separate highlighted bars in all three charts and the report). Also corrected two pre-Project-2 notes that said image generation was excluded. Features 1–4 re-checked; checked at phone width and in dark mode
 - [x] Remove the team view's "ten-minute showers" water anchor (decided by the user on 2026-09-26; see Revisions)
-- [ ] User verifies checkpoint 6; commit when asked
+- [x] User verifies checkpoint 6; commit when asked. Ticked at the user's direction on 2026-09-26 ("tick the six user verification items"); committed as `87fdd88`
 
 **Across all checkpoints**
 
