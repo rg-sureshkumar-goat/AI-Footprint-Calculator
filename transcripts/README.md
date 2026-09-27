@@ -15,6 +15,9 @@ Session transcripts for this project, kept as evidence of process.
 - `spec-*.md` — Project 2 specification-stage conversations
   (`start specification`), one per chat, in the same format as the research
   transcripts, with a PDF of the same name generated alongside for submission.
+- `plan-*.md` — Project 2 planning-stage conversations (`start planning`), one
+  per chat, in the same format as the research transcripts, with a PDF of the
+  same name generated alongside for submission.
 
 These are sanitised before being committed: the author's email address, macOS
 home path and username, and temporary session paths are replaced. Message
