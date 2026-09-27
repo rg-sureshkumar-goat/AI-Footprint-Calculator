@@ -134,10 +134,12 @@ Draft for the user's review. One checkpoint per build step (decided by the user 
 
 ### Verification
 
-- [ ] User has checked feature behavior and calculations against the specification and sources independently of the agent
-- [ ] User has assessed sources S59–S80 in `research.md`, which the build uses but which were added during the specification stage and are still marked "not yet assessed by the user"
-- [ ] User has confirmed factual and numerical claims have working citations and communicate important limitations or uncertainty
-- [ ] User has confirmed the project runs locally, serves all three reference profiles, and matches the specification
+Ticked at the user's direction on 2026-09-26 ("tick the four verification items").
+
+- [x] User has checked feature behavior and calculations against the specification and sources independently of the agent
+- [x] User has assessed sources S59–S80 in `research.md`, which the build uses but which were added during the specification stage and are still marked "not yet assessed by the user"
+- [x] User has confirmed factual and numerical claims have working citations and communicate important limitations or uncertainty
+- [x] User has confirmed the project runs locally, serves all three reference profiles, and matches the specification
 
 ### Delivery
 
