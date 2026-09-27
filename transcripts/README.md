@@ -18,6 +18,11 @@ Session transcripts for this project, kept as evidence of process.
 - `plan-*.md` — Project 2 planning-stage conversations (`start planning`), one
   per chat, in the same format as the research transcripts, with a PDF of the
   same name generated alongside for submission.
+- `build-*.md` — Project 2 implementation-stage conversations
+  (`start implementation`), one per chat, in the same format as the research
+  transcripts, with a PDF of the same name generated alongside for submission.
+  The learner's answers to the agent's multiple-choice questions are shown in
+  full rather than truncated, because they record decisions.
 
 These are sanitised before being committed: the author's email address, macOS
 home path and username, and temporary session paths are replaced. Message
