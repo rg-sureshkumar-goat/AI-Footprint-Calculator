@@ -28,8 +28,9 @@
       <summary>What&rsquo;s counted, and how reliable it is</summary>
       <p>
         Carbon uses the average grid intensity of the region you pick, not a single whole-world
-        average, plus the hardware&rsquo;s embodied emissions. Training, image and video generation,
-        and retries are excluded &mdash; training is too uncertain to attribute, though split
+        average, plus the hardware&rsquo;s embodied emissions. Generated images and agent sessions
+        count when you log them in the session tracker. Training, video generation, and unlogged
+        retries are excluded &mdash; training is too uncertain to attribute, though split
         across all users it
         <a href="https://blog.andymasley.com/p/training-ai-models-doesnt-emit-that" target="_blank" rel="noopener">adds little to your personal footprint</a>.
         The Claude numbers are the shakiest here: Anthropic hasn&rsquo;t said how Claude is built, so
@@ -368,7 +369,7 @@
         <div class="aipf-bars aipf-bars--compact" id="aipf-daily-bars" aria-live="polite"></div>
       </div>
       <p class="aipf-fine" id="aipf-grid-note"></p>
-      <p class="aipf-fine">Excludes training, image and video generation, and retries.</p>
+      <p class="aipf-fine">Excludes training, video generation, and retries you do not log. Generated images and agent sessions count only when logged in the session tracker.</p>
       <p class="aipf-fine">*A note on the Claude models: Anthropic has never said how Claude is built, so EcoLogits has to guess. Its guess is that Claude Opus and Sonnet only use a fraction of their parameters at a time. Some people who follow this closely think Claude actually uses all of them on every token, and if that's right, the Claude numbers here are too low. <a href="#methodology" onclick="document.getElementById('methodology').open=true">More in the methodology below</a>.</p>
     </div>
   </div>
@@ -684,9 +685,11 @@
         <strong>Home</strong> runs from a small apartment to a big house, about 1.5 to 7 t
         CO<sub>2</sub>e a year (<a href="https://www.eia.gov/consumption/residential/" target="_blank" rel="noopener">EIA RECS</a>;
         <a href="https://www.pnas.org/doi/10.1073/pnas.1922205117" target="_blank" rel="noopener">Goldstein et al. 2020</a>).
-        <strong>Driving</strong> uses
-        <a href="https://www.epa.gov/greenvehicles/greenhouse-gas-emissions-typical-passenger-vehicle" target="_blank" rel="noopener">EPA's ~400 g CO<sub>2</sub>/mile</a>
-        across roughly 3,000 to 25,000 miles a year (<a href="https://www.fhwa.dot.gov/policyinformation/statistics/2023/vm1.cfm" target="_blank" rel="noopener">FHWA</a>).
+        <strong>Driving</strong>: &ldquo;an average amount&rdquo; is the
+        <a href="https://www.epa.gov/greenvehicles/greenhouse-gas-emissions-typical-passenger-vehicle" target="_blank" rel="noopener">US EPA's</a>
+        typical car, about 4.6&nbsp;t CO<sub>2</sub> a year for 11,500 miles at about 400&nbsp;g a mile, tailpipe only
+        (fuel production is excluded). &ldquo;A little&rdquo; and &ldquo;a lot&rdquo; (about 1.15 and 9.6&nbsp;t) are
+        scaled from that average, not separately sourced.
         <strong>Diet</strong> uses food footprints from
         <a href="https://www.science.org/doi/10.1126/science.aaq0216" target="_blank" rel="noopener">Poore &amp; Nemecek (2018)</a>
         and <a href="https://www.nature.com/articles/s43016-023-00795-w" target="_blank" rel="noopener">Scarborough et al. (2023)</a>:
@@ -704,97 +707,82 @@
         <a href="https://tools.waterfootprint.org/national-explorer/" target="_blank" rel="noopener">Water Footprint Network (Mekonnen &amp; Hoekstra)</a>:
         about <a href="https://www.mdpi.com/2073-4441/12/11/3286" target="_blank" rel="noopener">450 m<sup>3</sup>/yr for the US</a>
         and <a href="https://www.pnas.org/doi/10.1073/pnas.1109936109" target="_blank" rel="noopener">153 m<sup>3</sup> globally</a>
-        (the other regions are scaled by their irrigation intensity and are approximate). Removing
-        green water changes the picture a lot: most of a food's water is rain, so a beef burger
-        drops from ~1,700 L total to about <a href="https://theconversation.com/heres-how-much-water-it-takes-to-make-a-serving-of-beef-and-why-where-it-comes-from-is-so-important-208155" target="_blank" rel="noopener">6 L of freshwater</a>,
-        while irrigated crops stay high.
+        (the other regions are scaled by their irrigation intensity and are approximate). Leaving
+        out green water changes the picture a lot, because most of a food's water is rain; see
+        &ldquo;Water comparisons&rdquo; below.
       </p>
       <p>
-        <strong>Lifestyle cuts (the yearly chart).</strong> The "saved" figures come from the
-        <a href="https://www.founderspledge.com/research/climate-and-lifestyle-report" target="_blank" rel="noopener">Founders Pledge Climate &amp; Lifestyle report</a>,
-        drawing on
-        <a href="https://iopscience.iop.org/article/10.1088/1748-9326/aa7541" target="_blank" rel="noopener">Wynes &amp; Nicholas (2017)</a>
-        (living car-free 2.4 t, avoiding a transatlantic flight 1.6 t, hang-drying, recycling, LED
-        bulbs) and
-        <a href="https://iopscience.iop.org/article/10.1088/1748-9326/ab8589" target="_blank" rel="noopener">Ivanova et al. (2020)</a>
-        (green electricity, heat-pump heating, a home retrofit, electric and hybrid cars).
+        <strong>How the everyday comparisons are chosen.</strong> A comparison can make AI look
+        trivial or large depending on what it is paired with, so every item in the charts follows one
+        rule. Water items use a sourced <em>blue-water</em> figure, freshwater actually consumed, the
+        same kind of water as the AI and digital-day figures; items based on electricity use
+        4.35&nbsp;L/kWh, the US average water used to generate electricity
+        (<a href="https://eta-publications.lbl.gov/sites/default/files/2024-12/lbnl-2024-united-states-data-center-energy-usage-report_1.pdf" target="_blank" rel="noopener">Berkeley Lab</a>). Carbon items use a sourced figure with a stated boundary (life
+        cycle, farm to retail, cradle to gate, tailpipe only, manufacturing only, or electricity
+        only); items based on electricity are costed on your region's grid, as the AI figures are.
+        Items that could not be checked to this standard were removed rather than kept with a
+        caveat. Serving and garment sizes are this calculator's own assumptions and are shown with
+        each item. Your AI total and your digital-day total appear as two separate highlighted bars,
+        never combined and never as a share of each other; remember that the digital day counts your
+        own devices and router and the AI total does not.
       </p>
       <p>
-        <strong>Ways you add emissions (the yearly chart).</strong>
-        Manufacturing a new car ≈ 6 t CO<sub>2</sub>e
-        (<a href="https://howbadarebananas.com/" target="_blank" rel="noopener">Berners-Lee, How Bad Are Bananas?</a>);
-        manufacturing a new 55-inch TV ≈ 370 kg (<a href="https://www.samsung.com/global/sustainability/landing_hub-file/AY_wFeS6BzIALYNu/Signage_QMC_Environmental_Report_EN_2503.pdf" target="_blank" rel="noopener">Samsung signage proxy</a>);
-        manufacturing a new laptop ≈ 110 kg (<a href="https://www.apple.com/environment/pdf/products/notebooks/M4_MacBook_Air_PER_March2025.pdf" target="_blank" rel="noopener">Apple MacBook Air</a>);
-        a <a href="https://howbadarebananas.com/" target="_blank" rel="noopener">new bicycle ≈ 100 kg and a new sofa ≈ 90 kg</a>.
-        Flights, per passenger
-        (<a href="https://co2.myclimate.org/en/flight_calculators/new" target="_blank" rel="noopener">myclimate</a>,
-        with a transatlantic round trip ≈ 1.6 t per
-        <a href="https://iopscience.iop.org/article/10.1088/1748-9326/aa7541" target="_blank" rel="noopener">Wynes &amp; Nicholas</a>):
-        a short-haul round trip ≈ 250 kg, a round-trip US
-        cross-country flight ≈ 1 t, and a transatlantic round trip ≈ 1.6 t. A year of average US
-        driving (~12,000 mi) ≈ 4.8 t at ~0.40 kg/mile
-        (<a href="https://www.epa.gov/greenvehicles/greenhouse-gas-emissions-typical-passenger-vehicle" target="_blank" rel="noopener">EPA</a>).
-        A beef burger every week for a year ≈ 156 kg
-        (<a href="https://www.science.org/doi/10.1126/science.aaq0216" target="_blank" rel="noopener">Poore &amp; Nemecek</a>, ~3 kg each);
-        a <a href="https://theconversation.com/coffee-heres-the-carbon-cost-of-your-daily-cup-and-how-to-make-it-climate-friendly-152629" target="_blank" rel="noopener">year of daily coffee ≈ 77 kg</a>;
-        a <a href="https://howbadarebananas.com/" target="_blank" rel="noopener">cotton T-shirt ≈ 7 kg</a>;
-        manufacturing a new smartphone ≈ 42 kg (<a href="https://www.apple.com/environment/pdf/products/iphone/iPhone_17_PER_Sept2025.pdf" target="_blank" rel="noopener">Apple iPhone 17</a>);
-        and a pair of jeans ≈ 33 kg (<a href="https://www.levistrauss.com/wp-content/uploads/2015/03/Full-LCA-Results-Deck-FINAL.pdf" target="_blank" rel="noopener">Levi's</a>).
+        <strong>Everyday carbon (the daily chart).</strong> A cup of coffee, about 0.20&nbsp;kg
+        (7&nbsp;g of roasted coffee at 28.53&nbsp;kg CO<sub>2</sub>e/kg), and a beef burger, about
+        11.2&nbsp;kg for a 113&nbsp;g patty of beef-herd beef (99.48&nbsp;kg/kg), or 3.8&nbsp;kg for
+        dairy-herd beef (33.3&nbsp;kg/kg), both farm to retail, from
+        <a href="https://www.science.org/doi/10.1126/science.aaq0216" target="_blank" rel="noopener">Poore &amp; Nemecek (2018)</a> as published by <a href="https://ourworldindata.org/grapher/ghg-per-kg-poore" target="_blank" rel="noopener">Our World in Data</a>.
+        An hour on a PS5: 0.216&nbsp;kWh of electricity while gaming (<a href="https://www.playstation.com/en-gb/legal/ecodesign/" target="_blank" rel="noopener">Sony</a>) on your
+        grid, about 0.082&nbsp;kg in the US. A mile in a gas car: about 0.40&nbsp;kg, tailpipe
+        CO<sub>2</sub> only (<a href="https://www.epa.gov/greenvehicles/greenhouse-gas-emissions-typical-passenger-vehicle" target="_blank" rel="noopener">US EPA</a>). Printing a paperback book: about 2.71&nbsp;kg,
+        cradle to gate (<a href="https://doi.org/10.1111/j.1530-9290.2011.00414.x" target="_blank" rel="noopener">Wells et al. 2012</a>).
       </p>
       <p>
-        <strong>Everyday things.</strong> A cup of coffee: ~0.21 kg CO<sub>2</sub>e and
-        <a href="https://www.weforum.org/stories/2019/03/hidden-water-in-your-cup-of-coffee/" target="_blank" rel="noopener">140 L of water</a>.
-        An hour on a <a href="https://www.playstation.com/en-us/legal/ecodesign/" target="_blank" rel="noopener">PS5 (~200 W)</a>;
-        3 minutes in a <a href="https://www.siliconvalleypower.com/residents/save-energy/appliance-energy-use-chart" target="_blank" rel="noopener">1,200 W microwave</a>;
-        a mile in a gas car (<a href="https://www.epa.gov/greenvehicles/greenhouse-gas-emissions-typical-passenger-vehicle" target="_blank" rel="noopener">EPA, ~0.40 kg</a>);
-        a 10-minute hot shower (<a href="https://www.epa.gov/watersense/showerheads" target="_blank" rel="noopener">~21 gal, EPA WaterSense</a>, plus water heating);
-        a <a href="https://www.energystar.gov/products/dishwashers" target="_blank" rel="noopener">dishwasher load (≤3.5 gal, ENERGY STAR)</a>;
-        a <a href="https://www.energystar.gov/products/clothes_dryers" target="_blank" rel="noopener">dryer load (~3 kWh)</a>;
-        <a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1530-9290.2011.00414.x" target="_blank" rel="noopener">printing a 400-page book (~2.7 kg, Wells 2012)</a>
-        with <a href="https://waterfootprint.org/resources/Report46-WaterFootprintPaper.pdf" target="_blank" rel="noopener">paper's water footprint</a>;
-        a beef burger (~3 kg, <a href="https://www.science.org/doi/10.1126/science.aaq0216" target="_blank" rel="noopener">Poore &amp; Nemecek</a>; ~1,700 L at
-        <a href="https://watercalculator.org/footprint/the-hidden-water-in-everyday-products/" target="_blank" rel="noopener">15,400 L/kg beef</a>);
-        a new smartphone (~42 kg to manufacture, <a href="https://www.apple.com/environment/pdf/products/iphone/iPhone_17_PER_Sept2025.pdf" target="_blank" rel="noopener">Apple</a>)
-        needing <a href="https://www.compareandrecycle.co.uk/blog/world-water-week-how-much-water-does-your-smartphone-use" target="_blank" rel="noopener">~12,800 L</a>;
-        a <a href="https://www.levistrauss.com/wp-content/uploads/2015/03/Full-LCA-Results-Deck-FINAL.pdf" target="_blank" rel="noopener">pair of jeans (~33 kg, Levi's)</a>
-        at ~10,000 L (<a href="https://watercalculator.org/footprint/the-hidden-water-in-everyday-products/" target="_blank" rel="noopener">Water Footprint Network</a>).
+        <strong>Ways you add emissions (the yearly chart).</strong> A year of daily coffee, about
+        73&nbsp;kg, and a beef burger every week, about 580&nbsp;kg, both from the figures above; a
+        pair of jeans, about 33&nbsp;kg over its life cycle (<a href="https://www.levistrauss.com/wp-content/uploads/2015/03/Full-LCA-Results-Deck-FINAL.pdf" target="_blank" rel="noopener">Levi Strauss &amp; Co.</a>);
+        manufacturing a new smartphone, laptop, or 55-inch TV, about 42, 110, and 370&nbsp;kg
+        (<a href="https://www.apple.com/environment/pdf/products/iphone/iPhone_17_PER_Sept2025.pdf" target="_blank" rel="noopener">Apple iPhone 17</a>, <a href="https://www.apple.com/environment/pdf/products/notebooks/M4_MacBook_Air_PER_March2025.pdf" target="_blank" rel="noopener">Apple MacBook Air</a>, and a
+        <a href="https://www.samsung.com/global/sustainability/landing_hub-file/AY_wFeS6BzIALYNu/Signage_QMC_Environmental_Report_EN_2503.pdf" target="_blank" rel="noopener">Samsung signage display</a> used as a proxy; see &ldquo;Device manufacturing&rdquo;);
+        a transatlantic round-trip flight, about 1.6&nbsp;t per passenger
+        (<a href="https://iopscience.iop.org/article/10.1088/1748-9326/aa7541" target="_blank" rel="noopener">Wynes &amp; Nicholas 2017</a>, confirmed by <a href="https://www.founderspledge.com/research/climate-and-lifestyle-report" target="_blank" rel="noopener">Founders Pledge</a>); and a year
+        of driving, about 4.6&nbsp;t for 11,500 miles, tailpipe only (<a href="https://www.epa.gov/greenvehicles/greenhouse-gas-emissions-typical-passenger-vehicle" target="_blank" rel="noopener">US EPA</a>).
       </p>
       <p>
-        <strong>How the appliance figures are derived.</strong> The coffee, PS5, microwave, shower,
-        dishwasher, and dryer carbon numbers are each that item's measured electricity (cited
-        above) times the US grid (~0.38 kg CO<sub>2</sub>/kWh), so they fall on cleaner grids.
-        Two depend heavily on assumptions: a cup of coffee is
-        <a href="https://theconversation.com/coffee-heres-the-carbon-cost-of-your-daily-cup-and-how-to-make-it-climate-friendly-152629" target="_blank" rel="noopener">~0.05 kg black up to ~0.5 kg for a large latte</a>
-        (we use ~0.2 kg), and a 10-minute hot shower is roughly 0.2 kg on a gas water heater up to
-        1.5 kg on electric resistance (we use ~0.7 kg). Where a single authority does not exist,
-        figures are rounded mid-range estimates from the sources cited, not false precision.
+        <strong>Ways you can cut emissions (the yearly chart).</strong> Per person per year:
+        hang-drying clothes and comprehensive recycling, about 210&nbsp;kg each, and living car-free,
+        about 2.4&nbsp;t (<a href="https://iopscience.iop.org/article/10.1088/1748-9326/aa7541" target="_blank" rel="noopener">Wynes &amp; Nicholas 2017</a>); and, from the review by
+        <a href="https://iopscience.iop.org/article/10.1088/1748-9326/ab8589" target="_blank" rel="noopener">Ivanova et al. (2020)</a>, a hybrid car about 0.7&nbsp;t (&minus;0.2 to 3.1&nbsp;t),
+        heat-pump heating about 0.8&nbsp;t, a deep home retrofit about 0.9&nbsp;t, a vegan diet about
+        0.9&nbsp;t, green electricity about 1.5&nbsp;t (0.3&ndash;2.5&nbsp;t), and an electric car about
+        2.0&nbsp;t (&minus;1.9 to 5.4&nbsp;t). The ranges are wide, and some go below zero because an
+        option can raise emissions in some settings. The sources differ: Wynes &amp; Nicholas give
+        1.15&nbsp;t for an electric car, and Ivanova et al. a median of 2.0&nbsp;t (0.6&ndash;3.6&nbsp;t)
+        for living car-free.
       </p>
       <p>
-        <strong>Water comparisons (blue water).</strong> The water charts use the
-        <strong>blue</strong> (freshwater) component only, so the comparison items are the
-        irrigation- and process-water heavy ones, from the
-        <a href="https://watercalculator.org/footprint/the-hidden-water-in-everyday-products/" target="_blank" rel="noopener">Water Footprint Network</a>
-        and crop studies: a beef burger (~6 L, since beef is ~90% rainwater), a cup of coffee
-        (~4 L), a slice of bread (~8 L), an egg (~15 L), a glass of milk (~22 L), a bowl of rice
-        (~25 L), an avocado (~60 L), a handful of almonds (~120 L, as
-        <a href="https://www.almonds.org/sites/default/files/2020-05/Water_footprint_plus_almonds.pdf" target="_blank" rel="noopener">each California almond takes ~12 L of irrigation</a>),
-        a cotton T-shirt (~1,500 L of its 2,700 L total is blue), a pair of jeans (~5,000 L), and a
-        <a href="https://www.compareandrecycle.co.uk/blog/world-water-week-how-much-water-does-your-smartphone-use" target="_blank" rel="noopener">new smartphone</a>
-        (mostly ultrapure freshwater). The savings come from cutting irrigated products (a few
-        fewer cotton clothes) and outdoor watering: a typical lawn drinks roughly 20,000 gal of
-        freshwater a year, so letting it go unwatered or replacing it with native plants saves most
-        of that (<a href="https://www.epa.gov/watersense/landscaping-tips" target="_blank" rel="noopener">EPA WaterSense</a>).
-        Eating less meat barely moves the blue total, because almost all of meat's water is rain.
-        Energy and manufactured goods have a blue-water cost too: thermoelectric power plants
-        evaporate about
-        <a href="https://www.nrel.gov/docs/fy11osti/50900.pdf" target="_blank" rel="noopener">0.47 gal of freshwater per kWh</a>
-        (NREL, cooling/consumption only), so an hour of central air conditioning (~3 kWh) consumes
-        roughly 1.4 gal and a day of the
-        <a href="https://www.eia.gov/tools/faqs/faq.php?id=97" target="_blank" rel="noopener">average US home's electricity (~29 kWh)</a>
-        about 14 gal — the very same power-plant cooling water that makes up much of AI's footprint.
-        Printing a 300-page book uses on the order of ~5 gal of process freshwater
-        (<a href="https://waterfootprint.org/resources/Report64-WaterFootprint-Paper.pdf" target="_blank" rel="noopener">paper's water footprint</a>
-        is mostly rain on trees, with the blue mill water lower since most is returned to rivers).
+        <strong>Water comparisons (blue water).</strong> Most of a food's water footprint is
+        <em>green</em> water, rain that falls on fields and would evaporate anyway, and some is
+        <em>grey</em> water, a notional volume for diluting pollution (<a href="https://www.waterfootprint.org/water-footprint-2/what-is-a-water-footprint/" target="_blank" rel="noopener">Water Footprint Network</a>).
+        Neither is freshwater drawn from rivers, lakes, or aquifers, and the AI and digital-day water
+        figures count neither, so the charts use only the <em>blue</em> part. Beef shows why this
+        matters: its total footprint is about 15,400&nbsp;L per kg, but only about 550&nbsp;L of that is
+        blue (<a href="https://waterfootprint.org/media/downloads/Mekonnen-Hoekstra-2012-WaterFootprintFarmAnimalProducts.pdf" target="_blank" rel="noopener">Mekonnen &amp; Hoekstra 2012</a>), so a total figure is not comparable to the AI
+        figures and is not charted. Global averages are used, from
+        <a href="https://doi.org/10.5194/hess-15-1577-2011" target="_blank" rel="noopener">Mekonnen &amp; Hoekstra (2011)</a> for crops and 2012 for animal products: a cup of
+        coffee, about 1.0&nbsp;L (7&nbsp;g at 139&nbsp;L/kg); a slice of bread, about 9.0&nbsp;L (30&nbsp;g at
+        301&nbsp;L/kg); an egg, about 14.6&nbsp;L (60&nbsp;g at 244&nbsp;L/kg); a glass of milk, about 21.5&nbsp;L
+        (250&nbsp;g at 86&nbsp;L/kg); a bowl of rice, about 33&nbsp;L (75&nbsp;g at 443&nbsp;L/kg); an avocado,
+        about 57&nbsp;L (200&nbsp;g at 283&nbsp;L/kg); a beef burger, about 62&nbsp;L (113&nbsp;g at 550&nbsp;L/kg);
+        and a handful of almonds, about 107&nbsp;L (28&nbsp;g at 3,816&nbsp;L/kg). Beef's blue water varies a
+        great deal by where it is raised, from about 67&nbsp;L/kg for UK beef to nearly 2,000&nbsp;L/kg for US
+        systems that rely on irrigated feed (<a href="https://theconversation.com/heres-how-much-water-it-takes-to-make-a-serving-of-beef-and-why-where-it-comes-from-is-so-important-208155" target="_blank" rel="noopener">Hess &amp; Williams 2023</a>), so the burger is shown
+        with that range (about 8&ndash;226&nbsp;L). A day of home electricity, about 129&nbsp;L, is the US
+        average of 10,791&nbsp;kWh a year (<a href="https://www.eia.gov/tools/faqs/faq.php?id=97" target="_blank" rel="noopener">US EIA</a>), or 29.6&nbsp;kWh a day, &times;
+        4.35&nbsp;L/kWh. In a year: daily coffee about 355&nbsp;L and daily almonds about 39,000&nbsp;L; a
+        cotton T-shirt about 1,230&nbsp;L and a pair of jeans about 3,930&nbsp;L, cotton only, at
+        4,917&nbsp;L of blue water per kg of cotton textile (<a href="https://waterfootprint.org/resources/Report18.pdf" target="_blank" rel="noopener">Chapagain et al. 2005</a>); and buying
+        five fewer cotton garments a year saves about 6,150&nbsp;L, the only water cut that met the rule.
       </p>
     </div>
   </details>

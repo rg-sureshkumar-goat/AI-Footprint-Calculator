@@ -118,18 +118,19 @@ Draft for the user's review. One checkpoint per build step (decided by the user 
 
 **Checkpoint 6. Feature 5, like-for-like comparisons**
 
-- [ ] Replace `DAILY_ITEMS`, `ANNUAL_ITEMS`, `DAILY_WATER_ITEMS`, and `ANNUAL_WATER_ITEMS` with exactly the items and values in the specification's tables; electricity-based items computed from kWh (PS5 carbon by the selected grid; home electricity water × 4.35 L/kWh)
-- [ ] Give every item its unit, assumption, boundary, source link, and range where reported (burger, Ivanova cuts)
-- [ ] Show the AI total and the digital-day total as two separate highlighted bars in the daily and yearly charts
-- [ ] Change the driving setting to about 1,150, 4,600, and 9,580 kg with its label, and 11,500 miles in the methodology
-- [ ] Rewrite the comparison methodology in `index.html`: remove deleted items and their citations, match every quoted figure, explain blue against total water; update `REPORT_REFS`
-- [ ] Agent runs feature 5 acceptance checks 1–6
+- [x] Replace `DAILY_ITEMS`, `ANNUAL_ITEMS`, `DAILY_WATER_ITEMS`, and `ANNUAL_WATER_ITEMS` with exactly the items and values in the specification's tables; electricity-based items computed from kWh (PS5 carbon by the selected grid; home electricity water × 4.35 L/kWh)
+- [x] Give every item its unit, assumption, boundary, source link, and range where reported (burger, Ivanova cuts)
+- [x] Show the AI total and the digital-day total as two separate highlighted bars in the daily and yearly charts
+- [x] Change the driving setting to about 1,150, 4,600, and 9,580 kg with its label, and 11,500 miles in the methodology
+- [x] Rewrite the comparison methodology in `index.html`: remove deleted items and their citations, match every quoted figure, explain blue against total water; update `REPORT_REFS`
+- [x] Agent runs feature 5 acceptance checks 1–6. Done 2026-09-26: all six passed in the preview (coffee 0.97 L, burger 62 L with 7.6–226 L, home electricity 129 L; PS5 82 g in the US and 27 g in the UK; both totals as separate highlighted bars in all three charts and the report). Also corrected two pre-Project-2 notes that said image generation was excluded. Features 1–4 re-checked; checked at phone width and in dark mode
+- [x] Remove the team view's "ten-minute showers" water anchor (decided by the user on 2026-09-26; see Revisions)
 - [ ] User verifies checkpoint 6; commit when asked
 
 **Across all checkpoints**
 
-- [ ] Agent re-runs every earlier acceptance check after each checkpoint to catch regressions
-- [ ] Agent checks the page at phone width and in both light and dark themes after checkpoints 2–6
+- [x] Agent re-runs every earlier acceptance check after each checkpoint to catch regressions
+- [x] Agent checks the page at phone width and in both light and dark themes after checkpoints 2–6
 
 ### Verification
 
@@ -147,6 +148,7 @@ Draft for the user's review. One checkpoint per build step (decided by the user 
 
 Record material changes to the approach, sequence, or checklist and explain why they were made.
 
+- 2026-09-26 (checkpoint 6): Added a task. The team view's company anchor compared AI water with showers, a withdrawal figure outside feature 5's tables; the user decided to remove it under feature 5's rule. Recorded in `spec.md` under Revisions.
 - 2026-09-26 (checkpoint 5): S51 gives two mismatched values for a phone's production water (3,190 gallons, and 12,760 L). The user decided to keep the specification's 12,075 L from the gallons figure and disclose the mismatch; recorded in `spec.md` under Revisions.
 - 2026-09-26 (checkpoint 4): Three feature 3 details were open in the specification (the console's central streaming draw, router hours when log and typical day mix, and the time window of a logged activity). The user decided them before the build; recorded in `spec.md` under Revisions.
 - 2026-09-26 (checkpoint 2): Added a task to checkpoint 2. Building feature 1 showed that the budget counted logged prompts even with "Use my log" off, while the spec excludes images then. The user chose to make logged prompts follow the setting as well, so every logged kind is treated alike; recorded in `spec.md` under Revisions.

@@ -234,7 +234,19 @@
     if (metric === 'carbon') return ((loc.c + home.c + drive.c + diet.c + fly.c) * 1000) / DAYS;
     return ((loc.w + home.w + drive.w + diet.w + fly.w) * GAL_TO_L) / DAYS;
   }
-  function itemBase(item, metric) { return metric === 'carbon' ? item.c * 1000 : item.w * GAL_TO_L; }
+  // A comparison item in base units. Electricity items (kwh) are costed on the
+  // selected grid for carbon and at the US 4.35 L/kWh for water, as the
+  // digital day is; the rest carry kg CO2e (c) or litres of blue water (w).
+  function itemBase(item, metric) {
+    if (item.kwh) return metric === 'carbon' ? item.kwh * AIPF.getLoc().grid : item.kwh * AIPF.DIGITAL.gridWaterLPerKwh;
+    return metric === 'carbon' ? item.c * 1000 : item.w;
+  }
+  // A reported [low, high] range in base units, or null.
+  function itemRange(item, metric) {
+    if (item.lo == null) return null;
+    const k = metric === 'carbon' ? 1000 : 1;
+    return [item.lo * k, item.hi * k];
+  }
 
   function dailyWords() {
     let n = 0;
@@ -245,7 +257,7 @@
   Object.assign(AIPF, { perPromptTriple, perPrompt, totalPrompts, entryKind, isAiEntry,
                         fromEnergy, imageTriple, sessionParts, sessionTriple, entryTriple,
                         aiDailyTriple, aiDaily, aiLoggedCount, aiDailyEnergy, dailyFootprint,
-                        itemBase, dailyWords });
+                        itemBase, itemRange, dailyWords });
 
   // ---- DOM helpers ----
   AIPF.el = function (tag, cls, html) {

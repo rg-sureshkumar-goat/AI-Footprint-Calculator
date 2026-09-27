@@ -164,9 +164,11 @@
   ];
   AIPF.DRIVING = [
     { id: 'd0',   label: 'not at all',        c: 0,     w: 0 },
-    { id: 'dlo',  label: 'a little',          c: 1200,  w: 0 },
-    { id: 'davg', label: 'an average amount', c: 4800,  w: 0 },
-    { id: 'dhi',  label: 'a lot',             c: 10000, w: 0 },
+    // US EPA: about 4.6 t CO2 a year for 11,500 miles, tailpipe only; 'a
+    // little' and 'a lot' are scaled from it by the calculator's original ratios.
+    { id: 'dlo',  label: 'a little (scaled from the EPA average)', c: 1150, w: 0 },
+    { id: 'davg', label: 'an average amount (EPA, 11,500 miles)',  c: 4600, w: 0 },
+    { id: 'dhi',  label: 'a lot (scaled from the EPA average)',    c: 9580, w: 0 },
   ];
   // Diet water (w) set to 0: on a blue-water basis the personal footprint is
   // dominated by irrigated agriculture and counted in the regional figure above.
@@ -193,11 +195,11 @@
     { url: 'https://ember-energy.org/latest-insights/global-electricity-review-2024/', label: 'Ember, Global Electricity Review 2024, with Our World in Data — grid carbon intensity by region, used to cost the electricity.' },
     { url: 'https://ourworldindata.org/co2-emissions', label: 'Our World in Data — consumption-based emissions, used for the regional baseline.' },
     { url: 'https://www.eia.gov/consumption/residential/', label: 'US EIA Residential Energy Consumption Survey, with Goldstein et al. 2020 (PNAS) — home energy.' },
-    { url: 'https://www.epa.gov/greenvehicles/greenhouse-gas-emissions-typical-passenger-vehicle', label: 'US EPA (~400 g CO2 per vehicle-mile) and FHWA (annual mileage) — driving.' },
+    { url: 'https://www.epa.gov/greenvehicles/greenhouse-gas-emissions-typical-passenger-vehicle', label: 'US EPA — about 400 g CO2 per mile and 4.6 t for 11,500 miles a year, tailpipe only; the driving setting and comparisons.' },
     { url: 'https://www.science.org/doi/10.1126/science.aaq0216', label: 'Poore & Nemecek 2018 (Science) and Scarborough et al. 2023 (Nature Food) — diet footprints.' },
     { url: 'https://iopscience.iop.org/article/10.1088/1748-9326/aa7541', label: 'Wynes & Nicholas 2017 — flights and lifestyle cuts.' },
     { url: 'https://iopscience.iop.org/article/10.1088/1748-9326/ab8589', label: 'Ivanova et al. 2020 — housing and transport mitigation options.' },
-    { url: 'https://www.founderspledge.com/research/climate-and-lifestyle-report', label: 'Founders Pledge, Climate & Lifestyle report — the lifestyle-cut comparison.' },
+    { url: 'https://www.founderspledge.com/research/climate-and-lifestyle-report', label: 'Founders Pledge, Climate & Lifestyle report — secondary confirmation of the transatlantic flight.' },
     { url: 'https://www.waterfootprint.org/', label: 'Water Footprint Network (Mekonnen & Hoekstra) and the Water Footprint Calculator — water-consumption figures and the personal water footprint.' },
     { url: 'https://arxiv.org/abs/2311.16863', label: 'Luccioni, Jernite & Strubell 2024 (FAccT) — median and highest energy per generated image.' },
     { url: 'https://arxiv.org/abs/2506.17016', label: 'Bertazzini et al. 2025 (preprint) — lowest energy per generated image across 17 open models.' },
@@ -205,73 +207,84 @@
     { url: 'https://epoch.ai/gradient-updates/how-much-energy-does-chatgpt-use', label: 'You 2025, Epoch AI — energy of a GPT-4o query with a long input; the central input-token rate.' },
     { url: 'https://simonpcouch.com/blog/2026-01-20-cc-impact/', label: 'Couch 2026 — worked estimate of a Claude Code session; the central cache-read rate (a price-based proxy).' },
     { url: 'https://arxiv.org/abs/2505.09598', label: 'Jegham et al. 2025 (preprint) — per-query energy at different input lengths; one end of the input-token range.' },
+    { url: 'https://ourworldindata.org/grapher/ghg-per-kg-poore', label: 'Poore & Nemecek 2018 (Science), via Our World in Data — food carbon per kg, farm to retail.' },
+    { url: 'https://doi.org/10.1111/j.1530-9290.2011.00414.x', label: 'Wells et al. 2012 (Journal of Industrial Ecology) — a paperback book, cradle to gate.' },
+    { url: 'https://www.playstation.com/en-gb/legal/ecodesign/', label: 'Sony Interactive Entertainment — PS5 power while gaming.' },
+    { url: 'https://www.levistrauss.com/wp-content/uploads/2015/03/Full-LCA-Results-Deck-FINAL.pdf', label: 'Levi Strauss & Co. 2015 — life cycle of a pair of 501 jeans.' },
+    { url: 'https://www.apple.com/environment/pdf/products/iphone/iPhone_17_PER_Sept2025.pdf', label: 'Apple and Samsung product environmental reports — device manufacturing (iPhone 17, MacBook Air, 55-inch signage proxy).' },
+    { url: 'https://doi.org/10.5194/hess-15-1577-2011', label: 'Mekonnen & Hoekstra 2011 (HESS) — blue water footprint of crops and crop products.' },
+    { url: 'https://waterfootprint.org/media/downloads/Mekonnen-Hoekstra-2012-WaterFootprintFarmAnimalProducts.pdf', label: 'Mekonnen & Hoekstra 2012 (Ecosystems) — blue water footprint of farm animal products.' },
+    { url: 'https://waterfootprint.org/resources/Report18.pdf', label: 'Chapagain et al. 2005 (UNESCO-IHE) — blue water footprint of cotton textiles.' },
+    { url: 'https://www.eia.gov/tools/faqs/faq.php?id=97', label: 'US EIA — average household electricity use, 10,791 kWh a year.' },
   ];
 
-  // Daily reference points (all things that emit, so no add/save direction)
+  // ---- Everyday comparisons (feature 5): like for like ----
+  // Water items are blue water (freshwater consumed), the same kind as the AI
+  // and digital-day figures; carbon items state their boundary. Each item:
+  //   label; note = the assumption and boundary shown with it; src/url = source;
+  //   c = kg CO2e, or kwh = electricity costed on the selected grid (carbon) or
+  //   at 4.35 L/kWh (water); w = litres of blue water; lo/hi = a reported
+  //   range in the same unit as c or w; dir = 'add' or 'save' (yearly charts);
+  //   src2/url2 = a second source where the item draws on two.
+  const OWID_POORE = 'https://ourworldindata.org/grapher/ghg-per-kg-poore';
+  const MH2011 = 'https://doi.org/10.5194/hess-15-1577-2011';
+  const MH2012 = 'https://waterfootprint.org/media/downloads/Mekonnen-Hoekstra-2012-WaterFootprintFarmAnimalProducts.pdf';
+  const COTTON = 'https://waterfootprint.org/resources/Report18.pdf';
+  const WYNES = 'https://doi.org/10.1088/1748-9326/aa7541';
+  const IVANOVA = 'https://doi.org/10.1088/1748-9326/ab8589';
+  const EPA_CAR = 'https://www.epa.gov/greenvehicles/greenhouse-gas-emissions-typical-passenger-vehicle';
+
+  // Per-serving masses are this calculator's own stated assumptions.
+  const COFFEE_KG = 0.007, PATTY_KG = 0.113, ALMONDS_KG = 0.028, TSHIRT_KG = 0.25, JEANS_KG = 0.8;
+  const COFFEE_W = COFFEE_KG * 139, ALMONDS_W = ALMONDS_KG * 3816, TSHIRT_W = TSHIRT_KG * 4917;
+  const COFFEE_C = COFFEE_KG * 28.53, BURGER_C = PATTY_KG * 99.48;
+
   AIPF.DAILY_ITEMS = [
-    { label: 'A cup of coffee',            c: 0.21, w: 37 },
-    { label: 'An hour on a PS5',           c: 0.08, w: 0.1 },
-    { label: '3 minutes in the microwave', c: 0.02, w: 0.05 },
-    { label: 'A mile in a gas car',        c: 0.40, w: 0.1 },
-    { label: 'A 10-minute hot shower',     c: 0.7,  w: 21 },
-    { label: 'A dishwasher load',          c: 0.5,  w: 3.5 },
-    { label: 'A dryer load',               c: 1.2,  w: 0.1 },
-    { label: 'Printing a 400-page book',   c: 2.7,  w: 300 },
-    { label: 'A beef burger',              c: 3.0,  w: 460 },
+    { label: 'A cup of coffee', c: COFFEE_C, note: '7 g roasted coffee · farm to retail', src: 'Poore & Nemecek 2018', url: OWID_POORE },
+    { label: 'An hour on a PS5', kwh: 0.216, note: '0.216 kWh on your grid · electricity only', src: 'Sony', url: 'https://www.playstation.com/en-gb/legal/ecodesign/' },
+    { label: 'A mile in a gas car', c: 0.4, note: 'tailpipe CO₂ only', src: 'US EPA', url: EPA_CAR },
+    { label: 'Printing a paperback book', c: 2.71, note: 'cradle to gate', src: 'Wells et al. 2012', url: 'https://doi.org/10.1111/j.1530-9290.2011.00414.x' },
+    { label: 'A beef burger', c: BURGER_C, lo: PATTY_KG * 33.3, hi: BURGER_C, note: '113 g patty · farm to retail; low end is dairy-herd beef', src: 'Poore & Nemecek 2018', url: OWID_POORE },
   ];
-  // Annual reference points. dir: 'add' = emissions you cause, 'save' = a cut you make.
-  // Lifestyle-cut figures from Founders Pledge / Wynes & Nicholas.
   AIPF.ANNUAL_ITEMS = [
-    { label: 'A cotton T-shirt',                c: 7,    w: 0,      dir: 'add' },
-    { label: 'A new pair of jeans',             c: 33,   w: 2640,   dir: 'add' },
-    { label: 'A new smartphone (manufacturing)', c: 42,  w: 3370,   dir: 'add' },
-    { label: 'A year of daily coffee',          c: 77,   w: 0,      dir: 'add' },
-    { label: 'A new sofa',                      c: 90,   w: 0,      dir: 'add' },
-    { label: 'A new bicycle',                   c: 100,  w: 0,      dir: 'add' },
-    { label: 'A beef burger every week (1 yr)', c: 156,  w: 0,      dir: 'add' },
-    { label: 'A new laptop (manufacturing)',    c: 110,  w: 0,      dir: 'add' },
-    { label: 'A short-haul round-trip flight',  c: 250,  w: 0,      dir: 'add' },
-    { label: 'A new 55-inch TV (manufacturing)', c: 370, w: 0,      dir: 'add' },
-    { label: 'A round-trip US cross-country flight', c: 1000, w: 0, dir: 'add' },
-    { label: 'One transatlantic flight',        c: 1600, w: 5,      dir: 'add' },
-    { label: 'A year of driving (12,000 mi)',   c: 4800, w: 50,     dir: 'add' },
-    { label: 'Manufacturing a new car',         c: 6000, w: 0,      dir: 'add' },
-    { label: 'Buying LED bulbs',                c: 30,   w: 0,      dir: 'save' },
-    { label: 'Recycling for a year',            c: 140,  w: 0,      dir: 'save' },
-    { label: 'Hang-drying your clothes',        c: 140,  w: 0,      dir: 'save' },
-    { label: 'Switching to a hybrid car',       c: 480,  w: 0,      dir: 'save' },
-    { label: 'Buying green electricity',        c: 1380, w: 0,      dir: 'save' },
-    { label: 'Switching to an electric car',    c: 1380, w: 0,      dir: 'save' },
-    { label: 'Going vegan for a year',          c: 1450, w: 270000, dir: 'save' },
-    { label: 'A deep retrofit of your home',    c: 1580, w: 0,      dir: 'save' },
-    { label: 'Switching to green heating',      c: 1990, w: 0,      dir: 'save' },
-    { label: 'Living car-free',                 c: 2400, w: 0,      dir: 'save' },
+    { label: 'A pair of jeans', c: 33.4, dir: 'add', note: 'one pair · life cycle', src: 'Levi Strauss & Co.', url: 'https://www.levistrauss.com/wp-content/uploads/2015/03/Full-LCA-Results-Deck-FINAL.pdf' },
+    { label: 'A new smartphone (manufacturing)', c: 42, dir: 'add', note: 'one model · manufacturing only', src: 'Apple', url: 'https://www.apple.com/environment/pdf/products/iphone/iPhone_17_PER_Sept2025.pdf' },
+    { label: 'A year of daily coffee', c: 365 * COFFEE_C, dir: 'add', note: '7 g a cup · farm to retail', src: 'Poore & Nemecek 2018', url: OWID_POORE },
+    { label: 'A new laptop (manufacturing)', c: 110, dir: 'add', note: 'one model · manufacturing only', src: 'Apple', url: 'https://www.apple.com/environment/pdf/products/notebooks/M4_MacBook_Air_PER_March2025.pdf' },
+    { label: 'A new 55-inch TV (manufacturing)', c: 370, dir: 'add', note: 'signage-display proxy · manufacturing only', src: 'Samsung', url: 'https://www.samsung.com/global/sustainability/landing_hub-file/AY_wFeS6BzIALYNu/Signage_QMC_Environmental_Report_EN_2503.pdf' },
+    { label: 'A beef burger every week', c: 52 * BURGER_C, dir: 'add', note: '113 g patty · farm to retail', src: 'Poore & Nemecek 2018', url: OWID_POORE },
+    { label: 'A transatlantic round-trip flight', c: 1600, dir: 'add', note: 'per passenger', src: 'Wynes & Nicholas 2017', url: WYNES },
+    { label: 'A year of driving', c: 4600, dir: 'add', note: '11,500 miles · tailpipe CO₂ only', src: 'US EPA', url: EPA_CAR },
+    { label: 'Hang-drying your clothes', c: 210, dir: 'save', note: 'per person a year', src: 'Wynes & Nicholas 2017', url: WYNES },
+    { label: 'Recycling for a year', c: 210, dir: 'save', note: 'comprehensive recycling, per person', src: 'Wynes & Nicholas 2017', url: WYNES },
+    { label: 'Switching to a hybrid car', c: 700, lo: -200, hi: 3100, dir: 'save', note: 'per person a year', src: 'Ivanova et al. 2020', url: IVANOVA },
+    { label: 'Heat-pump heating', c: 800, dir: 'save', note: 'per person a year', src: 'Ivanova et al. 2020', url: IVANOVA },
+    { label: 'A deep retrofit of your home', c: 900, dir: 'save', note: 'per person a year', src: 'Ivanova et al. 2020', url: IVANOVA },
+    { label: 'Going vegan', c: 900, dir: 'save', note: 'per person a year', src: 'Ivanova et al. 2020', url: IVANOVA },
+    { label: 'Buying green electricity', c: 1500, lo: 300, hi: 2500, dir: 'save', note: 'per person a year', src: 'Ivanova et al. 2020', url: IVANOVA },
+    { label: 'Switching to an electric car', c: 2000, lo: -1900, hi: 5400, dir: 'save', note: 'per person a year; Wynes & Nicholas give 1.15 t', src: 'Ivanova et al. 2020', url: IVANOVA },
+    { label: 'Living car-free', c: 2400, dir: 'save', note: 'per person a year; Ivanova et al.: median 2.0 t (0.6–3.6 t)', src: 'Wynes & Nicholas 2017', url: WYNES },
   ];
 
-  // Blue-water comparisons (gal): freshwater actually withdrawn, green rain excluded.
-  // Irrigated crops (almonds, cotton) and lawns dominate; rain-fed foods nearly vanish.
   AIPF.DAILY_WATER_ITEMS = [
-    { label: 'A cup of coffee',             w: 1 },
-    { label: 'A beef burger',               w: 1.6 },
-    { label: 'A slice of bread',            w: 2 },
-    { label: 'An egg',                      w: 4 },
-    { label: 'A glass of milk',             w: 6 },
-    { label: 'A bowl of rice',              w: 7 },
-    { label: 'An hour of air conditioning', w: 1.4 },
-    { label: 'Printing a book',             w: 5 },
-    { label: 'A day of home electricity',   w: 14 },
-    { label: 'An avocado',                  w: 16 },
-    { label: 'A handful of almonds',        w: 32 },
+    { label: 'A cup of coffee', w: COFFEE_W, note: '7 g roasted coffee · blue water', src: 'Mekonnen & Hoekstra 2011', url: MH2011 },
+    { label: 'A slice of bread', w: 0.03 * 301, note: '30 g wheat bread · blue water', src: 'Mekonnen & Hoekstra 2011', url: MH2011 },
+    { label: 'An egg', w: 0.06 * 244, note: '60 g · blue water', src: 'Mekonnen & Hoekstra 2012', url: MH2012 },
+    { label: 'A glass of milk', w: 0.25 * 86, note: '250 g · blue water', src: 'Mekonnen & Hoekstra 2012', url: MH2012 },
+    { label: 'A bowl of rice', w: 0.075 * 443, note: '75 g dry husked rice · blue water', src: 'Mekonnen & Hoekstra 2011', url: MH2011 },
+    { label: 'An avocado', w: 0.2 * 283, note: '200 g · blue water', src: 'Mekonnen & Hoekstra 2011', url: MH2011 },
+    { label: 'A beef burger', w: PATTY_KG * 550, lo: PATTY_KG * 67, hi: PATTY_KG * 2000, note: '113 g patty · blue water, global average; range from UK beef to US irrigated systems', src: 'Mekonnen & Hoekstra 2012', url: MH2012,
+      src2: 'Hess & Williams 2023', url2: 'https://theconversation.com/heres-how-much-water-it-takes-to-make-a-serving-of-beef-and-why-where-it-comes-from-is-so-important-208155' },
+    { label: 'A handful of almonds', w: ALMONDS_W, note: '28 g shelled · blue water', src: 'Mekonnen & Hoekstra 2011', url: MH2011 },
+    { label: 'A day of home electricity', kwh: 10791 / 365, note: '29.6 kWh, the US average × 4.35 L/kWh · power-plant water', src: 'US EIA', url: 'https://www.eia.gov/tools/faqs/faq.php?id=97',
+      src2: 'Berkeley Lab', url2: 'https://eta-publications.lbl.gov/sites/default/files/2024-12/lbnl-2024-united-states-data-center-energy-usage-report_1.pdf' },
   ];
   AIPF.ANNUAL_WATER_ITEMS = [
-    { label: 'A year of daily coffee',                   w: 365,   dir: 'add' },
-    { label: 'A cotton T-shirt',                         w: 396,   dir: 'add' },
-    { label: 'A new pair of jeans',                      w: 1321,  dir: 'add' },
-    { label: 'A new smartphone',                         w: 3370,  dir: 'add' },
-    { label: 'A year of daily almonds',                  w: 11700, dir: 'add' },
-    { label: 'Buying five fewer cotton garments (1 yr)', w: 2000,  dir: 'save' },
-    { label: 'Replacing a lawn with native plants',      w: 15000, dir: 'save' },
-    { label: 'Letting your lawn go unwatered (1 yr)',    w: 20000, dir: 'save' },
+    { label: 'A year of daily coffee', w: 365 * COFFEE_W, dir: 'add', note: '7 g a cup · blue water', src: 'Mekonnen & Hoekstra 2011', url: MH2011 },
+    { label: 'A cotton T-shirt', w: TSHIRT_W, dir: 'add', note: '250 g of cotton textile · blue water', src: 'Chapagain et al. 2005', url: COTTON },
+    { label: 'A pair of jeans', w: JEANS_KG * 4917, dir: 'add', note: '800 g, cotton only · blue water', src: 'Chapagain et al. 2005', url: COTTON },
+    { label: 'A year of daily almonds', w: 365 * ALMONDS_W, dir: 'add', note: '28 g a day · blue water', src: 'Mekonnen & Hoekstra 2011', url: MH2011 },
+    { label: 'Buying five fewer cotton garments', w: 5 * TSHIRT_W, dir: 'save', note: 'five 250 g T-shirts a year · blue water', src: 'Chapagain et al. 2005', url: COTTON },
   ];
 
   AIPF.GAL_TO_L = 3.785411784;

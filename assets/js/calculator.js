@@ -10,7 +10,7 @@
 
   const { MODELS, SIZES, LOCATIONS, HOMES, DRIVING, DIETS, FLYING, COUNTRY_DIET,
           DAILY_ITEMS, ANNUAL_ITEMS, DAILY_WATER_ITEMS, ANNUAL_WATER_ITEMS,
-          DEFAULT_ROWS, REPORT_REFS, GAL_TO_L, DAYS, WPM, LEGACY_SIZE_IDS } = AIPF;
+          DEFAULT_ROWS, REPORT_REFS, DAYS, WPM, LEGACY_SIZE_IDS } = AIPF;
   const { el, option, esc, escXml, state } = AIPF;
 
   let root = null;
@@ -213,12 +213,15 @@
   }
 
   // ---- Bar charts ----
-  function renderBars(targetId, focalLabel, focalVal, items, unit) {
-    const rows = [{ label: focalLabel, v: focalVal, focal: true }];
+  // Two highlighted bars, the AI total and the digital-day total, side by
+  // side and never combined, among everyday items that each show their
+  // assumption, boundary, reported range, and source.
+  function renderBars(targetId, focals, items, unit) {
+    const rows = focals.map((f) => ({ label: f.label, v: f.v, focal: true }));
     for (const it of items) {
       const v = AIPF.itemBase(it, state.metric);
-      if (v <= 0) continue; // skip items with no impact in this metric (keeps the water view clean)
-      rows.push({ label: it.label, v: v, dir: it.dir });
+      if (v <= 0) continue;
+      rows.push({ label: it.label, v: v, dir: it.dir, it: it });
     }
     rows.sort((a, b) => b.v - a.v);
     const max = Math.max.apply(null, rows.map((r) => r.v).concat([1e-9]));
@@ -229,10 +232,17 @@
       let labelHtml = esc(r.label);
       if (r.dir === 'save') labelHtml += ' <span class="aipf-tag aipf-tag--save">saved</span>';
       else if (r.dir === 'add') labelHtml += ' <span class="aipf-tag aipf-tag--add">added</span>';
+      if (r.it) {
+        const range = AIPF.itemRange(r.it, state.metric);
+        labelHtml += '<span class="aipf-bar-note">' + esc(r.it.note) +
+          (range ? ' · range ' + esc(AIPF.fmtUnit(range[0], unit)) + ' to ' + esc(AIPF.fmtUnit(range[1], unit)) : '') +
+          ' · <a href="' + r.it.url + '" target="_blank" rel="noopener">' + esc(r.it.src) + '</a>' +
+          (r.it.url2 ? '; <a href="' + r.it.url2 + '" target="_blank" rel="noopener">' + esc(r.it.src2) + '</a>' : '') + '</span>';
+      }
       row.appendChild(el('div', 'aipf-bar-label', labelHtml));
       const track = el('div', 'aipf-bar-track');
       const fill = el('div', 'aipf-bar-fill');
-      fill.style.width = Math.max(0.4, (r.v / max) * 100).toFixed(2) + '%';
+      fill.style.width = (r.v > 0 ? Math.max(0.4, (r.v / max) * 100) : 0).toFixed(2) + '%';
       track.appendChild(fill);
       row.appendChild(track);
       row.appendChild(el('div', 'aipf-bar-val', AIPF.fmtUnit(r.v, unit)));
@@ -241,27 +251,33 @@
   }
   AIPF.renderBars = renderBars;
 
+  // The digital-day total (feature 3) in the current metric, if that feature loaded.
+  const digitalDay = (metric) => (typeof AIPF.digitalDayTriple === 'function' ? AIPF.digitalDayTriple(metric)[0] : 0);
+  const digitalLabel = (base, v) => (v > 0 ? base : base + ' (not entered yet)');
+
   function renderDaily() {
-    const ai = AIPF.aiDaily(state.metric);
+    const ai = AIPF.aiDaily(state.metric), dd = digitalDay(state.metric);
     const unit = AIPF.chartUnit(state.metric, 'daily');
-    root.querySelector('#aipf-daily-sub').innerHTML = 'A day of your AI use (highlighted below) is ' + AIPF.fmtUnit(ai, unit) + '.';
+    root.querySelector('#aipf-daily-sub').innerHTML = 'A day of your AI use is ' + AIPF.fmtUnit(ai, unit) +
+      ' and your digital day is ' + AIPF.fmtUnit(dd, unit) + ' (both highlighted, shown separately).';
     const items = state.metric === 'water' ? DAILY_WATER_ITEMS : DAILY_ITEMS;
-    renderBars('#aipf-daily-bars', 'Your daily AI use', ai, items, unit);
+    renderBars('#aipf-daily-bars', [{ label: 'Your daily AI use', v: ai }, { label: digitalLabel('Your digital day', dd), v: dd }], items, unit);
   }
   function renderAnnualSplit() {
-    const aiYr = AIPF.aiDaily(state.metric) * DAYS;
-    const strip = (it) => ({ label: it.label, c: it.c, w: it.w });
+    const aiYr = AIPF.aiDaily(state.metric) * DAYS, ddYr = digitalDay(state.metric) * DAYS;
     const src = state.metric === 'water' ? ANNUAL_WATER_ITEMS : ANNUAL_ITEMS;
-    const adds = src.filter((it) => it.dir === 'add').map(strip);
-    const cuts = src.filter((it) => it.dir === 'save').map(strip);
+    const adds = src.filter((it) => it.dir === 'add');
+    const cuts = src.filter((it) => it.dir === 'save');
     const noun = state.metric === 'water' ? 'water' : 'emissions';
     root.querySelector('#aipf-add-title').textContent = 'In a year, ways you add ' + noun;
     root.querySelector('#aipf-cut-title').textContent = 'In a year, ways you can cut ' + noun;
     const unit = AIPF.chartUnit(state.metric, 'annual');
-    root.querySelector('#aipf-add-sub').innerHTML = 'Your AI use (highlighted) is ' + AIPF.fmtUnit(aiYr, unit) + ' a year, next to other things that add to your footprint.';
-    renderBars('#aipf-add-bars', 'A year of your AI use', aiYr, adds, unit);
-    root.querySelector('#aipf-cut-sub').innerHTML = 'Cutting your AI use (highlighted) would save ' + AIPF.fmtUnit(aiYr, unit) + ' a year, next to the bigger cuts you could make.';
-    renderBars('#aipf-cut-bars', 'Cut your AI use', aiYr, cuts, unit);
+    root.querySelector('#aipf-add-sub').innerHTML = 'A year of your AI use is ' + AIPF.fmtUnit(aiYr, unit) + ' and of your digital day ' +
+      AIPF.fmtUnit(ddYr, unit) + ' (both highlighted), next to other things that add to your footprint.';
+    renderBars('#aipf-add-bars', [{ label: 'A year of your AI use', v: aiYr }, { label: digitalLabel('A year of your digital day', ddYr), v: ddYr }], adds, unit);
+    root.querySelector('#aipf-cut-sub').innerHTML = 'Cutting your AI use would save ' + AIPF.fmtUnit(aiYr, unit) + ' a year, and your digital day ' +
+      AIPF.fmtUnit(ddYr, unit) + ' (both highlighted), next to other cuts you could make.';
+    renderBars('#aipf-cut-bars', [{ label: 'Cut your AI use', v: aiYr }, { label: digitalLabel('Cut your digital day', ddYr), v: ddYr }], cuts, unit);
   }
 
   function updateOutputs() {
@@ -325,12 +341,20 @@
                 ['Flying (' + fly.label + ')', fly.c]];
     let fpHtml = '';
     for (const f of fp) fpHtml += '<tr><td>' + escXml(f[0]) + '</td><td class="n">' + AIPF.fmtCarbon(f[1] * 1000) + ' / yr</td></tr>';
-    const dailyRows = [{ label: 'My daily AI use', v: aiDay, focal: true }].concat(DAILY_ITEMS.map((it) => ({ label: it.label, v: it.c * 1000 })));
-    const addRows = [{ label: 'A year of my AI use', v: aiYr, focal: true }].concat(ANNUAL_ITEMS.filter((it) => it.dir === 'add').map((it) => ({ label: it.label, v: it.c * 1000 })));
-    const cutRows = [{ label: 'Cut my AI use', v: aiYr, focal: true }].concat(ANNUAL_ITEMS.filter((it) => it.dir === 'save').map((it) => ({ label: it.label, v: it.c * 1000 })));
-    const dailyWaterRows = [{ label: 'My daily AI use', v: wDay, focal: true }].concat(DAILY_WATER_ITEMS.map((it) => ({ label: it.label, v: it.w * GAL_TO_L })));
-    const addWaterRows = [{ label: 'A year of my AI use', v: wYr, focal: true }].concat(ANNUAL_WATER_ITEMS.filter((it) => it.dir === 'add').map((it) => ({ label: it.label, v: it.w * GAL_TO_L })));
-    const cutWaterRows = [{ label: 'Cut my AI use', v: wYr, focal: true }].concat(ANNUAL_WATER_ITEMS.filter((it) => it.dir === 'save').map((it) => ({ label: it.label, v: it.w * GAL_TO_L })));
+    // Everyday items as on the page, with the AI total and the digital-day
+    // total as two separate highlighted bars.
+    const dd = (m) => (typeof AIPF.digitalDayTriple === 'function' ? AIPF.digitalDayTriple(m)[0] : 0);
+    const chart = (metric, items, aiV, ddV, aiLabel, ddLabel) =>
+      [{ label: aiLabel, v: aiV, focal: true }, { label: ddLabel, v: ddV, focal: true }]
+        .concat(items.map((it) => ({ label: it.label + ' (' + it.note + ')', v: AIPF.itemBase(it, metric) })));
+    const adds = (list) => list.filter((it) => it.dir === 'add'), cuts = (list) => list.filter((it) => it.dir === 'save');
+    const ddC = dd('carbon'), ddW = dd('water');
+    const dailyRows = chart('carbon', DAILY_ITEMS, aiDay, ddC, 'My daily AI use', 'My digital day');
+    const addRows = chart('carbon', adds(ANNUAL_ITEMS), aiYr, ddC * DAYS, 'A year of my AI use', 'A year of my digital day');
+    const cutRows = chart('carbon', cuts(ANNUAL_ITEMS), aiYr, ddC * DAYS, 'Cut my AI use', 'Cut my digital day');
+    const dailyWaterRows = chart('water', DAILY_WATER_ITEMS, wDay, ddW, 'My daily AI use', 'My digital day');
+    const addWaterRows = chart('water', adds(ANNUAL_WATER_ITEMS), wYr, ddW * DAYS, 'A year of my AI use', 'A year of my digital day');
+    const cutWaterRows = chart('water', cuts(ANNUAL_WATER_ITEMS), wYr, ddW * DAYS, 'Cut my AI use', 'Cut my digital day');
     let refsHtml = '';
     REPORT_REFS.forEach((r, i) => { refsHtml += '<li id="ref' + (i + 1) + '">[' + (i + 1) + '] ' + escXml(r.label) + ' <a href="' + r.url + '">' + escXml(r.url) + '</a></li>'; });
     const fn = (n) => '<sup><a href="#ref' + n + '">[' + n + ']</a></sup>';
@@ -361,16 +385,16 @@
       '<table><tbody>' + fpHtml + '</tbody></table>' +
       '<p class="muted">Regional baseline' + fn(3) + '; home energy' + fn(4) + '; driving' + fn(5) + '; diet' + fn(6) + '; flying' + fn(7) + '.</p>' +
       '<h2>4. My daily AI use, next to everyday things</h2>' + reportBarsSVG(dailyRows) +
-      '<p class="muted">Everyday comparisons from diet' + fn(6) + ', driving' + fn(5) + ', and product life-cycle studies listed on the source page.</p>' +
+      '<p class="muted">The digital day is shown beside my AI total, never as a share of it; it counts my own devices and router, which the AI total does not. Each everyday item states its boundary: food farm to retail' + fn(17) + ', driving tailpipe only' + fn(5) + ', a paperback book cradle to gate' + fn(18) + ', a PS5 hour as electricity only' + fn(19) + ', jeans over their life cycle' + fn(20) + ', and devices as manufacturing only' + fn(21) + '.</p>' +
       '<h2>5. In a year, ways I add emissions</h2>' + reportBarsSVG(addRows) +
       '<h2>6. In a year, ways I could cut emissions</h2>' + reportBarsSVG(cutRows) +
-      '<p class="muted">Lifestyle-cut figures from the Founders Pledge comparison' + fn(9) + ', drawing on Wynes &amp; Nicholas' + fn(7) + ' and Ivanova et al.' + fn(8) + '</p>' +
+      '<p class="muted">Lifestyle cuts per person a year from Wynes &amp; Nicholas' + fn(7) + ' and Ivanova et al.' + fn(8) + ', whose ranges are wide (an electric car saves −1.9 to 5.4 t); the transatlantic flight is confirmed by Founders Pledge' + fn(9) + '.</p>' +
       '<h2>7. My AI water</h2>' +
       '<p>The same prompts consume about <strong>' + AIPF.fmtWater(wDay) + ' of water a day</strong> (range ' + AIPF.fmtWater(wMin) + ' to ' + AIPF.fmtWater(wMax) + '), or <strong>' + AIPF.fmtWater(wYr) + ' a year</strong> — <span class="big">' + pctWStr + '</span> of my daily blue-water footprint (' + AIPF.fmtWater(dayW) + '). All water figures here are blue water (freshwater drawn from rivers, lakes, and aquifers); green rainwater and grey pollution-dilution water are excluded, so the AI and lifestyle figures match.' + fn(1) + fn(10) + '</p>' +
       '<h2>8. My daily AI water, next to everyday things</h2>' + reportBarsSVG(dailyWaterRows, AIPF.fmtWater) +
       '<h2>9. In a year, water I add</h2>' + reportBarsSVG(addWaterRows, AIPF.fmtWater) +
       '<h2>10. In a year, water I could cut</h2>' + reportBarsSVG(cutWaterRows, AIPF.fmtWater) +
-      '<p class="muted">Water comparisons from EcoLogits' + fn(1) + ' and the Water Footprint Network' + fn(10) + '.</p>' +
+      '<p class="muted">Every water comparison is blue water, the same kind as the AI and digital-day figures: crops and animal products from Mekonnen &amp; Hoekstra' + fn(22) + fn(23) + ', cotton from Chapagain et al.' + fn(24) + ', and home electricity as the US average use' + fn(25) + ' × 4.35 L/kWh' + fn(13) + '.</p>' +
       '<h2>References</h2><ol class="refs">' + refsHtml + '</ol>' +
       '</body></html>';
   }

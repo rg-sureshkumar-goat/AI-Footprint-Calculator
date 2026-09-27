@@ -119,18 +119,13 @@
       'Across ' + co.headcount.toLocaleString('en-US') + ' people over ' + days + ' working days.';
 
     // Anchor the annual figure to something a reader already has a feel for.
+    // Carbon only: there is no water anchor that meets the like-for-like rule
+    // (blue water consumed), so none is shown in the water view.
     const anchor = root.querySelector('#aipf-tm-co-anchor');
-    if (metric === 'carbon') {
-      const flights = yr / 1.6e6;  // transatlantic round trip ≈ 1.6 t CO2e (Wynes & Nicholas)
-      anchor.textContent = flights >= 0.5
-        ? 'About ' + AIPF.sig(flights) + ' transatlantic round-trip flights a year.'
-        : '';
-    } else {
-      const showers = yr / (21 * AIPF.GAL_TO_L); // 10-minute hot shower ≈ 21 gal (EPA WaterSense)
-      anchor.textContent = showers >= 1
-        ? 'About ' + AIPF.sig(showers) + ' ten-minute showers a year.'
-        : '';
-    }
+    const flights = yr / 1.6e6;  // transatlantic round trip ≈ 1.6 t CO2e (Wynes & Nicholas)
+    anchor.textContent = metric === 'carbon' && flights >= 0.5
+      ? 'About ' + AIPF.sig(flights) + ' transatlantic round-trip flights a year.'
+      : '';
   }
 
   function renderTeamBars() {
