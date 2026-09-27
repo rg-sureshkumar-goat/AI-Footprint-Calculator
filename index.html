@@ -50,6 +50,7 @@
       <ul class="aipf-nav-links">
         <li><a class="aipf-nav-link" data-target="session" href="#session">Session</a></li>
         <li><a class="aipf-nav-link" data-target="projects" href="#projects">Projects</a></li>
+        <li><a class="aipf-nav-link" data-target="digital" href="#digital">Digital day</a></li>
         <li><a class="aipf-nav-link" data-target="usage" href="#usage">Your use</a></li>
         <li><a class="aipf-nav-link" data-target="budget" href="#budget">Budget</a></li>
         <li><a class="aipf-nav-link" data-target="team" href="#team">Team</a></li>
@@ -175,6 +176,22 @@
             (<a href="https://eta-publications.lbl.gov/sites/default/files/2024-12/lbnl-2024-united-states-data-center-energy-usage-report_1.pdf" target="_blank" rel="noopener">Berkeley Lab</a>, derived). Sessions count toward your AI total only while &ldquo;Use my log&rdquo; is on.
           </p>
         </details>
+
+        <details class="aipf-tk-form aipf-ss" id="aipf-tk-digital">
+          <summary class="aipf-tk-form-h">Log a digital activity</summary>
+          <p class="aipf-ss-intro">
+            A call, stream, music, social media, or gaming session you have just finished. It counts in your
+            digital day, not your AI total, and replaces that activity&rsquo;s typical-day hours for today.
+          </p>
+          <div class="aipf-dg-ctl" id="aipf-dg-log-ctl"></div>
+          <div class="aipf-tk-controls">
+            <input type="number" class="aipf-tk-num" id="aipf-dg-log-min" min="1" max="1440" step="1" value="30"
+                   aria-label="Duration in minutes">
+            <span class="aipf-tk-num-lab">minutes, ending now</span>
+            <button type="button" class="aipf-tk-btn" id="aipf-dg-log-btn">+ Log activity</button>
+          </div>
+          <p class="aipf-ss-msg" id="aipf-dg-log-msg" aria-live="polite"></p>
+        </details>
       </div>
 
       <div class="aipf-tk-right">
@@ -233,6 +250,54 @@
     <p class="aipf-fine">
       Projects use the same method as logged sessions (see the session form above and &ldquo;How these numbers are made&rdquo;).
       The example is a single developer, as is the reference session, and neither is typical.
+    </p>
+  </section>
+
+  <section class="aipf-panel" id="digital" aria-labelledby="aipf-digital-h">
+    <div class="aipf-panel-head">
+      <h2 class="aipf-panel-title" id="aipf-digital-h">Your digital day</h2>
+      <p class="aipf-panel-note">Shown beside your AI total, never as a share of it</p>
+    </div>
+    <div class="aipf-dg">
+      <div class="aipf-dg-col">
+        <p class="aipf-tk-form-h">A typical day</p>
+        <p class="aipf-ss-intro">Hours a day of each activity. Anything you log in the tracker today replaces that activity&rsquo;s hours here.</p>
+        <div id="aipf-dg-rows"></div>
+        <button type="button" class="aipf-addrow" id="aipf-dg-add">+ add an activity</button>
+        <label class="aipf-dg-wifi">Hours your home Wi-Fi is in use for these activities
+          <span class="aipf-dg-wifi-in"><input type="number" id="aipf-dg-wifi" min="0" max="24" step="0.25" value="0"> h
+          <span class="aipf-dg-wifi-max" id="aipf-dg-wifi-max"></span></span>
+        </label>
+        <p class="aipf-fine">Lower this when activities overlap (a call while music plays), so the router is counted once for that time.
+          <button type="button" class="aipf-link" id="aipf-dg-wifi-reset">Reset to the sum</button></p>
+      </div>
+      <div class="aipf-dg-col">
+        <div class="aipf-dg-totals" id="aipf-dg-totals" aria-live="polite"></div>
+        <div id="aipf-dg-breakdown" aria-live="polite"></div>
+      </div>
+    </div>
+    <p class="aipf-fine">
+      Each hour counts your device, your home router, the network, and data centres, following the
+      <a href="https://www.carbontrust.com/sites/default/files/documents/resource/public/Carbon-impact-of-video-streaming.pdf" target="_blank" rel="noopener">Carbon Trust (2021)</a>. Your device dominates every activity, and the phone, laptop,
+      office desktop, and TV figures (1, 22, 115, and 100&nbsp;W) are single 2020-era estimates with no range.
+      The router is counted at its actual draw, 10&nbsp;Wh for each hour of home Wi-Fi use and nothing on cellular; it is usually
+      on anyway, and its share depends on how shared energy is divided (the Carbon Trust&rsquo;s 71&nbsp;Wh an hour divides it by data
+      volume and is not used). The network is counted per gigabyte (0.0065&nbsp;kWh/GB fixed, 0.1&nbsp;kWh/GB mobile), although
+      <a href="https://doi.org/10.1111/jiec.13512" target="_blank" rel="noopener">Mytton, Lund&eacute;n &amp; Malmodin (2024)</a> find network energy is not
+      proportional to data volume; the network and router are therefore counted by different methods. Data use: video streaming from Netflix figures (Carbon Trust); video calls
+      0.5&ndash;3.4&nbsp;GB an hour by app (<a href="https://www.cablelabs.com/blog/hourly-data-consumption-of-popular-video-conferencing-applications" target="_blank" rel="noopener">CableLabs</a>), with a central 1.95&nbsp;GB that is our own midpoint;
+      music from <a href="https://support.spotify.com/us/article/audio-quality/" target="_blank" rel="noopener">Spotify&rsquo;s quality settings</a>. Social media and gaming have no network share, because no verified
+      data-use figure was found; on cellular that omitted share could be large next to a phone&rsquo;s own 1&nbsp;W.
+      Data centres: about 1&nbsp;Wh per hour of video streaming, and a flat 15&nbsp;Wh a day for any social media use, which is
+      <a href="https://sustainability.atmeta.com/asset/2025-environmental-data-index/" target="_blank" rel="noopener">Meta&rsquo;s 2024</a> company-wide electricity per daily user across all its workloads, not tied to hours
+      and not specific to other platforms. No data-centre figure is counted for calls, music, or gaming.
+      Consoles: 213&ndash;219&nbsp;W gaming and 43&ndash;47&nbsp;W on the home menu, a stand-in for streaming, from
+      <a href="https://www.playstation.com/en-gb/legal/ecodesign/" target="_blank" rel="noopener">Sony&rsquo;s PS5 figures</a> (central values are our midpoints). Gaming PC: about 373&nbsp;W (315&ndash;388),
+      from <a href="https://arxiv.org/abs/2402.06346" target="_blank" rel="noopener">one measured game</a> and <a href="https://arxiv.org/abs/2608.19040" target="_blank" rel="noopener">a modelled Steam average</a>, plus a monitor from
+      <a href="https://data.energystar.gov/Active-Specifications/ENERGY-STAR-Certified-Displays/qbg3-d468" target="_blank" rel="noopener">ENERGY STAR</a>. The Carbon Trust study was seed-funded by Netflix through DIMPACT and its figures are European
+      averages for 2020. Carbon is the energy on your region&rsquo;s grid. Water uses US averages from
+      <a href="https://eta-publications.lbl.gov/sites/default/files/2024-12/lbnl-2024-united-states-data-center-energy-usage-report_1.pdf" target="_blank" rel="noopener">Berkeley Lab</a> (4.35&nbsp;L/kWh for electricity, 4.88&nbsp;L/kWh for data centres), so it does not change with the
+      region. Your AI total does not count your own device or router, so the two totals are not measured on the same boundary.
     </p>
   </section>
 
@@ -489,6 +554,51 @@
         Sessions count toward your AI total only while &ldquo;Use my log&rdquo; is on.
       </p>
       <p>
+        <strong>Your digital day.</strong> A separate total for video calls, video streaming, music,
+        social media, and gaming, shown beside the AI total and never as a share of it; the session
+        tracker, budget, and team view never read it. Each activity's energy is hours &times; device
+        power, plus hours &times; data per hour &times; network intensity, plus data-centre energy where
+        a figure exists, following the full breakdown in the
+        <a href="https://www.carbontrust.com/sites/default/files/documents/resource/public/Carbon-impact-of-video-streaming.pdf" target="_blank" rel="noopener">Carbon Trust's 2021 white paper on video streaming</a>
+        (European averages for 2020, seed-funded by Netflix through DIMPACT). Device power: smartphone
+        1&nbsp;W, laptop 22&nbsp;W, office desktop with monitor 115&nbsp;W, and TV 100&nbsp;W (&ldquo;conservative
+        for 2020&rdquo;), each a single estimate with no range. Console: 216&nbsp;W gaming (213&ndash;219) and
+        45&nbsp;W on the home menu (43&ndash;47), used as a stand-in for streaming, from
+        <a href="https://www.playstation.com/en-gb/legal/ecodesign/" target="_blank" rel="noopener">Sony's PS5 measurements</a>; the central
+        values are our midpoints. Gaming PC: about 373&nbsp;W, the 358.6&nbsp;W measured for one game by
+        <a href="https://arxiv.org/abs/2402.06346" target="_blank" rel="noopener">P&eacute;rez et al. (2024)</a> plus a 14&nbsp;W monitor (the
+        <a href="https://data.energystar.gov/Active-Specifications/ENERGY-STAR-Certified-Displays/qbg3-d468" target="_blank" rel="noopener">ENERGY STAR</a>
+        median), with a range of 315&ndash;388&nbsp;W from the 305.1&nbsp;W Steam average modelled by
+        <a href="https://arxiv.org/abs/2608.19040" target="_blank" rel="noopener">Hazas et al. (2026)</a> plus a 10&nbsp;W monitor, to 358.6&nbsp;W plus
+        29&nbsp;W. The home router is counted at 10&nbsp;W for each hour of home Wi-Fi use, and not on cellular.
+        When activities overlap, the typical day's Wi-Fi hours can be lowered, and logged activities are
+        treated as ending when they were logged, so overlapping logs count the router once; the two parts are
+        added, capped at 24 hours. The Carbon Trust's headline 71&nbsp;Wh an hour for routers is not used,
+        because it divides router energy by data volume. The network is costed at 0.0065&nbsp;kWh/GB on fixed
+        broadband and 0.1&nbsp;kWh/GB on mobile, although
+        <a href="https://doi.org/10.1111/jiec.13512" target="_blank" rel="noopener">Mytton, Lund&eacute;n &amp; Malmodin (2024)</a> find network
+        energy is not proportional to data volume, and the Carbon Trust's own power model gives a much
+        smaller, flatter network figure. Data per hour: streaming 1, 3, or 7&nbsp;GB for SD, HD, or 4K on
+        broadband and 0.17, 0.25, or 3&nbsp;GB on mobile data settings (Carbon Trust, from Netflix);
+        calls 0.5&ndash;3.4&nbsp;GB by app, from
+        <a href="https://www.cablelabs.com/blog/hourly-data-consumption-of-popular-video-conferencing-applications" target="_blank" rel="noopener">CableLabs (2021)</a>,
+        with a central 1.95&nbsp;GB that is our own midpoint, since CableLabs does not say which app used
+        how much; music about 11&ndash;144&nbsp;MB from
+        <a href="https://support.spotify.com/us/article/audio-quality/" target="_blank" rel="noopener">Spotify's quality settings</a>.
+        Social media and gaming have no network share, because no verified data-use figure was found.
+        Data centres: about 1&nbsp;Wh per hour of video streaming (Carbon Trust) and a flat 15&nbsp;Wh a day
+        for any social media use, from
+        <a href="https://sustainability.atmeta.com/asset/2025-environmental-data-index/" target="_blank" rel="noopener">Meta's 2024 electricity of 0.0055&nbsp;MWh per daily active person</a>,
+        a company-wide yearly average across all workloads; none for calls, music, or gaming. An activity
+        logged in the tracker today replaces that activity's typical-day hours, so the total can mix a
+        record with an estimate, and the panel shows which is which. Carbon is energy &times; your region's
+        grid intensity. Water is device, router, and network electricity &times; 4.35&nbsp;L/kWh and data
+        centres &times; 4.88&nbsp;L/kWh, US averages from
+        <a href="https://eta-publications.lbl.gov/sites/default/files/2024-12/lbnl-2024-united-states-data-center-energy-usage-report_1.pdf" target="_blank" rel="noopener">Berkeley Lab</a>,
+        so it does not change with the region. Device manufacturing is not included here. The AI total
+        does not count your own device or router, so the two totals use different boundaries.
+      </p>
+      <p>
         <strong>Generated images.</strong> Images are logged in the session tracker, one per image
         made, including variations you discard. Every image uses one general range, with no choice of
         tool or settings, because no commercial image provider (such as DALL&middot;E or Midjourney)
@@ -658,6 +768,7 @@
 <script src="assets/js/calculator.js"></script>
 <script src="assets/js/tracker.js"></script>
 <script src="assets/js/sessions.js"></script>
+<script src="assets/js/digital.js"></script>
 <script src="assets/js/team.js"></script>
 <script src="assets/js/budget.js"></script>
 <script src="assets/js/nav.js"></script>

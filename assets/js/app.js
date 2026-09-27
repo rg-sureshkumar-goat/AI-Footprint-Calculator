@@ -16,7 +16,7 @@
 
     // Company features opt in by exposing an init function; each is independent,
     // so the page still works if one is removed.
-    for (const name of ['initTracker', 'initSessions', 'initTeam', 'initBudget', 'initNav']) {
+    for (const name of ['initTracker', 'initSessions', 'initDigital', 'initTeam', 'initBudget', 'initNav']) {
       if (typeof AIPF[name] !== 'function') continue;
       // Isolate each one: a feature that fails to start should not stop the
       // features after it in this list from starting at all.

@@ -98,12 +98,12 @@ Draft for the user's review. One checkpoint per build step (decided by the user 
 
 **Checkpoint 4. Feature 3, digital day builder**
 
-- [ ] Add device powers, data use per hour, network intensities, data-centre figures, router draw, and water factors (4.35 and 4.88 L/kWh) with sources
-- [ ] Build the typical-day panel: activity, device, connection, hours, quality where relevant, with only the allowed combinations, plus the home-Wi-Fi hours field (defaulting to the capped sum, never above it)
-- [ ] Add tracker logging of digital activities with duration; logged activities replace that activity's typical-day entry for today; calculate router overlap from log times
-- [ ] Compute the digital-day total (central, low, high; energy, carbon, water) and its breakdown by activity and component; show it beside the AI total, never as a share, with each activity's origin (log or typical day)
-- [ ] Add the limitations notes, "single estimate, no range available" labels, and the methodology text
-- [ ] Agent runs feature 3 acceptance checks 1–8
+- [x] Add device powers, data use per hour, network intensities, data-centre figures, router draw, and water factors (4.35 and 4.88 L/kWh) with sources
+- [x] Build the typical-day panel: activity, device, connection, hours, quality where relevant, with only the allowed combinations, plus the home-Wi-Fi hours field (defaulting to the capped sum, never above it)
+- [x] Add tracker logging of digital activities with duration; logged activities replace that activity's typical-day entry for today; calculate router overlap from log times
+- [x] Compute the digital-day total (central, low, high; energy, carbon, water) and its breakdown by activity and component; show it beside the AI total, never as a share, with each activity's origin (log or typical day)
+- [x] Add the limitations notes, "single estimate, no range available" labels, and the methodology text
+- [x] Agent runs feature 3 acceptance checks 1–8. Done 2026-09-26: all eight passed in the preview (366.4 Wh, 347.6–385.3; 139.2 g, 132.1–146.4; 1.60 L, 1.52–1.69; breakdown as specified). Check 7 first failed, because a logged digital activity alone switched the page into log-driven mode and zeroed the AI total; fixed so that only AI entries do that. Features 1 and 2 re-checked; checked at phone width and in dark mode
 - [ ] User verifies checkpoint 4; commit when asked
 
 **Checkpoint 5. Feature 4, device manufacturing**
@@ -147,6 +147,7 @@ Draft for the user's review. One checkpoint per build step (decided by the user 
 
 Record material changes to the approach, sequence, or checklist and explain why they were made.
 
+- 2026-09-26 (checkpoint 4): Three feature 3 details were open in the specification (the console's central streaming draw, router hours when log and typical day mix, and the time window of a logged activity). The user decided them before the build; recorded in `spec.md` under Revisions.
 - 2026-09-26 (checkpoint 2): Added a task to checkpoint 2. Building feature 1 showed that the budget counted logged prompts even with "Use my log" off, while the spec excludes images then. The user chose to make logged prompts follow the setting as well, so every logged kind is treated alike; recorded in `spec.md` under Revisions.
 
 ## Commands

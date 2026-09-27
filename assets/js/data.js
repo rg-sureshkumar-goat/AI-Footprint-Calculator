@@ -66,6 +66,54 @@
   // repository, 28 days, often running unattended around the clock.
   AIPF.PROJECT_EXAMPLE = { fresh: 980326, write: 108060378, read: 15202019495, out: 20156852 };
 
+  // ---- Digital day (feature 3): non-AI activities, per hour ----
+  // Unless noted, from the Carbon Trust's 2021 white paper on video streaming
+  // (European averages for 2020; seed-funded by Netflix through DIMPACT).
+  // Power triples are [central, low, high] watts; single estimates repeat one value.
+  AIPF.DIGITAL = {
+    routerW: 10,                              // home router, counted per hour of home Wi-Fi use
+    netKwhPerGb: { home: 0.0065, cell: 0.1 }, // fixed and mobile network intensities
+    socialDcWhPerDay: 5500 / 365,             // Meta 2024: 0.0055 MWh per daily active person per year
+    gridWaterLPerKwh: 4.35,                   // Berkeley Lab: water to generate US electricity overall
+    devices: {
+      phone:    { label: 'Smartphone', w: [1, 1, 1], single: true },
+      laptop:   { label: 'Laptop', w: [22, 22, 22], single: true },
+      desktop:  { label: 'Office desktop with monitor', w: [115, 115, 115], single: true },
+      tv:       { label: 'TV', w: [100, 100, 100], single: true },
+      // PS5 (Sony): active gaming 213.25-219.2 W; home menu 43.4-47.06 W, a
+      // stand-in for streaming. Central values are the midpoints.
+      console:  { label: 'Games console', w: { gaming: [216.2, 213.25, 219.2], stream: [45.2, 43.4, 47.06] } },
+      // Pérez et al. 2024's measured 358.6 W plus a 14.2 W monitor (ENERGY STAR
+      // median); low: Hazas et al. 2026's modelled 305.1 W plus 10 W; high:
+      // 358.6 W plus 29 W (ENERGY STAR 10th and 90th percentiles).
+      gamingpc: { label: 'Gaming PC with monitor', w: [372.8, 315.1, 387.6] },
+    },
+    activities: {
+      // CableLabs 2021: 0.5-3.4 GB an hour across four apps; the midpoint
+      // is this project's own construction.
+      call:   { label: 'Video calls', devices: ['phone', 'laptop', 'desktop'], gb: [1.95, 0.5, 3.4] },
+      stream: {
+        label: 'Video streaming', devices: ['phone', 'laptop', 'desktop', 'tv', 'console'], dcWhPerHour: 1,
+        quality: {
+          home: [{ id: 'sd', label: 'SD', gb: 1 }, { id: 'hd', label: 'HD', gb: 3 }, { id: 'uhd', label: '4K', gb: 7 }],
+          cell: [{ id: 'save', label: 'Save data', gb: 0.17 }, { id: 'auto', label: 'Automatic', gb: 0.25 }, { id: 'max', label: 'Maximum data', gb: 3 }],
+        },
+      },
+      // Spotify's quality settings: 24, 96, 160, and 320 kbit/s.
+      music: {
+        label: 'Music streaming', devices: ['phone', 'laptop', 'desktop'],
+        quality: { any: [
+          { id: 'low', label: 'Low', gb: 24 * 3600 / 8e6 },
+          { id: 'normal', label: 'Normal', gb: 96 * 3600 / 8e6 },
+          { id: 'high', label: 'High', gb: 160 * 3600 / 8e6 },
+          { id: 'vhigh', label: 'Very high', gb: 320 * 3600 / 8e6 },
+        ] },
+      },
+      social: { label: 'Social media', devices: ['phone', 'laptop', 'desktop'], noNetwork: true, dcPerDay: true },
+      gaming: { label: 'Gaming', devices: ['phone', 'console', 'gamingpc'], noNetwork: true },
+    },
+  };
+
   // Data-centre water per kWh, derived: Berkeley Lab's 2023 US average on-site
   // use (0.36 L/kWh) plus indirect water through electricity (4.52 L/kWh).
   AIPF.DC_WATER_L_PER_KWH = 0.36 + 4.52;

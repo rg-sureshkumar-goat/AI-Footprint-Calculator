@@ -115,7 +115,8 @@
   // With the log on but empty — a first visit — the page would otherwise be a
   // wall of zeros, which reads as broken rather than as "nothing yet", so fall
   // back to the original's example day until there is real usage to show.
-  function isLogDriving() { return tracker.useLog && tracker.today.length > 0; }
+  // Only AI entries count as usage here; digital activities belong elsewhere.
+  function isLogDriving() { return tracker.useLog && tracker.today.some(AIPF.isAiEntry); }
   AIPF.trackerIsLogDriving = isLogDriving;
   // Logged entries that are not prompts (images, sessions) reach the AI total
   // only while the log drives the page; prompts arrive through the rows.
@@ -193,7 +194,7 @@
   }
 
   function countKinds(entries) {
-    const out = { prompt: 0, image: 0, session: 0 };
+    const out = { prompt: 0, image: 0, session: 0, digital: 0 };
     for (const e of entries) {
       const k = AIPF.entryKind(e);
       out[k] = (out[k] || 0) + 1;
@@ -211,7 +212,8 @@
     root.querySelector('#aipf-tk-total').textContent = AIPF.fmtMetric(total);
     root.querySelector('#aipf-tk-count').textContent = plural(kinds.prompt, 'prompt') +
       (kinds.image ? ' · ' + plural(kinds.image, 'image') : '') +
-      (kinds.session ? ' · ' + plural(kinds.session, 'session') : '');
+      (kinds.session ? ' · ' + plural(kinds.session, 'session') : '') +
+      (kinds.digital ? ' · ' + plural(kinds.digital, 'digital activity').replace(/activitys$/, 'activities') : '');
 
     const live = root.querySelector('#aipf-tk-live');
     const paceBox = root.querySelector('#aipf-tk-pace');
@@ -270,6 +272,8 @@
       } else if (kind === 'session') {
         line.appendChild(el('span', 'aipf-tk-entry-what', 'Agent session <span class="aipf-tk-dot">·</span> ' +
           AIPF.esc(AIPF.getModel(e.m).name) + (e.p ? ' <span class="aipf-tk-dot">·</span> ' + AIPF.esc(e.p) : '')));
+      } else if (kind === 'digital') {
+        line.appendChild(el('span', 'aipf-tk-entry-what', AIPF.esc(AIPF.digitalLabel ? AIPF.digitalLabel(e) : 'Digital activity')));
       } else if (!AIPF.isSize(e.s)) {
         line.appendChild(el('span', 'aipf-tk-entry-what', AIPF.esc(AIPF.getModel(e.m).name) + ' <span class="aipf-tk-dot">·</span> removed size'));
       } else {
@@ -279,7 +283,10 @@
           AIPF.esc(model.name) + ' <span class="aipf-tk-dot">·</span> ' + AIPF.esc(AIPF.sizeLabel(e.m, size))));
       }
       const counted = counts(e) && (kind !== 'prompt' || AIPF.isSize(e.s));
-      line.appendChild(el('span', 'aipf-tk-entry-val', counted ? AIPF.fmtMetric(entryCost(e, AIPF.state.metric)) : 'not counted'));
+      // Digital activities belong to the digital-day total, not this AI total.
+      const val = kind === 'digital' ? (tracker.useLog ? 'digital day' : 'not counted')
+        : counted ? AIPF.fmtMetric(entryCost(e, AIPF.state.metric)) : 'not counted';
+      line.appendChild(el('span', 'aipf-tk-entry-val', val));
       box.appendChild(line);
     }
     if (tracker.today.length > RECENT_SHOWN) {

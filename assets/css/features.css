@@ -128,6 +128,43 @@
 .aipf-pe-beside { font-family: var(--font-body); font-size: 0.76rem; line-height: 1.5; color: var(--text-secondary); margin: 0.6rem 0 0; padding: 0.5rem 0.6rem; background: var(--bg-subtle); border-left: 3px solid var(--accent); }
 @media (max-width: 820px) { .aipf-pj { grid-template-columns: 1fr; gap: 1.2rem; } }
 
+/* ---- Project 2, feature 3: digital day ---- */
+.aipf-dg { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.aipf-dg-col { min-width: 0; }
+.aipf-dg-row { display: grid; grid-template-columns: 1fr auto auto; gap: 0.5rem; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid var(--border); }
+.aipf-dg-ctl { display: flex; flex-wrap: wrap; gap: 0.35rem; min-width: 0; }
+.aipf-dg-ctl select { flex: 1 1 7.5rem; min-width: 0; }
+.aipf-tk-form .aipf-dg-ctl { margin-bottom: 0.5rem; }
+.aipf-dg-hours { display: flex; align-items: center; gap: 0.3rem; font-family: var(--font-body); font-size: 0.74rem; color: var(--dim); white-space: nowrap; }
+.aipf-dg-hours input, .aipf-dg-wifi input {
+  width: 4.2rem; padding: 0.3rem 0.4rem; font-family: var(--font-body); font-size: 0.82rem; color: var(--text);
+  background: var(--bg-subtle); border: 1px solid var(--border-strong); border-radius: 5px; font-variant-numeric: tabular-nums;
+}
+.aipf-dg-hours input:focus, .aipf-dg-wifi input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.aipf-dg-wifi { display: flex; flex-direction: column; gap: 0.3rem; margin-top: 0.9rem; font-family: var(--font-body); font-size: 0.76rem; color: var(--text-secondary); }
+.aipf-dg-wifi-in { display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; color: var(--dim); }
+.aipf-dg-wifi-max { font-size: 0.7rem; }
+.aipf-dg-totals { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-bottom: 0.8rem; }
+.aipf-dg-card { background: var(--bg-subtle); border: 1px solid var(--border); padding: 0.6rem 0.7rem; min-width: 0; }
+.aipf-dg-card:last-child { border-left: 3px solid var(--accent); }
+.aipf-dg-card-h { font-family: var(--font-body); font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); margin: 0 0 0.35rem; }
+.aipf-dg-card-fig { font-family: var(--font-body); font-size: 0.78rem; line-height: 1.5; color: var(--text-secondary); margin: 0; font-variant-numeric: tabular-nums; }
+.aipf-dg-card-sub { font-family: var(--font-body); font-size: 0.66rem; line-height: 1.4; color: var(--dim); margin: 0.4rem 0 0; }
+.aipf-dg-h { font-family: var(--font-body); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--dim); margin: 0.9rem 0 0.2rem; }
+.aipf-dg-mix { font-family: var(--font-body); font-size: 0.72rem; color: var(--text-secondary); margin: 0 0 0.3rem; }
+.aipf-dg-act { padding: 0.4rem 0; border-bottom: 1px solid var(--border); }
+.aipf-dg-act-h { display: flex; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap; font-family: var(--font-body); font-size: 0.78rem; color: var(--text); margin: 0; font-variant-numeric: tabular-nums; }
+.aipf-dg-act-parts { list-style: none; margin: 0.15rem 0 0; padding: 0; font-family: var(--font-body); font-size: 0.7rem; line-height: 1.5; color: var(--dim); font-variant-numeric: tabular-nums; }
+.aipf-dg-act-parts b { font-weight: 600; color: var(--text-secondary); }
+.aipf-tag--log { color: var(--ok); margin-left: 0.3rem; }
+.aipf-tag--typ { color: var(--dim); margin-left: 0.3rem; }
+@media (max-width: 820px) { .aipf-dg { grid-template-columns: 1fr; gap: 1.2rem; } }
+@media (max-width: 560px) {
+  .aipf-dg-totals { grid-template-columns: 1fr; }
+  .aipf-dg-row { grid-template-columns: 1fr auto; }
+  .aipf-dg-row .aipf-dg-ctl { grid-column: 1 / -1; }
+}
+
 /* Hour-by-hour shape of the day */
 .aipf-tk-hours-h { font-family: var(--font-body); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--dim); margin: 0 0 0.35rem; }
 .aipf-tk-hours { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 2px; height: 46px; align-items: end; }
